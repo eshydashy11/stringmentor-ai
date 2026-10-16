@@ -3,6 +3,7 @@ import { AudioLines, NotebookPen } from "lucide-react";
 import { Player } from "@/components/player";
 import { AnalysisCards } from "@/components/analysis-cards";
 import { useStudio } from "@/components/studio-provider";
+import { MicrophoneRecorder } from "@/components/microphone-recorder";
 export default function Practice() {
   const studio = useStudio();
   return (
@@ -21,7 +22,7 @@ export default function Practice() {
         </span>
       </div>
       <div className="studio-grid">
-        <Player />
+        <Player recordingControls={<MicrophoneRecorder />} />
         <aside className="panel notes-panel">
           <span className="feature-icon">
             <NotebookPen size={23} />
@@ -53,9 +54,9 @@ export default function Practice() {
       <div className="disclosure panel">
         <AudioLines size={20} />
         <p>
-          <strong>Your ears lead the way.</strong> Audio playback is working.
-          Intonation, tone analysis, and AI feedback are not yet implemented. No
-          audio is sent to an AI service.
+          <strong>Your ears lead the way.</strong> Record with your microphone
+          or upload audio to practise. Intonation, tone analysis, and AI
+          feedback are not yet implemented. No audio is sent to an AI service.
         </p>
       </div>
     </>

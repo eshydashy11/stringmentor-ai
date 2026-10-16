@@ -1958,3 +1958,82 @@ input[type="range"] {
     scroll-behavior: auto !important;
   }
 }
+
+/* Live capture extends the existing Practice Studio upload strip. */
+.upload-strip.with-recording {
+  flex-direction: column;
+  align-items: stretch;
+}
+.upload-strip.with-recording .audio-input-actions {
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.upload-strip.with-recording .button {
+  min-height: 42px;
+  padding: 10px 13px;
+  font-size: 12px;
+}
+.microphone-recorder {
+  flex: 1;
+  min-width: 200px;
+}
+.microphone-buttons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.upload-strip .recording-timer {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ivory);
+  white-space: nowrap;
+}
+.stop-recording {
+  border-color: #b97570;
+  background: #553337;
+  color: #ffe1d8;
+}
+.stop-recording:hover {
+  background: #714247;
+}
+.microphone-status {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--teal);
+  line-height: 1.6;
+  margin-top: 10px;
+  overflow-wrap: anywhere;
+}
+.microphone-status.microphone-error {
+  color: #edb3a7;
+}
+.recording-dot {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ee9e93;
+}
+.microphone-help {
+  font-size: 11px;
+  color: #9eafb8;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+@media (max-width: 540px) {
+  .upload-strip.with-recording .audio-input-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .upload-strip.with-recording .audio-input-actions > .button {
+    justify-self: start;
+  }
+  .microphone-recorder {
+    min-width: 0;
+  }
+}

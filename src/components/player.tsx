@@ -49,7 +49,13 @@ export function UploadButton({
   );
 }
 
-export function Player({ compact = false }: { compact?: boolean }) {
+export function Player({
+  compact = false,
+  recordingControls,
+}: {
+  compact?: boolean;
+  recordingControls?: React.ReactNode;
+}) {
   const studio = useStudio();
   const [dragging, setDragging] = useState(false);
   const loaded = !!studio.current;
@@ -207,7 +213,9 @@ export function Player({ compact = false }: { compact?: boolean }) {
               : "No audio loaded"}
         </span>
       </div>
-      <div className="upload-strip">
+      <div
+        className={`upload-strip ${recordingControls ? "with-recording" : ""}`}
+      >
         <div>
           <Upload size={18} />
           <span>
@@ -215,7 +223,10 @@ export function Player({ compact = false }: { compact?: boolean }) {
             <small>MP3, WAV, M4A & more · Up to 100 MB per file</small>
           </span>
         </div>
-        <UploadButton secondary label="Choose file" />
+        <div className="audio-input-actions">
+          <UploadButton secondary label="Choose file" />
+          {recordingControls}
+        </div>
       </div>
     </section>
   );

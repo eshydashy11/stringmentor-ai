@@ -86,8 +86,8 @@ export default function Recordings() {
         <p>
           <strong>A personal audio library.</strong> Upload MP3, WAV, M4A, and
           other browser-supported audio formats up to 100 MB per file. This
-          version uses your files; it has no streaming catalogue or microphone
-          recording.
+          library also includes microphone takes recorded in Practice Studio.
+          There is no streaming catalogue.
         </p>
       </div>
     </>
