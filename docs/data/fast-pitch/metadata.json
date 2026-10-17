@@ -1,0 +1,75 @@
+{
+  "schema": "stringmentor-fast-pitch-audit-v1",
+  "generatedAt": "2026-10-17T22:14:01.029Z",
+  "sourceCommit": "5843f191fb26d8307e4256f753d686f2cb7b6000",
+  "node": "v24.19.0",
+  "platform": "linux",
+  "arch": "x64",
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "logicalCpus": 5,
+  "ffmpeg": "ffmpeg version 7.1.5-0+deb13u1 Copyright (c) 2000-2026 the FFmpeg developers",
+  "repeats": 3,
+  "config": {
+    "sampleRate": 22050,
+    "windowSize": 4096,
+    "hopSize": 512,
+    "minFrequency": 55,
+    "maxFrequency": 1000,
+    "minRms": 0.003,
+    "minClarity": 0.9,
+    "peakThreshold": 0.97,
+    "tuningA4": 440,
+    "maxSpectralFrequency": 3000,
+    "spectralPeakFloor": 0.035,
+    "primitivePeakFloor": 0.06,
+    "maxCandidateDivisor": 16,
+    "maxHarmonic": 20,
+    "harmonicTolerance": 0.008,
+    "harmonicComplexityPenalty": 0.025,
+    "subharmonicPenalty": 0.2,
+    "minHarmonicSupport": 0.65,
+    "minCandidateScore": 0.6,
+    "minCandidatePeriodicity": 0.25,
+    "minCandidateMargin": 0.04,
+    "neighbourFrames": 3,
+    "neighbourToleranceCents": 80,
+    "neighbourBonus": 0.05,
+    "rawRefinementCents": 15
+  },
+  "windows": [
+    4096,
+    2048,
+    1024
+  ],
+  "realAudio": {
+    "sha256": "109a8bf5d75dc11f3bc80bba170c4d1f27a14ec3999fa30bdcbba478b61c2082",
+    "metadata": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "index": 0,
+          "codec_name": "aac",
+          "sample_rate": "48000",
+          "channels": 2,
+          "duration": "21.568000"
+        }
+      ],
+      "format": {
+        "duration": "21.568000"
+      }
+    },
+    "decodedSamples": 474605,
+    "decodedSeconds": 21.52403628117914,
+    "decoding": "FFmpeg f32le at 22050 Hz; preserve channel count; production mixToMono. No normalisation. Browser resampling can differ."
+  },
+  "protocol": {
+    "correctToleranceCents": 50,
+    "onsetToleranceSeconds": 0.05,
+    "hopHeldFixed": true,
+    "accuracyForUnlabelledAudio": false,
+    "timingExcludes": "warmup, decode, tone, disk IO; Node wall-clock analysis time; no concurrent benchmarks",
+    "commonGrid": "Frame centres present in the 4096 run; same 512-sample hop for all sizes",
+    "syntheticInterference": "The active oscillator is the target; resonance-tail matches are not evidence that real acoustic overlap has a uniquely recoverable fundamental."
+  }
+}

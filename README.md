@@ -138,6 +138,12 @@ npm test
 
 Each private-file test verifies its hash. The V1 test uses labelled pitch intervals; V2 checks the documented acoustic behaviour without treating proposed events as ground truth. Missing file variables explicitly skip the corresponding private-file tests. Derived candidate fixtures still run in CI; the audio itself is not committed or transmitted.
 
+## Fast-passage audit (Phase 2D.1)
+
+The [fast-passage investigation](docs/fast-passage-pitch-audit.md) records the current detector's rejection causes, the supplied Bach excerpt, controlled rapid-note sequences, window-size tradeoffs, onset-response metrics and processing times. It includes reproducible data and plots and a [specific Phase 2D.2 implementation plan](docs/fast-passage-phase2d2-plan.md). The production pitch engine remains unchanged. Higher coverage with a shorter window is not established as higher real-recording accuracy.
+
+Run the offline audit with `npm run audit:pitch`; set `STRINGMENTOR_BACH_PATH` to analyse the private Bach file and optionally `STRINGMENTOR_CELLO_SAMPLE_PATH` for the original open-string control. FFmpeg/ffprobe is required. Files default to ignored `work/fast-pitch/`; no audio is uploaded or committed. The report documents the exact reproduction command and scientific limitations.
+
 ## Project structure
 
 ```text

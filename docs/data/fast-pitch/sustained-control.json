@@ -1,0 +1,489 @@
+{
+  "provenance": {
+    "sha256": "6da88d0b66109e476222d85b1334b53b8e183f99d1de44a1bb70c17e556e07fc",
+    "metadata": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "index": 0,
+          "codec_name": "aac",
+          "sample_rate": "48000",
+          "channels": 2,
+          "duration": "14.058667"
+        }
+      ],
+      "format": {
+        "duration": "14.058667"
+      }
+    },
+    "decodedSamples": 309024,
+    "decodedSeconds": 14.01469387755102,
+    "decoding": "FFmpeg f32le at 22050 Hz; preserve channel count; production mixToMono. No normalisation. Browser resampling can differ."
+  },
+  "caveat": "Known open-string note identity at \u00b150 cents from equal temperament, not independent cents accuracy or onset labels.",
+  "rows": [
+    {
+      "windowSize": 4096,
+      "timing": {
+        "runsMs": [
+          1625.818468000005,
+          1598.0271270000085,
+          2225.229250999997
+        ],
+        "medianMs": 1625.818468000005,
+        "realtimeFactor": 0.11600813276444584
+      },
+      "labelledRegions": [
+        {
+          "label": {
+            "start": 1.4,
+            "end": 4.2,
+            "frequency": 65.40639132514966
+          },
+          "scores": {
+            "total": 120,
+            "usable": 116,
+            "correct": 116,
+            "wrong": 0,
+            "withheld": 4,
+            "octaveWrong": 0,
+            "previousNoteMatches": 0,
+            "coverage": 0.9666666666666667,
+            "correctFraction": 0.9666666666666667,
+            "acceptedAccuracy": 1,
+            "acceptedAbsoluteCentsMedian": 22.862769640515225,
+            "acceptedAbsoluteCentsP95": 28.04288368454601,
+            "byContext": {
+              "mixedWindow": {
+                "total": 8,
+                "correct": 8,
+                "wrong": 0,
+                "withheld": 0
+              },
+              "singleNoteWindow": {
+                "total": 112,
+                "correct": 108,
+                "wrong": 0,
+                "withheld": 4
+              }
+            }
+          }
+        },
+        {
+          "label": {
+            "start": 4.6,
+            "end": 7.5,
+            "frequency": 97.99885899543733
+          },
+          "scores": {
+            "total": 124,
+            "usable": 124,
+            "correct": 124,
+            "wrong": 0,
+            "withheld": 0,
+            "octaveWrong": 0,
+            "previousNoteMatches": 0,
+            "coverage": 1,
+            "correctFraction": 1,
+            "acceptedAccuracy": 1,
+            "acceptedAbsoluteCentsMedian": 13.026027791882042,
+            "acceptedAbsoluteCentsP95": 14.537895539069664,
+            "byContext": {
+              "mixedWindow": {
+                "total": 8,
+                "correct": 8,
+                "wrong": 0,
+                "withheld": 0
+              },
+              "singleNoteWindow": {
+                "total": 116,
+                "correct": 116,
+                "wrong": 0,
+                "withheld": 0
+              }
+            }
+          }
+        },
+        {
+          "label": {
+            "start": 7.9,
+            "end": 10.6,
+            "frequency": 146.8323839587038
+          },
+          "scores": {
+            "total": 116,
+            "usable": 112,
+            "correct": 112,
+            "wrong": 0,
+            "withheld": 4,
+            "octaveWrong": 0,
+            "previousNoteMatches": 0,
+            "coverage": 0.9655172413793104,
+            "correctFraction": 0.9655172413793104,
+            "acceptedAccuracy": 1,
+            "acceptedAbsoluteCentsMedian": 12.629932331377148,
+            "acceptedAbsoluteCentsP95": 13.432467049983513,
+            "byContext": {
+              "mixedWindow": {
+                "total": 8,
+                "correct": 8,
+                "wrong": 0,
+                "withheld": 0
+              },
+              "singleNoteWindow": {
+                "total": 108,
+                "correct": 104,
+                "wrong": 0,
+                "withheld": 4
+              }
+            }
+          }
+        },
+        {
+          "label": {
+            "start": 11.3,
+            "end": 13.7,
+            "frequency": 220
+          },
+          "scores": {
+            "total": 104,
+            "usable": 100,
+            "correct": 100,
+            "wrong": 0,
+            "withheld": 4,
+            "octaveWrong": 0,
+            "previousNoteMatches": 0,
+            "coverage": 0.9615384615384616,
+            "correctFraction": 0.9615384615384616,
+            "acceptedAccuracy": 1,
+            "acceptedAbsoluteCentsMedian": 15.011232861667867,
+            "acceptedAbsoluteCentsP95": 15.927322020496549,
+            "byContext": {
+              "mixedWindow": {
+                "total": 8,
+                "correct": 8,
+                "wrong": 0,
+                "withheld": 0
+              },
+              "singleNoteWindow": {
+                "total": 96,
+                "correct": 92,
+                "wrong": 0,
+                "withheld": 4
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "windowSize": 2048,
+      "timing": {
+        "runsMs": [
+          1277.4515140000003,
+          1177.4742340000084,
+          1019.8183299999946
+        ],
+        "medianMs": 1177.4742340000084,
+        "realtimeFactor": 0.08401712119350015
+      },
+      "labelledRegions": [
+        {
+          "label": {
+            "start": 1.4,
+            "end": 4.2,
+            "frequency": 65.40639132514966
+          },
+          "scores": {
+            "total": 120,
+            "usable": 118,
+            "correct": 118,
+            "wrong": 0,
+            "withheld": 2,
+            "octaveWrong": 0,
+            "previousNoteMatches": 0,
+            "coverage": 0.9833333333333333,
+            "correctFraction": 0.9833333333333333,
+            "acceptedAccuracy": 1,
+            "acceptedAbsoluteCentsMedian": 22.744161163547822,
+            "acceptedAbsoluteCentsP95": 28.163775875649122,
+            "byContext": {
+              "mixedWindow": {
+                "total": 4,
+                "correct": 4,
+                "wrong": 0,
+                "withheld": 0
+              },
+              "singleNoteWindow": {
+                "total": 116,
+                "correct": 114,
+                "wrong": 0,
+                "withheld": 2
+              }
+            }
+          }
+        },
+        {
+          "label": {
+            "start": 4.6,
+            "end": 7.5,
+            "frequency": 97.99885899543733
+          },
+          "scores": {
+            "total": 124,
+            "usable": 124,
+            "correct": 124,
+            "wrong": 0,
+            "withheld": 0,
+            "octaveWrong": 0,
+            "previousNoteMatches": 0,
+            "coverage": 1,
+            "correctFraction": 1,
+            "acceptedAccuracy": 1,
+            "acceptedAbsoluteCentsMedian": 13.014141539473583,
+            "acceptedAbsoluteCentsP95": 14.693329796917936,
+            "byContext": {
+              "mixedWindow": {
+                "total": 4,
+                "correct": 4,
+                "wrong": 0,
+                "withheld": 0
+              },
+              "singleNoteWindow": {
+                "total": 120,
+                "correct": 120,
+                "wrong": 0,
+                "withheld": 0
+              }
+            }
+          }
+        },
+        {
+          "label": {
+            "start": 7.9,
+            "end": 10.6,
+            "frequency": 146.8323839587038
+          },
+          "scores": {
+            "total": 116,
+            "usable": 116,
+            "correct": 116,
+            "wrong": 0,
+            "withheld": 0,
+            "octaveWrong": 0,
+            "previousNoteMatches": 0,
+            "coverage": 1,
+            "correctFraction": 1,
+            "acceptedAccuracy": 1,
+            "acceptedAbsoluteCentsMedian": 12.563707419676357,
+            "acceptedAbsoluteCentsP95": 13.576670933420623,
+            "byContext": {
+              "mixedWindow": {
+                "total": 4,
+                "correct": 4,
+                "wrong": 0,
+                "withheld": 0
+              },
+              "singleNoteWindow": {
+                "total": 112,
+                "correct": 112,
+                "wrong": 0,
+                "withheld": 0
+              }
+            }
+          }
+        },
+        {
+          "label": {
+            "start": 11.3,
+            "end": 13.7,
+            "frequency": 220
+          },
+          "scores": {
+            "total": 104,
+            "usable": 94,
+            "correct": 91,
+            "wrong": 3,
+            "withheld": 10,
+            "octaveWrong": 3,
+            "previousNoteMatches": 0,
+            "coverage": 0.9038461538461539,
+            "correctFraction": 0.875,
+            "acceptedAccuracy": 0.9680851063829787,
+            "acceptedAbsoluteCentsMedian": 15.083386358142207,
+            "acceptedAbsoluteCentsP95": 16.092133591588823,
+            "byContext": {
+              "mixedWindow": {
+                "total": 4,
+                "correct": 2,
+                "wrong": 1,
+                "withheld": 1
+              },
+              "singleNoteWindow": {
+                "total": 100,
+                "correct": 89,
+                "wrong": 2,
+                "withheld": 9
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "windowSize": 1024,
+      "timing": {
+        "runsMs": [
+          455.8306290000037,
+          503.5356000000029,
+          475.86217600000964
+        ],
+        "medianMs": 475.86217600000964,
+        "realtimeFactor": 0.033954518033551484
+      },
+      "labelledRegions": [
+        {
+          "label": {
+            "start": 1.4,
+            "end": 4.2,
+            "frequency": 65.40639132514966
+          },
+          "scores": {
+            "total": 120,
+            "usable": 120,
+            "correct": 119,
+            "wrong": 1,
+            "withheld": 0,
+            "octaveWrong": 0,
+            "previousNoteMatches": 0,
+            "coverage": 1,
+            "correctFraction": 0.9916666666666667,
+            "acceptedAccuracy": 0.9916666666666667,
+            "acceptedAbsoluteCentsMedian": 22.50712318287069,
+            "acceptedAbsoluteCentsP95": 28.57314992369988,
+            "byContext": {
+              "mixedWindow": {
+                "total": 2,
+                "correct": 2,
+                "wrong": 0,
+                "withheld": 0
+              },
+              "singleNoteWindow": {
+                "total": 118,
+                "correct": 117,
+                "wrong": 1,
+                "withheld": 0
+              }
+            }
+          }
+        },
+        {
+          "label": {
+            "start": 4.6,
+            "end": 7.5,
+            "frequency": 97.99885899543733
+          },
+          "scores": {
+            "total": 124,
+            "usable": 124,
+            "correct": 124,
+            "wrong": 0,
+            "withheld": 0,
+            "octaveWrong": 0,
+            "previousNoteMatches": 0,
+            "coverage": 1,
+            "correctFraction": 1,
+            "acceptedAccuracy": 1,
+            "acceptedAbsoluteCentsMedian": 13.097861806831428,
+            "acceptedAbsoluteCentsP95": 14.720832297028007,
+            "byContext": {
+              "mixedWindow": {
+                "total": 2,
+                "correct": 2,
+                "wrong": 0,
+                "withheld": 0
+              },
+              "singleNoteWindow": {
+                "total": 122,
+                "correct": 122,
+                "wrong": 0,
+                "withheld": 0
+              }
+            }
+          }
+        },
+        {
+          "label": {
+            "start": 7.9,
+            "end": 10.6,
+            "frequency": 146.8323839587038
+          },
+          "scores": {
+            "total": 116,
+            "usable": 98,
+            "correct": 98,
+            "wrong": 0,
+            "withheld": 18,
+            "octaveWrong": 0,
+            "previousNoteMatches": 0,
+            "coverage": 0.8448275862068966,
+            "correctFraction": 0.8448275862068966,
+            "acceptedAccuracy": 1,
+            "acceptedAbsoluteCentsMedian": 12.46353058713039,
+            "acceptedAbsoluteCentsP95": 13.726188756807511,
+            "byContext": {
+              "mixedWindow": {
+                "total": 2,
+                "correct": 2,
+                "wrong": 0,
+                "withheld": 0
+              },
+              "singleNoteWindow": {
+                "total": 114,
+                "correct": 96,
+                "wrong": 0,
+                "withheld": 18
+              }
+            }
+          }
+        },
+        {
+          "label": {
+            "start": 11.3,
+            "end": 13.7,
+            "frequency": 220
+          },
+          "scores": {
+            "total": 104,
+            "usable": 76,
+            "correct": 63,
+            "wrong": 13,
+            "withheld": 28,
+            "octaveWrong": 13,
+            "previousNoteMatches": 0,
+            "coverage": 0.7307692307692307,
+            "correctFraction": 0.6057692307692307,
+            "acceptedAccuracy": 0.8289473684210527,
+            "acceptedAbsoluteCentsMedian": 15.128225925397068,
+            "acceptedAbsoluteCentsP95": 1186.702916821706,
+            "byContext": {
+              "mixedWindow": {
+                "total": 2,
+                "correct": 1,
+                "wrong": 1,
+                "withheld": 0
+              },
+              "singleNoteWindow": {
+                "total": 102,
+                "correct": 62,
+                "wrong": 12,
+                "withheld": 28
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
