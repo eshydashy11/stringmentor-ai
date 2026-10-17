@@ -31,7 +31,7 @@ No API keys, environment variables, accounts, or external services are required.
 ## What works
 
 - Dashboard with StringMentor AI branding and real library/playlist counts.
-- Practice Studio with audio upload (file picker or drag and drop), live microphone recording, and local cello pitch analysis.
+- Practice Studio with audio upload (file picker or drag and drop), live microphone recording, local cello pitch analysis, and acoustic tone/articulation analysis.
 - Play, pause, seek, replay from the beginning, loop, and volume control.
 - A persistent audio element keeps playback running during client-side navigation.
 - Recordings library with uploaded audio, load-to-player, and delete controls.
@@ -68,6 +68,20 @@ The supplied C2 → G2 → D3 → A3 recording is now a regression case. Its sus
 
 Initially analysis accepts recordings up to **ten minutes**, with the existing **100 MB** file limit. Selecting another recording, leaving Practice Studio, or cancelling terminates the worker. Native `decodeAudioData` cannot be interrupted mid-decode; a cancelled decode's eventual result is discarded. Results are temporary and recalculated on demand. No original audio, playlists, preferences, or IndexedDB schema are changed. Violin playback and recording remain available; analysis is disabled for violin-labelled recordings because this configuration is not validated for violin.
 
+## Local tone and articulation analysis (Phase 2B)
+
+In **Practice Studio**, load a cello recording and click **Analyse Tone**. A separate local worker measures RMS/dBFS, spectral brightness, flatness, flux and harmonic-support indicators, with level and brightness variation over time. Four graphs show real calculated features, the player position and proposed acoustic events. Click a graph or use the keyboard timestamp inspector to seek. No result or quality score is invented.
+
+Select a detected sustained passage or enter start/end times. **Keep as comparison**, then select another stable passage of the same detected note to compare recorded level and brightness. The method panel explains units, thresholds, recording confounds and uncertainty. Features describe recorded acoustics; they do not diagnose bow pressure, speed, direction, location or technique. Microphone distance, room sound, gain control, compression and register affect comparisons.
+
+Review **candidate bow reversals**, **note changes**, **other acoustic transients** and **uncertain events**. Each has a timestamp and evidence. Confirm, reject or adjust the time/type; manual reviews remain separate from the algorithm. **Export review JSON** saves both collections locally without audio. Reviews and results last only for the current analysis: export before switching recordings, reanalysing, refreshing or navigating away. A continuous legato reversal may produce no candidate, and candidate counts are not stroke counts.
+
+The private V2 development recording produced 36 acoustic candidates: 1 candidate bow reversal, 4 note-change candidates, 13 other transients and 18 uncertain events. Its known 32 strokes have no independently labelled timestamps, so real precision/recall and missed/false event counts are unknown. See [the tone validation report](docs/tone-validation.md) for the feature definitions, exact rules, synthetic timing results, real measurements and limitations. The pitch estimator and existing storage/player/microphone paths are preserved.
+
+### Test Phase 2B on Vercel
+
+After Vercel marks the latest main-branch deployment ready, open [Practice Studio](https://stringmentor-ai.vercel.app/practice), load the V2 file, and choose **Analyse Tone**. Check graph seeking, interval comparisons, candidate review/export, cancellation and switching recordings. Refresh and confirm existing recordings, playlists and settings remain, then test a new microphone take. Repeat in current Chrome/Safari and at a narrow mobile width. Detailed acceptance steps are in the validation report; a Git push alone does not verify deployment or browser interaction.
+
 ### Test the updated website
 
 After the new main-branch commit is deployed to your existing Vercel site (or using the local preview above):
@@ -83,11 +97,11 @@ Real-browser codec, microphone, touch-layout, and broader real-cello accuracy ch
 
 ## Not yet implemented
 
-**Tone analysis and AI feedback remain explicitly labelled “Not yet implemented.”** Cello pitch measurements use real audio; there are no invented analysis results, wrong-note scores, or technique diagnoses. There is no commercial streaming catalogue, authentication, cloud sync, or AI API integration.
+**AI practice feedback remains explicitly labelled “Not yet implemented.”** Cello pitch and acoustic tone measurements use real audio; there are no invented analysis results, wrong-note scores, or technique diagnoses. There is no commercial streaming catalogue, authentication, cloud sync, or AI API integration.
 
 ## Storage and privacy
 
-Audio is processed for playback and pitch analysis on the device and never uploaded to a backend. Browser storage is tied to this site origin, device, and browser profile. Clearing site data removes the library. Keep original files separately. If IndexedDB is unavailable or full, new uploads remain playable for the current session and a storage warning appears. Uploaded files retain the instrument selected at upload time; changing your default instrument does not relabel existing recordings.
+Audio is processed for playback, pitch and acoustic tone analysis on the device and never uploaded to a backend. Browser storage is tied to this site origin, device, and browser profile. Clearing site data removes the library. Keep original files separately. If IndexedDB is unavailable or full, new uploads remain playable for the current session and a storage warning appears. Uploaded files retain the instrument selected at upload time; changing your default instrument does not relabel existing recordings.
 
 ## Checks
 
@@ -98,23 +112,25 @@ npm test
 npm run build
 ```
 
-The automated tests cover upload validation, playback time formatting, microphone lifecycle/format handling, IndexedDB persistence and playlist references, pitch estimation, decoding failure handling, and analysis cancellation. See [the synthetic and real-recording validation report](docs/intonation-validation.md) for tolerances and measured results. To verify on real devices, use HTTPS or localhost in Chrome and Safari: allow and deny microphone permission, record and stop, seek/replay, reload the library, add a take to a playlist, switch instruments during a take, navigate away while recording or awaiting permission, and let a take reach five minutes. Also check existing audio uploads and playback, playlist editing, and desktop/mobile layouts.
+The automated tests cover upload validation, playback time formatting, microphone lifecycle/format handling, IndexedDB persistence and playlist references, pitch estimation, acoustic feature metrology, synthetic event timing, manual review separation, decoding failure handling, and analysis cancellation. See [the synthetic and real-recording validation report](docs/intonation-validation.md) for tolerances and measured results. To verify on real devices, use HTTPS or localhost in Chrome and Safari: allow and deny microphone permission, record and stop, seek/replay, reload the library, add a take to a playlist, switch instruments during a take, navigate away while recording or awaiting permission, and let a take reach five minutes. Also check existing audio uploads and playback, playlist editing, and desktop/mobile layouts.
 
 To include the private original-audio regression (requires FFmpeg):
 
 ```bash
-STRINGMENTOR_CELLO_SAMPLE_PATH='/path/to/Cello Open Strings sample.m4a' npm test
+STRINGMENTOR_CELLO_SAMPLE_PATH='/path/to/Cello Open Strings sample.m4a' \
+STRINGMENTOR_CELLO_V2_PATH='/path/to/Cello Open Strings Sample V2.m4a' \
+npm test
 ```
 
-The test verifies the original file hash before applying its labels. Without that variable, the original-file test is explicitly skipped. Derived candidate fixtures still run in CI; the audio itself is not committed or transmitted.
+Each private-file test verifies its hash. The V1 test uses labelled pitch intervals; V2 checks the documented acoustic behaviour without treating proposed events as ground truth. Missing file variables explicitly skip the corresponding private-file tests. Derived candidate fixtures still run in CI; the audio itself is not committed or transmitted.
 
 ## Project structure
 
 ```text
 src/app/                 Dashboard and four feature routes, layout, styles
-src/components/          Studio state, player, recording, intonation UI, placeholders
-src/lib/                 Audio validation, pitch engine, decoding, IndexedDB
-src/workers/             Background pitch analysis
+src/components/          Studio state, player, recording, intonation/tone UI, placeholders
+src/lib/                 Audio validation, separate pitch/tone engines, decoding, IndexedDB
+src/workers/             Background pitch and tone analysis
 tests/                   Automated checks
 ```
 

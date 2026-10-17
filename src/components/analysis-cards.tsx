@@ -8,8 +8,9 @@ const features = [
     icon: SlidersHorizontal,
   },
   {
-    title: "Tone quality",
-    description: "Explore the colour and clarity of your sound.",
+    title: "Tone & articulation",
+    description:
+      "Measure acoustic stability and review possible articulation events.",
     icon: Waves,
   },
   {
@@ -20,8 +21,10 @@ const features = [
 ];
 export function AnalysisCards({
   hideIntonation = false,
+  hideTone = false,
 }: {
   hideIntonation?: boolean;
+  hideTone?: boolean;
 }) {
   return (
     <section aria-labelledby="analysis-heading" className="analysis-section">
@@ -35,7 +38,9 @@ export function AnalysisCards({
       <div className="analysis-grid">
         {features
           .filter(
-            (feature) => !hideIntonation || feature.title !== "Intonation",
+            (feature) =>
+              (!hideIntonation || feature.title !== "Intonation") &&
+              (!hideTone || feature.title !== "Tone & articulation"),
           )
           .map(({ title, description, icon: Icon }) => (
             <article className="panel analysis-card" key={title}>
@@ -44,7 +49,11 @@ export function AnalysisCards({
               </span>
               <h3>{title}</h3>
               <p>{description}</p>
-              {title === "Intonation" ? (
+              {title === "Tone & articulation" ? (
+                <Link className="teal" href="/practice#tone-analysis">
+                  Open acoustic tone analysis →
+                </Link>
+              ) : title === "Intonation" ? (
                 <Link className="teal" href="/practice">
                   Open cello pitch analysis →
                 </Link>
