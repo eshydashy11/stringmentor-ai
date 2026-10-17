@@ -2227,3 +2227,70 @@ input[type="range"] {
     gap: 10px;
   }
 }
+
+.pitch-raw-toggle {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+  margin: 18px 0;
+  line-height: 1.6;
+}
+.pitch-raw-toggle input {
+  accent-color: var(--teal);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.pitch-frame-diagnostics,
+.pitch-rejections {
+  border: 1px solid #30434c;
+  border-radius: 10px;
+  padding: 14px;
+  margin: 12px 0 18px;
+  font-size: 12px;
+}
+.pitch-frame-diagnostics summary,
+.pitch-rejections summary {
+  cursor: pointer;
+  color: var(--teal);
+  line-height: 1.8;
+}
+.pitch-frame-diagnostics p,
+.pitch-rejections p {
+  margin-top: 12px;
+}
+.pitch-diagnostic-values {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin: 16px 0;
+}
+.pitch-diagnostic-values dt {
+  color: #acb9c0;
+  margin-bottom: 5px;
+}
+.pitch-diagnostic-values dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.pitch-candidate-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+}
+.pitch-candidates {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: 540px;
+}
+.pitch-candidates caption {
+  text-align: left;
+  color: #acb9c0;
+  padding: 10px 0;
+}
+.pitch-candidates th,
+.pitch-candidates td {
+  padding: 10px;
+  border-bottom: 1px solid #30434c;
+}

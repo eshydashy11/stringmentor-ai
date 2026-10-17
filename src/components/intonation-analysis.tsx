@@ -17,6 +17,7 @@ import { analyseRecording } from "@/lib/analyse-recording";
 import {
   CELLO_CONFIG,
   noteName,
+  frequencyToPitch,
   type PitchFrame,
   type PitchResult,
 } from "@/lib/pitch";
@@ -34,7 +35,7 @@ function Measurement({ frame }: { frame: PitchFrame }) {
   if (frame.frequency === null)
     return (
       <span>
-        {preciseTime(frame.time)} · No usable pitch ({frame.rejection}) ·
+        {preciseTime(frame.time)} · No usable pitch ({frame.rejection}) · raw
         clarity {(frame.clarity * 100).toFixed(0)}%
       </span>
     );
@@ -50,8 +51,109 @@ function Measurement({ frame }: { frame: PitchFrame }) {
             ? "flat"
             : "on reference"}
       </span>{" "}
-      · clarity {(frame.clarity * 100).toFixed(0)}%
+      · periodicity {(frame.clarity * 100).toFixed(0)}%
     </span>
+  );
+}
+function FrameDiagnostics({ frame }: { frame: PitchFrame }) {
+  const diagnostic = frame.diagnostics;
+  if (!diagnostic) return null;
+  const raw = diagnostic.rawFrequency;
+  return (
+    <details className="pitch-frame-diagnostics">
+      <summary>
+        Frame diagnostics ·{" "}
+        {frame.frequency === null
+          ? "withheld / uncertain"
+          : diagnostic.corrected
+            ? "harmonic correction"
+            : "raw estimate retained"}
+      </summary>
+      <p>{diagnostic.detail}</p>
+      <dl className="pitch-diagnostic-values">
+        <div>
+          <dt>Raw Pitchy estimate</dt>
+          <dd>
+            {raw
+              ? `${raw.toFixed(2)} Hz · ${frequencyToPitch(raw).note}`
+              : "None"}{" "}
+            · clarity {(diagnostic.rawClarity * 100).toFixed(1)}%
+          </dd>
+        </div>
+        <div>
+          <dt>Original rejection rule</dt>
+          <dd>
+            {diagnostic.rawRejection ?? "Not rejected by the old threshold"}
+          </dd>
+        </div>
+        <div>
+          <dt>Tracked estimate</dt>
+          <dd>
+            {frame.frequency
+              ? `${frame.frequency.toFixed(2)} Hz · ${frame.note}`
+              : "Uncertain — no note assigned"}
+          </dd>
+        </div>
+        <div>
+          <dt>RMS / quiet threshold</dt>
+          <dd>
+            {frame.rms.toFixed(5)} / {CELLO_CONFIG.minRms}
+          </dd>
+        </div>
+        <div>
+          <dt>Decision / score margin</dt>
+          <dd>
+            {diagnostic.decision} / {diagnostic.margin.toFixed(3)} (minimum{" "}
+            {CELLO_CONFIG.minCandidateMargin})
+          </dd>
+        </div>
+      </dl>
+      {diagnostic.candidates.length > 0 && (
+        <div
+          className="pitch-candidate-scroll"
+          tabIndex={0}
+          role="region"
+          aria-label="Competing pitch candidates"
+        >
+          <table className="pitch-candidates">
+            <caption>Candidate evidence · scores are not probabilities</caption>
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Spectral support</th>
+                <th>Periodicity</th>
+                <th>Score</th>
+                <th>Harmonics</th>
+              </tr>
+            </thead>
+            <tbody>
+              {diagnostic.candidates.map((candidate, i) => (
+                <tr key={i}>
+                  <td>
+                    {candidate.frequency.toFixed(2)} Hz
+                    {diagnostic.selectedCandidate === i ? " · selected" : ""}
+                  </td>
+                  <td>{(candidate.support * 100).toFixed(1)}%</td>
+                  <td>{(candidate.periodicity * 100).toFixed(1)}%</td>
+                  <td>{candidate.score.toFixed(3)}</td>
+                  <td>
+                    {candidate.harmonics.join(", ")}
+                    {candidate.primitive ? "" : " · common divisor"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <p>
+        Raw clarity measures one period’s repeatability. Spectral support
+        measures the share of retained peak amplitude explained by a harmonic
+        family. Neither establishes the intended note. Neighbours contribute at
+        most {CELLO_CONFIG.neighbourBonus.toFixed(2)} to a score; they cannot
+        fill frames with insufficient acoustic evidence.
+      </p>
+    </details>
   );
 }
 function MeasurementTooltip({
@@ -81,6 +183,7 @@ function AnalysisSession({ recording }: { recording: Recording | null }) {
   const [progress, setProgress] = useState(0);
   const [windowStart, setWindowStart] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [showRaw, setShowRaw] = useState(false);
   const active = useRef<AbortController | null>(null);
   useEffect(() => {
     const cancel = () => {
@@ -146,13 +249,22 @@ function AnalysisSession({ recording }: { recording: Recording | null }) {
     .filter((f) => f.time >= windowStart && f.time <= windowEnd)
     .map((frame, index, visible) => ({
       ...frame,
+      rawMidi:
+        frame.diagnostics?.rawFrequency &&
+        frame.diagnostics.rawFrequency >= CELLO_CONFIG.minFrequency &&
+        frame.diagnostics.rawFrequency <= CELLO_CONFIG.maxFrequency
+          ? frequencyToPitch(frame.diagnostics.rawFrequency).midi
+          : null,
       // Do not draw across semitone-reference changes: cents wraps at ±50.
       graphCents:
         index > 0 && frame.note !== visible[index - 1].note
           ? null
           : frame.cents,
     }));
-  const visibleMidi = data.flatMap((f) => (f.midi === null ? [] : [f.midi]));
+  const visibleMidi = data.flatMap((f) => [
+    ...(f.midi === null ? [] : [f.midi]),
+    ...(showRaw && f.rawMidi !== null ? [f.rawMidi] : []),
+  ]);
   const pitchDomain = visibleMidi.length
     ? [
         Math.floor(Math.min(...visibleMidi)) - 1,
@@ -263,7 +375,7 @@ function AnalysisSession({ recording }: { recording: Recording | null }) {
             </span>
             <span>
               <strong>{Math.round(result.meanClarity * 100)}%</strong> mean
-              clarity of usable frames
+              periodicity of usable frames
             </span>
             <span>
               {result.usableFrames.toLocaleString()} /{" "}
@@ -278,8 +390,45 @@ function AnalysisSession({ recording }: { recording: Recording | null }) {
               ranges can reduce usable data.
             </p>
           )}
+          <details className="pitch-rejections">
+            <summary>Rejected-frame breakdown</summary>
+            <p>
+              Final decisions:{" "}
+              {Object.entries(
+                frames.reduce<Record<string, number>>((counts, frame) => {
+                  if (frame.rejection)
+                    counts[frame.rejection] =
+                      (counts[frame.rejection] ?? 0) + 1;
+                  return counts;
+                }, {}),
+              )
+                .map(([reason, count]) => `${reason}: ${count}`)
+                .join(" · ") || "No frames withheld"}
+            </p>
+            <p>
+              Raw Pitchy rejections before correction:{" "}
+              {Object.entries(
+                frames.reduce<Record<string, number>>((counts, frame) => {
+                  const reason = frame.diagnostics?.rawRejection;
+                  if (reason) counts[reason] = (counts[reason] ?? 0) + 1;
+                  return counts;
+                }, {}),
+              )
+                .map(([reason, count]) => `${reason}: ${count}`)
+                .join(" · ") || "None"}
+            </p>
+          </details>
           {frames.length > 0 && (
             <>
+              <label className="pitch-raw-toggle">
+                <input
+                  type="checkbox"
+                  checked={showRaw}
+                  onChange={(event) => setShowRaw(event.target.checked)}
+                />
+                Show raw Pitchy estimates (dashed) beside the tracked pitch
+                (teal)
+              </label>
               <div className="pitch-window">
                 <label htmlFor="pitch-window">
                   Graph window: {preciseTime(windowStart)}–
@@ -378,6 +527,18 @@ function AnalysisSession({ recording }: { recording: Recording | null }) {
                                 strokeDasharray="2 2"
                               />
                             )}
+                          {metric === "midi" && showRaw && (
+                            <Line
+                              dataKey="rawMidi"
+                              name="Raw Pitchy estimate"
+                              stroke="#b5a2d5"
+                              strokeDasharray="4 4"
+                              strokeWidth={1}
+                              dot={false}
+                              connectNulls={false}
+                              isAnimationActive={false}
+                            />
+                          )}
                           <Line
                             dataKey={metric}
                             type="linear"
@@ -394,6 +555,12 @@ function AnalysisSession({ recording }: { recording: Recording | null }) {
                   </div>
                 ))}
               </div>
+              {showRaw && (
+                <p>
+                  Raw estimates outside the cello range appear in frame
+                  diagnostics rather than on the graph.
+                </p>
+              )}
               <div className="pitch-inspector">
                 <label htmlFor="pitch-timestamp">
                   Inspect a timestamp{" "}
@@ -431,6 +598,7 @@ function AnalysisSession({ recording }: { recording: Recording | null }) {
                     </>
                   )}
                 </div>
+                {selected && <FrameDiagnostics frame={selected} />}
                 <button
                   className="button secondary"
                   disabled={!selected || !playbackDuration}
@@ -467,22 +635,37 @@ function AnalysisSession({ recording }: { recording: Recording | null }) {
       <details className="pitch-method">
         <summary>Method and limits</summary>
         <p>
-          Pitchy’s monophonic McLeod estimator uses {CELLO_CONFIG.windowSize}
-          -sample windows (~186 ms) every {CELLO_CONFIG.hopSize} samples (~23
-          ms), at {CELLO_CONFIG.sampleRate.toLocaleString()} Hz. Cello range:{" "}
-          {CELLO_CONFIG.minFrequency}–{CELLO_CONFIG.maxFrequency} Hz, including
-          C2. Minimum clarity: {CELLO_CONFIG.minClarity * 100}%; minimum RMS:{" "}
-          {CELLO_CONFIG.minRms}. Clarity measures periodicity, not the
-          probability a note is correct. Frame timestamps mark window centres,
-          so note boundaries are approximate.
+          Pitchy supplies a raw periodicity estimate. A separate Hann-windowed
+          spectrum proposes competing harmonic families, including missing
+          fundamentals. It favours families supported by distinct harmonic
+          numbers over unnecessary subharmonics. Windows remain{" "}
+          {CELLO_CONFIG.windowSize} samples (~186 ms), with{" "}
+          {CELLO_CONFIG.hopSize}-sample hops (~23 ms), at{" "}
+          {CELLO_CONFIG.sampleRate.toLocaleString()} Hz; range{" "}
+          {CELLO_CONFIG.minFrequency}–{CELLO_CONFIG.maxFrequency} Hz includes
+          C2. Frame times are window centres.
+        </p>
+        <p>
+          Minimum RMS: {CELLO_CONFIG.minRms}. The raw clarity threshold remains{" "}
+          {CELLO_CONFIG.minClarity * 100}% for comparison. Tracked candidates
+          instead require at least {CELLO_CONFIG.minHarmonicSupport * 100}%
+          spectral support, {CELLO_CONFIG.minCandidatePeriodicity * 100}%
+          periodicity, a score of {CELLO_CONFIG.minCandidateScore}, and a
+          winning margin of {CELLO_CONFIG.minCandidateMargin}. A single partial
+          also requires high periodicity. Up to {CELLO_CONFIG.neighbourFrames}{" "}
+          neighbouring frames on each side provide bounded support;
+          current-frame frequency is never rounded to a note or smoothed. Close
+          competing candidates remain uncertain. No expected open-string
+          sequence is built into the detector.
         </p>
         <p>
           Silence and low-confidence measurements leave gaps. Octave errors can
           still occur with weak fundamentals. Chords and accompanied music are
           unsuitable. Transitions, vibrato, and musical tuning choices can
           differ from equal temperament; no fingering, bowing, or wrong-note
-          diagnosis is made. Synthetic tests do not validate accuracy on real
-          cello recordings.
+          diagnosis is made. One supplied open-string recording has been used
+          for regression testing. This is not broad real-cello validation, and
+          its note labels do not provide precise frequency ground truth.
         </p>
         <p>
           Analysis stays on this device, supports files up to ten minutes and

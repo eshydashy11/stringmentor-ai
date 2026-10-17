@@ -6,7 +6,6 @@ import {
   frequencyToPitch,
   measuredObservations,
   mixToMono,
-  rejectOctaveSpikes,
   type PitchFrame,
 } from "../src/lib/pitch.ts";
 
@@ -138,7 +137,9 @@ test("deterministic broadband noise has low confidence and no pitch judgments", 
     result.frames.every(
       (f) =>
         f.frequency === null &&
-        (f.rejection === "low-confidence" || f.rejection === "out-of-range"),
+        (f.rejection === "low-confidence" ||
+          f.rejection === "out-of-range" ||
+          f.rejection === "weak-harmonics"),
     ),
   );
   assert.ok(
@@ -186,13 +187,6 @@ function frame(midi: number, time = 0): PitchFrame {
     rms: 0.1,
   };
 }
-test("isolated octave spikes are rejected while sustained octave leaps remain", () => {
-  const frames = [36, 36, 48, 36, 36, 48, 48, 48].map((n) => frame(n));
-  rejectOctaveSpikes(frames);
-  assert.equal(frames[2].frequency, null);
-  assert.equal(frames[2].rejection, "unstable");
-  assert.ok(frames.slice(5).every((f) => f.midi === 48));
-});
 test("observations use stable measured regions and suppress transitions/vibrato judgments", () => {
   for (const cents of [-20, 20]) {
     const result = analysePitch(tone(220 * 2 ** (cents / 1200), [1], 0.3, 2));
