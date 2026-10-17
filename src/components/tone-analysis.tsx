@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Download, Waves, X } from "lucide-react";
 import {
   CartesianGrid,
@@ -14,7 +14,12 @@ import {
   YAxis,
 } from "recharts";
 import { useStudio } from "./studio-provider";
-import { analyseToneRecording } from "@/lib/analyse-tone-recording";
+import { usePracticeAnalysis } from "./practice-analysis-provider";
+import {
+  advancedReview,
+  isAcceptedReview,
+  type ArticulationReview,
+} from "@/lib/articulation-review";
 import {
   intervalObservations,
   reviewEvent,
@@ -24,10 +29,8 @@ import {
   type EventReview,
   type IntervalSummary,
   type ToneFrame,
-  type ToneResult,
 } from "@/lib/tone";
 import { formatTime, trackTitle } from "@/lib/audio";
-import type { Recording } from "@/lib/storage";
 
 const WINDOW = 20;
 const PAGE_SIZE = 8;
@@ -49,7 +52,9 @@ function value(value: number | null, unit: string, digits = 1) {
 function ToneTooltip({
   active,
   payload,
+  advanced = false,
 }: {
+  advanced?: boolean;
   active?: boolean;
   payload?: readonly { payload?: ToneFrame }[];
 }) {
@@ -60,8 +65,13 @@ function ToneTooltip({
       {frame.note ?? "Pitch uncertain"}
       <br />
       {value(frame.dbfs, "dBFS")} · {value(frame.centroid, "Hz centroid")}
-      <br />
-      Flatness {value(frame.flatness, "", 3)} · flux {value(frame.flux, "", 3)}
+      {advanced && (
+        <>
+          <br />
+          Flatness {value(frame.flatness, "", 3)} · flux{" "}
+          {value(frame.flux, "", 3)}
+        </>
+      )}
     </div>
   ) : null;
 }
@@ -101,14 +111,6 @@ function Summary({
             {value(summary.centroidStdHz, "Hz SD", 0)}
           </dd>
         </div>
-        <div>
-          <dt>Mean spectral flatness</dt>
-          <dd>{value(summary.flatness, "(0–1)", 3)}</dd>
-        </div>
-        <div>
-          <dt>Mean pitch harmonic support</dt>
-          <dd>{value(summary.harmonicSupport, "(0–1)", 3)}</dd>
-        </div>
       </dl>
     </div>
   );
@@ -123,10 +125,10 @@ function EventEditor({
   reset,
 }: {
   event: AcousticEvent;
-  review?: EventReview;
+  review?: ArticulationReview;
   duration: number;
   seek: (time: number) => void;
-  save: (review: EventReview) => void;
+  save: (review: ArticulationReview) => void;
   reset: () => void;
 }) {
   const [time, setTime] = useState(
@@ -141,12 +143,14 @@ function EventEditor({
       if (status === "adjusted" && !time.trim())
         throw new Error("Enter a time in seconds.");
       save(
-        reviewEvent(
-          event,
-          status,
-          status === "adjusted" ? Number(time) : event.time,
-          status === "adjusted" ? kind : event.kind,
-          duration,
+        advancedReview(
+          reviewEvent(
+            event,
+            status,
+            status === "adjusted" ? Number(time) : event.time,
+            status === "adjusted" ? kind : event.kind,
+            duration,
+          ),
         ),
       );
       setError("");
@@ -171,7 +175,9 @@ function EventEditor({
           <small>{event.strength} · uncalibrated evidence</small>
         </div>
         <span className="outline-badge">
-          {review ? `Your review: ${review.status}` : "Unreviewed"}
+          {review
+            ? `Your review: ${review.status} · bow change: ${review.bowAnswer}`
+            : "Unreviewed"}
         </span>
       </div>
       <ul>
@@ -247,80 +253,47 @@ function EventEditor({
   );
 }
 
-export function ToneAnalysis() {
-  const { current } = useStudio();
-  return <ToneSession key={current?.id ?? "empty"} recording={current} />;
+export function ToneAnalysis({ advanced = false }: { advanced?: boolean }) {
+  const shared = usePracticeAnalysis();
+  return <ToneSession key={shared.revision} advanced={advanced} />;
 }
-
-function ToneSession({ recording }: { recording: Recording | null }) {
+function ToneSession({ advanced }: { advanced: boolean }) {
   const { seek, position, duration: playbackDuration } = useStudio();
-  const [result, setResult] = useState<ToneResult | null>(null);
-  const [status, setStatus] = useState("idle");
-  const [progress, setProgress] = useState(0);
-  const [error, setError] = useState("");
-  const [windowStart, setWindowStart] = useState(0);
+  const shared = usePracticeAnalysis();
+  const {
+    recording,
+    status,
+    progress,
+    error,
+    busy,
+    interval,
+    setInterval,
+    reviews,
+    setReviews,
+    windowStart,
+    setWindowStart,
+    exportReview,
+  } = shared;
+  const result = shared.result?.tone ?? null;
+  const run = () => shared.run(!!result);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [interval, setInterval] = useState({ start: 0, end: 1 });
-  const [comparison, setComparison] = useState<IntervalSummary | null>(null);
-  const [reviews, setReviews] = useState<Record<string, EventReview>>({});
   const [page, setPage] = useState(0);
-  const active = useRef<AbortController | null>(null);
-  useEffect(() => {
-    const cancel = () => {
-      if (active.current) {
-        active.current.abort();
-        setStatus("cancelled");
-      }
-    };
-    window.addEventListener("pagehide", cancel);
-    return () => {
-      active.current?.abort();
-      window.removeEventListener("pagehide", cancel);
-    };
-  }, []);
-  const busy = status === "decoding" || status === "analysing";
-  async function run() {
-    if (!recording || busy) return;
-    const controller = new AbortController();
-    active.current?.abort();
-    active.current = controller;
-    setResult(null);
-    setReviews({});
-    setComparison(null);
-    setPage(0);
-    setError("");
-    setProgress(0);
-    setStatus("decoding");
-    try {
-      const next = await analyseToneRecording(
-        recording.file,
-        controller.signal,
-        (p) => {
-          if (!controller.signal.aborted) {
-            setStatus("analysing");
-            setProgress(Math.round(p * 100));
-          }
-        },
-      );
-      if (controller.signal.aborted) return;
-      setResult(next);
-      setWindowStart(0);
-      setSelectedIndex(0);
-      setInterval({ start: 0, end: Math.min(5, next.duration) });
-      setStatus("complete");
-    } catch (cause) {
-      if (!controller.signal.aborted) {
-        setError(
-          cause instanceof Error
-            ? cause.message
-            : "Tone analysis failed. Try a shorter recording.",
-        );
-        setStatus("error");
-      }
-    } finally {
-      if (active.current === controller) active.current = null;
-    }
-  }
+  const prefix = advanced ? "advanced-" : "";
+  const comparison = useMemo(
+    () =>
+      result && shared.comparison
+        ? summariseInterval(
+            result.frames,
+            shared.comparison.start,
+            shared.comparison.end,
+          )
+        : null,
+    [result, shared.comparison],
+  );
+  const setComparison = (summary: IntervalSummary | null) =>
+    shared.setComparison(
+      summary ? { start: summary.start, end: summary.end } : null,
+    );
   const windowEnd = Math.min(result?.duration ?? WINDOW, windowStart + WINDOW);
   const data = useMemo(
     () =>
@@ -365,39 +338,6 @@ function ToneSession({ recording }: { recording: Recording | null }) {
       Math.max(0, Math.min(result!.duration - WINDOW, passage.start - 1)),
     );
   };
-  const exportReview = () => {
-    if (!result || !recording) return;
-    const blob = new Blob(
-      [
-        JSON.stringify(
-          {
-            schema: "stringmentor-tone-review-v1",
-            algorithm: result.version,
-            recording: {
-              id: recording.id,
-              name: recording.name,
-              instrument: recording.instrument,
-              duration: result.duration,
-            },
-            exportedAt: new Date().toISOString(),
-            algorithmEvents: result.events,
-            manualReviews: Object.values(reviews),
-            selectedInterval: interval,
-            note: "Manual reviews are musician annotations, not independently verified ground truth. No audio included.",
-          },
-          null,
-          2,
-        ),
-      ],
-      { type: "application/json" },
-    );
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "stringmentor-tone-review.json";
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  };
   const charts = [
     {
       title: "Dynamic contour",
@@ -433,15 +373,19 @@ function ToneSession({ recording }: { recording: Recording | null }) {
   return (
     <section
       className="panel intonation-panel tone-panel"
-      id="tone-analysis"
-      aria-labelledby="tone-title"
+      id={`${prefix}tone-analysis`}
+      aria-labelledby={`${prefix}tone-title`}
     >
       <div className="intonation-heading">
         <div>
           <span className="eyebrow">
             <Waves size={16} /> LOCAL ACOUSTIC MEASUREMENTS
           </span>
-          <h2 id="tone-title">Explore your tone & articulation</h2>
+          <h2 id={`${prefix}tone-title`}>
+            {advanced
+              ? "Tone & articulation diagnostics"
+              : "Explore your tone & articulation"}
+          </h2>
           <p>
             {recording
               ? trackTitle(recording.name)
@@ -452,8 +396,7 @@ function ToneSession({ recording }: { recording: Recording | null }) {
           <button
             className="button secondary"
             onClick={() => {
-              active.current?.abort();
-              setStatus("cancelled");
+              shared.cancel();
             }}
           >
             <X size={16} />
@@ -478,7 +421,8 @@ function ToneSession({ recording }: { recording: Recording | null }) {
       {!result && !busy && (
         <p className="pitch-notice">
           No tone measurements yet. Analyse a recording to see calculated
-          results. AI mentoring remains not yet implemented.
+          results. Choose a practice goal above to explore supported
+          observations.
         </p>
       )}
       {recording?.instrument === "violin" && (
@@ -513,14 +457,18 @@ function ToneSession({ recording }: { recording: Recording | null }) {
       )}
       {result && (
         <>
-          <div className="pitch-stats" role="status">
-            <span>
-              <strong>{result.events.length}</strong> acoustic candidates, not a
-              stroke count
-            </span>
-            <span>{result.frames.length.toLocaleString()} measured frames</span>
-            <span>{Object.values(reviews).length} manually reviewed</span>
-          </div>
+          {advanced && (
+            <div className="pitch-stats" role="status">
+              <span>
+                <strong>{result.events.length}</strong> acoustic candidates, not
+                a stroke count
+              </span>
+              <span>
+                {result.frames.length.toLocaleString()} measured frames
+              </span>
+              <span>{Object.values(reviews).length} manually reviewed</span>
+            </div>
+          )}
           {result.frames.length === 0 ||
           !result.frames.some((f) => f.active) ? (
             <p className="pitch-notice">
@@ -528,23 +476,25 @@ function ToneSession({ recording }: { recording: Recording | null }) {
               bow conclusions can be drawn.
             </p>
           ) : null}
-          <p className="pitch-notice">
-            Decoded peak: {result.clipping.peak.toFixed(4)} full scale.{" "}
-            {result.clipping.nearFullScaleSamples.toLocaleString()}{" "}
-            near-full-scale channel samples; longest run{" "}
-            {result.clipping.longestRun}.{" "}
-            {result.clipping.longestRun >= 3
-              ? "Possible digital clipping: consecutive samples reach the digital rail. Check the original waveform and recording gain."
-              : "No sustained near-rail run detected. This does not rule out earlier clipping or limiting."}
-          </p>
+          {advanced && (
+            <p className="pitch-notice">
+              Decoded peak: {result.clipping.peak.toFixed(4)} full scale.{" "}
+              {result.clipping.nearFullScaleSamples.toLocaleString()}{" "}
+              near-full-scale channel samples; longest run{" "}
+              {result.clipping.longestRun}.{" "}
+              {result.clipping.longestRun >= 3
+                ? "Possible digital clipping: consecutive samples reach the digital rail. Check the original waveform and recording gain."
+                : "No sustained near-rail run detected. This does not rule out earlier clipping or limiting."}
+            </p>
+          )}
           {result.frames.length > 0 && (
             <>
               <div className="pitch-window">
-                <label htmlFor="tone-window">
+                <label htmlFor={`${prefix}tone-window`}>
                   Graph window: {timeLabel(windowStart)}–{timeLabel(windowEnd)}
                 </label>
                 <input
-                  id="tone-window"
+                  id={`${prefix}tone-window`}
                   type="range"
                   min={0}
                   max={Math.max(0, result.duration - WINDOW)}
@@ -561,132 +511,166 @@ function ToneSession({ recording }: { recording: Recording | null }) {
                 boundaries. Shading marks your selected interval.
               </p>
               <div className="pitch-chart-grid">
-                {charts.map((chart, chartIndex) => (
-                  <div className="pitch-chart-panel" key={chart.title}>
-                    <h3>{chart.title}</h3>
-                    <p>{chart.explanation}</p>
-                    <div
-                      className="pitch-chart"
-                      role="group"
-                      aria-label={`${chart.title}. Exact values are available in the timestamp inspector.`}
-                    >
-                      <ResponsiveContainer
-                        width="100%"
-                        height={230}
-                        minWidth={0}
-                      >
-                        <LineChart
-                          data={data}
-                          accessibilityLayer
-                          margin={{ top: 12, right: 14, bottom: 6, left: 0 }}
-                          onClick={(state) => {
-                            const frame =
-                              state.activeTooltipIndex != null
-                                ? data[Number(state.activeTooltipIndex)]
-                                : null;
-                            if (frame)
-                              inspect(
-                                Math.round((frame.time * 22050 - 1024) / 256),
-                                true,
-                              );
-                          }}
+                {charts.map(
+                  (chart, chartIndex) =>
+                    (advanced ? chartIndex === 2 : chartIndex !== 2) && (
+                      <div className="pitch-chart-panel" key={chart.title}>
+                        <h3>{chart.title}</h3>
+                        <p>{chart.explanation}</p>
+                        <div
+                          className="pitch-chart"
+                          role="group"
+                          aria-label={`${chart.title}. Exact values are available in the timestamp inspector.`}
                         >
-                          <CartesianGrid
-                            stroke="#30434c"
-                            strokeDasharray="3 4"
-                            vertical={false}
-                          />
-                          <XAxis
-                            dataKey="time"
-                            type="number"
-                            domain={[windowStart, windowEnd]}
-                            tickFormatter={formatTime}
-                            stroke="#acb9c0"
-                            tick={{ fontSize: 11 }}
-                            minTickGap={30}
-                          />
-                          <YAxis
-                            width={52}
-                            domain={chart.domain}
-                            stroke="#acb9c0"
-                            tick={{ fontSize: 11 }}
-                            tickFormatter={(n: number) =>
-                              Math.abs(n) >= 1000
-                                ? `${(n / 1000).toFixed(1)}k`
-                                : `${Number(n.toFixed(2))}`
-                            }
-                          />
-                          <Tooltip content={<ToneTooltip />} />
-                          {interval.end >= windowStart &&
-                            interval.start <= windowEnd && (
-                              <ReferenceArea
-                                x1={Math.max(interval.start, windowStart)}
-                                x2={Math.min(interval.end, windowEnd)}
-                                fill="#8dd4be"
-                                fillOpacity={0.06}
+                          <ResponsiveContainer
+                            width="100%"
+                            height={230}
+                            minWidth={0}
+                          >
+                            <LineChart
+                              data={data}
+                              accessibilityLayer
+                              margin={{
+                                top: 12,
+                                right: 14,
+                                bottom: 6,
+                                left: 0,
+                              }}
+                              onClick={(state) => {
+                                const frame =
+                                  state.activeTooltipIndex != null
+                                    ? data[Number(state.activeTooltipIndex)]
+                                    : null;
+                                if (frame)
+                                  inspect(
+                                    Math.round(
+                                      (frame.time * 22050 - 1024) / 256,
+                                    ),
+                                    true,
+                                  );
+                              }}
+                            >
+                              <CartesianGrid
+                                stroke="#30434c"
+                                strokeDasharray="3 4"
+                                vertical={false}
                               />
-                            )}
-                          {chartIndex === 0 &&
-                            result.events
-                              .filter(
-                                (e) =>
-                                  e.time >= windowStart && e.time <= windowEnd,
-                              )
-                              .map((e) => (
-                                <ReferenceLine
-                                  key={e.id}
-                                  x={e.time}
-                                  stroke={
-                                    reviews[e.id]?.status === "rejected"
-                                      ? "#657078"
-                                      : "#edc49a"
-                                  }
-                                  strokeDasharray="2 4"
+                              <XAxis
+                                dataKey="time"
+                                type="number"
+                                domain={[windowStart, windowEnd]}
+                                tickFormatter={formatTime}
+                                stroke="#acb9c0"
+                                tick={{ fontSize: 11 }}
+                                minTickGap={30}
+                              />
+                              <YAxis
+                                width={52}
+                                domain={chart.domain}
+                                stroke="#acb9c0"
+                                tick={{ fontSize: 11 }}
+                                tickFormatter={(n: number) =>
+                                  Math.abs(n) >= 1000
+                                    ? `${(n / 1000).toFixed(1)}k`
+                                    : `${Number(n.toFixed(2))}`
+                                }
+                              />
+                              <Tooltip
+                                content={<ToneTooltip advanced={advanced} />}
+                              />
+                              {shared.highlight?.graph === "tone" &&
+                                shared.highlight.interval.end >= windowStart &&
+                                shared.highlight.interval.start <=
+                                  windowEnd && (
+                                  <ReferenceArea
+                                    x1={Math.max(
+                                      windowStart,
+                                      shared.highlight.interval.start,
+                                    )}
+                                    x2={Math.min(
+                                      windowEnd,
+                                      shared.highlight.interval.end,
+                                    )}
+                                    fill="#edc49a"
+                                    fillOpacity={0.16}
+                                  />
+                                )}
+                              {interval.end >= windowStart &&
+                                interval.start <= windowEnd && (
+                                  <ReferenceArea
+                                    x1={Math.max(interval.start, windowStart)}
+                                    x2={Math.min(interval.end, windowEnd)}
+                                    fill="#8dd4be"
+                                    fillOpacity={0.06}
+                                  />
+                                )}
+                              {chartIndex === 0 &&
+                                result.events
+                                  .filter(
+                                    (e) =>
+                                      e.time >= windowStart &&
+                                      e.time <= windowEnd,
+                                  )
+                                  .map((e) => (
+                                    <ReferenceLine
+                                      key={e.id}
+                                      x={e.time}
+                                      stroke={
+                                        reviews[e.id]?.status === "rejected"
+                                          ? "#657078"
+                                          : "#edc49a"
+                                      }
+                                      strokeDasharray="2 4"
+                                    />
+                                  ))}
+                              {chartIndex === 0 &&
+                                Object.values(reviews)
+                                  .filter(
+                                    (r) =>
+                                      isAcceptedReview(r) &&
+                                      r.time >= windowStart &&
+                                      r.time <= windowEnd,
+                                  )
+                                  .map((r) => (
+                                    <ReferenceLine
+                                      key={`manual-${r.eventId}`}
+                                      x={r.time}
+                                      stroke="#8dd4be"
+                                    />
+                                  ))}
+                              {position >= windowStart &&
+                                position <= windowEnd && (
+                                  <ReferenceLine
+                                    x={position}
+                                    stroke="#c4b9df"
+                                  />
+                                )}
+                              {chart.keys.map((key, i) => (
+                                <Line
+                                  key={key}
+                                  dataKey={key}
+                                  name={chart.names[i]}
+                                  stroke={["#8dd4be", "#edc49a", "#b5a2d5"][i]}
+                                  dot={false}
+                                  connectNulls={false}
+                                  isAnimationActive={false}
+                                  strokeWidth={1.5}
                                 />
                               ))}
-                          {chartIndex === 0 &&
-                            Object.values(reviews)
-                              .filter(
-                                (r) =>
-                                  r.status !== "rejected" &&
-                                  r.time >= windowStart &&
-                                  r.time <= windowEnd,
-                              )
-                              .map((r) => (
-                                <ReferenceLine
-                                  key={`manual-${r.eventId}`}
-                                  x={r.time}
-                                  stroke="#8dd4be"
-                                />
-                              ))}
-                          {position >= windowStart && position <= windowEnd && (
-                            <ReferenceLine x={position} stroke="#c4b9df" />
-                          )}
-                          {chart.keys.map((key, i) => (
-                            <Line
-                              key={key}
-                              dataKey={key}
-                              name={chart.names[i]}
-                              stroke={["#8dd4be", "#edc49a", "#b5a2d5"][i]}
-                              dot={false}
-                              connectNulls={false}
-                              isAnimationActive={false}
-                              strokeWidth={1.5}
-                            />
-                          ))}
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-                ))}
+                            </LineChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </div>
+                    ),
+                )}
               </div>
               {selected && (
                 <div className="pitch-inspector">
-                  <label htmlFor="tone-inspector">
+                  <label htmlFor={`${prefix}tone-inspector`}>
                     Inspect timestamp · {timeLabel(selected.time)}
                   </label>
                   <input
-                    id="tone-inspector"
+                    id={`${prefix}tone-inspector`}
                     type="range"
                     min={0}
                     max={result.frames.length - 1}
@@ -699,11 +683,17 @@ function ToneSession({ recording }: { recording: Recording | null }) {
                       {selected.note ?? "Pitch uncertain"} ·{" "}
                       {value(selected.rms, "RMS", 5)} ·{" "}
                       {value(selected.dbfs, "dBFS")} ·{" "}
-                      {value(selected.centroid, "Hz centroid", 0)} · flatness{" "}
-                      {value(selected.flatness, "", 3)} · flux{" "}
-                      {value(selected.flux, "", 3)} · harmonic support{" "}
-                      {value(selected.harmonicSupport, "", 3)} · periodicity{" "}
-                      {value(selected.periodicity, "", 3)} · brightness SD{" "}
+                      {value(selected.centroid, "Hz centroid", 0)}{" "}
+                      {advanced && (
+                        <>
+                          {" "}
+                          · flatness {value(selected.flatness, "", 3)} · flux{" "}
+                          {value(selected.flux, "", 3)} · harmonic support{" "}
+                          {value(selected.harmonicSupport, "", 3)} · periodicity{" "}
+                          {value(selected.periodicity, "", 3)}
+                        </>
+                      )}{" "}
+                      · brightness SD{" "}
                       {value(selected.brightnessSpread, "Hz", 0)}
                       {!selected.active ? " · below analysis floor" : ""}
                     </span>
@@ -717,270 +707,281 @@ function ToneSession({ recording }: { recording: Recording | null }) {
                   </div>
                 </div>
               )}
-              <div className="tone-interval">
-                <h3>Select & compare passages</h3>
-                <p>
-                  Select a detected sustained note or enter interval times.
-                  Summaries exclude frames below the level floor; coverage is
-                  shown. Compare the same note with unchanged microphone and
-                  recording settings.
-                </p>
-                <div className="tone-actions">
-                  <label>
-                    Detected sustained passage
-                    <select
-                      value=""
-                      onChange={(e) => choosePassage(e.target.value)}
-                    >
-                      <option value="">Choose a passage…</option>
-                      {result.passages.map((p, i) => (
-                        <option value={i} key={i}>
-                          {p.note} · {timeLabel(p.start)}–{timeLabel(p.end)}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    Start (seconds)
-                    <input
-                      type="number"
-                      min={0}
-                      max={interval.end - 0.01}
-                      step={0.01}
-                      value={Number(interval.start.toFixed(3))}
-                      onChange={(e) => {
-                        const n = Number(e.target.value);
-                        if (Number.isFinite(n))
-                          setInterval({
-                            ...interval,
-                            start: Math.max(
-                              0,
-                              Math.min(interval.end - 0.01, n),
-                            ),
-                          });
-                      }}
-                    />
-                  </label>
-                  <label>
-                    End (seconds)
-                    <input
-                      type="number"
-                      min={interval.start + 0.01}
-                      max={result.duration}
-                      step={0.01}
-                      value={Number(interval.end.toFixed(3))}
-                      onChange={(e) => {
-                        const n = Number(e.target.value);
-                        if (Number.isFinite(n))
-                          setInterval({
-                            ...interval,
-                            end: Math.min(
-                              result.duration,
-                              Math.max(interval.start + 0.01, n),
-                            ),
-                          });
-                      }}
-                    />
-                  </label>
-                  <button
-                    className="button secondary"
-                    disabled={!playbackDuration}
-                    onClick={() => seek(interval.start)}
-                  >
-                    Listen from start
-                  </button>
-                </div>
-                {summary && (
-                  <>
-                    <Summary summary={summary} label="Current selection" />
-                    <div className="tone-actions">
-                      <button
-                        className="button secondary"
-                        disabled={!summary.note}
-                        onClick={() => setComparison(summary)}
+              {!advanced && (
+                <div className="tone-interval">
+                  <h3>Select & compare passages</h3>
+                  <p>
+                    Select a detected sustained note or enter interval times.
+                    Summaries exclude frames below the level floor; coverage is
+                    shown. Compare the same note with unchanged microphone and
+                    recording settings.
+                  </p>
+                  <div className="tone-actions">
+                    <label>
+                      Detected sustained passage
+                      <select
+                        value=""
+                        onChange={(e) => choosePassage(e.target.value)}
                       >
-                        Keep as comparison
-                      </button>
-                      {comparison && (
+                        <option value="">Choose a passage…</option>
+                        {result.passages.map((p, i) => (
+                          <option value={i} key={i}>
+                            {p.note} · {timeLabel(p.start)}–{timeLabel(p.end)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      Start (seconds)
+                      <input
+                        type="number"
+                        min={0}
+                        max={interval.end - 0.01}
+                        step={0.01}
+                        value={Number(interval.start.toFixed(3))}
+                        onChange={(e) => {
+                          const n = Number(e.target.value);
+                          if (Number.isFinite(n))
+                            setInterval({
+                              ...interval,
+                              start: Math.max(
+                                0,
+                                Math.min(interval.end - 0.01, n),
+                              ),
+                            });
+                        }}
+                      />
+                    </label>
+                    <label>
+                      End (seconds)
+                      <input
+                        type="number"
+                        min={interval.start + 0.01}
+                        max={result.duration}
+                        step={0.01}
+                        value={Number(interval.end.toFixed(3))}
+                        onChange={(e) => {
+                          const n = Number(e.target.value);
+                          if (Number.isFinite(n))
+                            setInterval({
+                              ...interval,
+                              end: Math.min(
+                                result.duration,
+                                Math.max(interval.start + 0.01, n),
+                              ),
+                            });
+                        }}
+                      />
+                    </label>
+                    <button
+                      className="button secondary"
+                      disabled={!playbackDuration}
+                      onClick={() => seek(interval.start)}
+                    >
+                      Listen from start
+                    </button>
+                  </div>
+                  {summary && (
+                    <>
+                      <Summary summary={summary} label="Current selection" />
+                      <div className="tone-actions">
                         <button
                           className="button secondary"
-                          onClick={() => setComparison(null)}
+                          disabled={!summary.note}
+                          onClick={() => setComparison(summary)}
                         >
-                          Clear comparison
+                          Keep as comparison
                         </button>
+                        {comparison && (
+                          <button
+                            className="button secondary"
+                            onClick={() => setComparison(null)}
+                          >
+                            Clear comparison
+                          </button>
+                        )}
+                      </div>
+                      {comparison && (
+                        <>
+                          <Summary
+                            summary={comparison}
+                            label="Kept comparison"
+                          />
+                          <p className="pitch-notice">
+                            {summary.note &&
+                            summary.note === comparison.note &&
+                            summary.meanDbfs !== null &&
+                            comparison.meanDbfs !== null &&
+                            summary.centroidHz !== null &&
+                            comparison.centroidHz !== null
+                              ? `Both selections contain stable detected ${summary.note}. Current minus kept: ${(summary.meanDbfs - comparison.meanDbfs).toFixed(2)} dB recorded level; ${(summary.centroidHz - comparison.centroidHz).toFixed(0)} Hz brightness. Differences describe acoustics, not better or worse technique.`
+                              : "Choose another stable passage of the same detected note for a meaningful same-note comparison."}
+                          </p>
+                        </>
                       )}
-                    </div>
-                    {comparison && (
-                      <>
-                        <Summary summary={comparison} label="Kept comparison" />
-                        <p className="pitch-notice">
-                          {summary.note &&
-                          summary.note === comparison.note &&
-                          summary.meanDbfs !== null &&
-                          comparison.meanDbfs !== null &&
-                          summary.centroidHz !== null &&
-                          comparison.centroidHz !== null
-                            ? `Both selections contain stable detected ${summary.note}. Current minus kept: ${(summary.meanDbfs - comparison.meanDbfs).toFixed(2)} dB recorded level; ${(summary.centroidHz - comparison.centroidHz).toFixed(0)} Hz brightness. Differences describe acoustics, not better or worse technique.`
-                            : "Choose another stable passage of the same detected note for a meaningful same-note comparison."}
-                        </p>
-                      </>
-                    )}
-                  </>
-                )}
-                <div className="pitch-observations">
-                  <h3>Measured observations for this interval</h3>
-                  {observations.length ? (
-                    <ul>
-                      {observations.map((text) => (
-                        <li key={text}>{text}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p>
-                      No observation meets the evidence thresholds in this
-                      selection.
-                    </p>
+                    </>
                   )}
-                  <p>
-                    Practice investigation: listen to two passages of the same
-                    note with a fixed microphone position. Explore whether a
-                    measured change is audible. Room sound, gain changes and
-                    playing changes are possible explanations, not diagnoses.
-                  </p>
+                  <div className="pitch-observations">
+                    <h3>Measured observations for this interval</h3>
+                    {observations.length ? (
+                      <ul>
+                        {observations.map((text) => (
+                          <li key={text}>{text}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>
+                        No observation meets the evidence thresholds in this
+                        selection.
+                      </p>
+                    )}
+                    <p>
+                      Practice investigation: listen to two passages of the same
+                      note with a fixed microphone position. Explore whether a
+                      measured change is audible. Room sound, gain changes and
+                      playing changes are possible explanations, not diagnoses.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </>
           )}
-          <div className="tone-review">
-            <div className="intonation-heading">
-              <div>
-                <h3>Review articulation candidates</h3>
-                <p>
-                  Confirm only what you can hear or independently identify. An
-                  acoustic event does not establish a bow reversal. Reviews stay
-                  separate and last for this analysis only; export before
-                  switching recordings, reanalysing or leaving.
-                </p>
-              </div>
-              <button className="button secondary" onClick={exportReview}>
-                <Download size={16} />
-                Export review JSON
-              </button>
-            </div>
-            <p>
-              {Object.entries(eventNames)
-                .map(
-                  ([kind, label]) =>
-                    `${label}: ${result.events.filter((e) => e.kind === kind).length}`,
-                )
-                .join(" · ")}
-            </p>
-            {result.events.length ? (
-              <>
-                <ol className="tone-events" start={page * PAGE_SIZE + 1}>
-                  {result.events
-                    .slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
-                    .map((event) => (
-                      <EventEditor
-                        key={`${event.id}-${reviews[event.id]?.status}-${reviews[event.id]?.time}`}
-                        event={event}
-                        review={reviews[event.id]}
-                        duration={result.duration}
-                        seek={seek}
-                        save={(review) =>
-                          setReviews((previous) => ({
-                            ...previous,
-                            [event.id]: review,
-                          }))
-                        }
-                        reset={() =>
-                          setReviews((previous) => {
-                            const next = { ...previous };
-                            delete next[event.id];
-                            return next;
-                          })
-                        }
-                      />
-                    ))}
-                </ol>
-                <div className="tone-actions">
-                  <button
-                    className="button secondary"
-                    disabled={page === 0}
-                    onClick={() => setPage(page - 1)}
-                  >
-                    Previous candidates
-                  </button>
-                  <span role="status">
-                    Page {page + 1} of{" "}
-                    {Math.ceil(result.events.length / PAGE_SIZE)}
-                  </span>
-                  <button
-                    className="button secondary"
-                    disabled={(page + 1) * PAGE_SIZE >= result.events.length}
-                    onClick={() => setPage(page + 1)}
-                  >
-                    Next candidates
-                  </button>
+          {advanced && (
+            <div className="tone-review">
+              <div className="intonation-heading">
+                <div>
+                  <h3>Review articulation candidates</h3>
+                  <p>
+                    Confirm only what you can hear or independently identify. An
+                    acoustic event does not establish a bow reversal. Reviews
+                    stay separate and last for this analysis only; export before
+                    switching recordings, reanalysing or leaving.
+                  </p>
                 </div>
-              </>
-            ) : (
-              <p className="pitch-notice">
-                No candidate met the acoustic evidence thresholds. This does not
-                mean no bow reversals occurred.
+                <button className="button secondary" onClick={exportReview}>
+                  <Download size={16} />
+                  Export review JSON
+                </button>
+              </div>
+              <p>
+                {Object.entries(eventNames)
+                  .map(
+                    ([kind, label]) =>
+                      `${label}: ${result.events.filter((e) => e.kind === kind).length}`,
+                  )
+                  .join(" · ")}
               </p>
-            )}
-          </div>
+              {result.events.length ? (
+                <>
+                  <ol className="tone-events" start={page * PAGE_SIZE + 1}>
+                    {result.events
+                      .slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+                      .map((event) => (
+                        <EventEditor
+                          key={`${event.id}-${reviews[event.id]?.status}-${reviews[event.id]?.time}-${reviews[event.id]?.kind}`}
+                          event={event}
+                          review={reviews[event.id]}
+                          duration={result.duration}
+                          seek={seek}
+                          save={(review) =>
+                            setReviews((previous) => ({
+                              ...previous,
+                              [event.id]: review,
+                            }))
+                          }
+                          reset={() =>
+                            setReviews((previous) => {
+                              const next = { ...previous };
+                              delete next[event.id];
+                              return next;
+                            })
+                          }
+                        />
+                      ))}
+                  </ol>
+                  <div className="tone-actions">
+                    <button
+                      className="button secondary"
+                      disabled={page === 0}
+                      onClick={() => setPage(page - 1)}
+                    >
+                      Previous candidates
+                    </button>
+                    <span role="status">
+                      Page {page + 1} of{" "}
+                      {Math.ceil(result.events.length / PAGE_SIZE)}
+                    </span>
+                    <button
+                      className="button secondary"
+                      disabled={(page + 1) * PAGE_SIZE >= result.events.length}
+                      onClick={() => setPage(page + 1)}
+                    >
+                      Next candidates
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <p className="pitch-notice">
+                  No candidate met the acoustic evidence thresholds. This does
+                  not mean no bow reversals occurred.
+                </p>
+              )}
+            </div>
+          )}
         </>
       )}
-      <details className="pitch-method">
-        <summary>Tone analysis method, units & limits</summary>
-        <p>
-          Local processing only. A separate worker reuses the unchanged
-          harmonic-aware pitch estimator for context. Tone windows are 46.4 ms
-          for DC-removed RMS and 92.9 ms for the Hann-windowed spectrum, every
-          11.6 ms at 22,050 Hz. Timestamps mark window centres; windows overlap
-          and are not independent. Audio under −50.5 dBFS has no spectral or
-          event interpretation. Full-scale RMS is 0 dBFS (a peak-full-scale sine
-          is about −3 dBFS); the graph floors silence at −120 dBFS.
-        </p>
-        <p>
-          Brightness is the magnitude-weighted centroid from 50–8,000 Hz.
-          Flatness is geometric/arithmetical mean spectral power in that band:
-          noise-like sound often has higher values, but it is not a noise
-          percentage. Flux measures positive changes between magnitude spectra
-          normalised to sum to one. Harmonic support is the pitch estimator’s
-          explained peak-amplitude share below 3 kHz, available only with a
-          usable pitch. These indicators are not HNR, SNR, or a good/bad tone
-          score.
-        </p>
-        <p>
-          Candidate events combine local energy dips, steps or peaks, spectral
-          flux and structural changes. Before/after pitch context distinguishes
-          possible note changes from same-pitch dips; missing pitch alone never
-          generates an event. Evidence strengths are uncalibrated rules.
-          Candidate bow reversals remain hypotheses; smooth reversals may be
-          missed, and taps, noise, articulation and gain changes may look
-          similar. Events less than 250 ms apart may merge.
-        </p>
-        <p>
-          Clipping checks count decoded channel samples with magnitude at least
-          0.999 before mono mixing. Consecutive near-rail samples suggest
-          possible digital clipping, but AAC decoding and resampling can create
-          overshoots or conceal clipped peaks. Earlier distortion or limiting
-          may be invisible.
-        </p>
-        <p>
-          Microphone distance and direction, room reflections, background noise,
-          automatic gain control, compression and register affect every
-          comparison. Relative dBFS is not calibrated sound intensity or
-          perceived loudness. Measurements do not establish bow technique.
-          Single cello notes are the development scope; chords, accompaniment
-          and other instruments are unvalidated. Ten-minute / 100 MB limits
-          apply, and large decoded files may exceed browser memory. Original
-          recordings and stored playlists are unchanged.
-        </p>
-      </details>
+      {advanced && (
+        <details className="pitch-method">
+          <summary>Tone analysis method, units & limits</summary>
+          <p>
+            Local processing only. One shared worker reuses the unchanged
+            harmonic-aware pitch estimator for both graphs and mentor context.
+            Tone windows are 46.4 ms for DC-removed RMS and 92.9 ms for the
+            Hann-windowed spectrum, every 11.6 ms at 22,050 Hz. Timestamps mark
+            window centres; windows overlap and are not independent. Audio under
+            −50.5 dBFS has no spectral or event interpretation. Full-scale RMS
+            is 0 dBFS (a peak-full-scale sine is about −3 dBFS); the graph
+            floors silence at −120 dBFS.
+          </p>
+          <p>
+            Brightness is the magnitude-weighted centroid from 50–8,000 Hz.
+            Flatness is geometric/arithmetical mean spectral power in that band:
+            noise-like sound often has higher values, but it is not a noise
+            percentage. Flux measures positive changes between magnitude spectra
+            normalised to sum to one. Harmonic support is the pitch estimator’s
+            explained peak-amplitude share below 3 kHz, available only with a
+            usable pitch. These indicators are not HNR, SNR, or a good/bad tone
+            score.
+          </p>
+          <p>
+            Candidate events combine local energy dips, steps or peaks, spectral
+            flux and structural changes. Before/after pitch context
+            distinguishes possible note changes from same-pitch dips; missing
+            pitch alone never generates an event. Evidence strengths are
+            uncalibrated rules. Candidate bow reversals remain hypotheses;
+            smooth reversals may be missed, and taps, noise, articulation and
+            gain changes may look similar. Events less than 250 ms apart may
+            merge.
+          </p>
+          <p>
+            Clipping checks count decoded channel samples with magnitude at
+            least 0.999 before mono mixing. Consecutive near-rail samples
+            suggest possible digital clipping, but AAC decoding and resampling
+            can create overshoots or conceal clipped peaks. Earlier distortion
+            or limiting may be invisible.
+          </p>
+          <p>
+            Microphone distance and direction, room reflections, background
+            noise, automatic gain control, compression and register affect every
+            comparison. Relative dBFS is not calibrated sound intensity or
+            perceived loudness. Measurements do not establish bow technique.
+            Single cello notes are the development scope; chords, accompaniment
+            and other instruments are unvalidated. Ten-minute / 100 MB limits
+            apply, and large decoded files may exceed browser memory. Original
+            recordings and stored playlists are unchanged.
+          </p>
+        </details>
+      )}
     </section>
   );
 }

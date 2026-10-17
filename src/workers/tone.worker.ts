@@ -18,7 +18,8 @@ self.onmessage = (
       self.postMessage({ type: "progress", progress: 0.7 + progress * 0.3 }),
     );
     result.clipping = clippingEvidence(event.data.channels);
-    self.postMessage({ type: "result", result });
+    // Both views and the mentor share this single pitch pass.
+    self.postMessage({ type: "result", result, pitch });
   } catch (error) {
     self.postMessage({
       type: "error",

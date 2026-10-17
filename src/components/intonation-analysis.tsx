@@ -1,28 +1,27 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Activity, ArrowDown, ArrowUp, Crosshair, X } from "lucide-react";
 import {
   CartesianGrid,
   Line,
   LineChart,
   ReferenceLine,
+  ReferenceArea,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 import { useStudio } from "./studio-provider";
-import { analyseRecording } from "@/lib/analyse-recording";
+import { usePracticeAnalysis } from "./practice-analysis-provider";
 import {
   CELLO_CONFIG,
   noteName,
   frequencyToPitch,
   type PitchFrame,
-  type PitchResult,
 } from "@/lib/pitch";
 import { formatTime, trackTitle } from "@/lib/audio";
-import type { Recording } from "@/lib/storage";
 
 const WINDOW_SECONDS = 20;
 function preciseTime(time: number) {
@@ -170,75 +169,33 @@ function MeasurementTooltip({
     </div>
   ) : null;
 }
-export function IntonationAnalysis() {
-  const { current } = useStudio();
-  // A new recording owns a new job and results. Unmount cancels the previous job.
-  return <AnalysisSession key={current?.id ?? "empty"} recording={current} />;
+export function IntonationAnalysis({
+  advanced = false,
+}: {
+  advanced?: boolean;
+}) {
+  const shared = usePracticeAnalysis();
+  return <AnalysisSession key={shared.revision} advanced={advanced} />;
 }
-function AnalysisSession({ recording }: { recording: Recording | null }) {
+function AnalysisSession({ advanced }: { advanced: boolean }) {
   const { seek, duration: playbackDuration, position } = useStudio();
-  const [result, setResult] = useState<PitchResult | null>(null);
-  const [status, setStatus] = useState("idle");
-  const [error, setError] = useState("");
-  const [progress, setProgress] = useState(0);
-  const [windowStart, setWindowStart] = useState(0);
+  const shared = usePracticeAnalysis();
+  const {
+    recording,
+    status,
+    error,
+    progress,
+    busy,
+    cancel,
+    windowStart,
+    setWindowStart,
+    highlight,
+  } = shared;
+  const result = shared.result?.pitch ?? null;
+  const run = () => shared.run(!!result);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [showRaw, setShowRaw] = useState(false);
-  const active = useRef<AbortController | null>(null);
-  useEffect(() => {
-    const cancel = () => {
-      if (active.current && !active.current.signal.aborted) {
-        active.current.abort();
-        setStatus("cancelled");
-      }
-    };
-    window.addEventListener("pagehide", cancel);
-    return () => {
-      active.current?.abort();
-      window.removeEventListener("pagehide", cancel);
-    };
-  }, []);
-  const busy = status === "decoding" || status === "analysing";
-  async function run() {
-    if (!recording || busy) return;
-    active.current?.abort();
-    const controller = new AbortController();
-    active.current = controller;
-    setError("");
-    setResult(null);
-    setProgress(0);
-    setStatus("decoding");
-    try {
-      const next = await analyseRecording(
-        recording.file,
-        controller.signal,
-        (value) => {
-          if (controller.signal.aborted) return;
-          setStatus("analysing");
-          setProgress(Math.round(value * 100));
-        },
-      );
-      if (controller.signal.aborted) return;
-      setResult(next);
-      setSelectedIndex(0);
-      setWindowStart(0);
-      setStatus("complete");
-    } catch (cause) {
-      if (controller.signal.aborted) return;
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : "Analysis failed. Please try another recording.",
-      );
-      setStatus("error");
-    } finally {
-      if (active.current === controller) active.current = null;
-    }
-  }
-  function cancel() {
-    active.current?.abort();
-    setStatus("cancelled");
-  }
+  const [showRaw, setShowRaw] = useState(advanced);
+  const prefix = advanced ? "advanced-" : "";
   const frames = result?.frames ?? [];
   const selected = frames[selectedIndex];
   const windowEnd = Math.min(
@@ -301,14 +258,16 @@ function AnalysisSession({ recording }: { recording: Recording | null }) {
   return (
     <section
       className="panel intonation-panel"
-      aria-labelledby="intonation-title"
+      aria-labelledby={`${prefix}intonation-title`}
     >
       <div className="intonation-heading">
         <div>
           <span className="eyebrow">
             <Activity size={16} /> LOCAL PITCH MEASUREMENTS
           </span>
-          <h2 id="intonation-title">Explore your intonation</h2>
+          <h2 id={`${prefix}intonation-title`}>
+            {advanced ? "Pitch diagnostics" : "Explore your intonation"}
+          </h2>
           <p>
             {recording
               ? trackTitle(recording.name)
@@ -390,52 +349,56 @@ function AnalysisSession({ recording }: { recording: Recording | null }) {
               ranges can reduce usable data.
             </p>
           )}
-          <details className="pitch-rejections">
-            <summary>Rejected-frame breakdown</summary>
-            <p>
-              Final decisions:{" "}
-              {Object.entries(
-                frames.reduce<Record<string, number>>((counts, frame) => {
-                  if (frame.rejection)
-                    counts[frame.rejection] =
-                      (counts[frame.rejection] ?? 0) + 1;
-                  return counts;
-                }, {}),
-              )
-                .map(([reason, count]) => `${reason}: ${count}`)
-                .join(" · ") || "No frames withheld"}
-            </p>
-            <p>
-              Raw Pitchy rejections before correction:{" "}
-              {Object.entries(
-                frames.reduce<Record<string, number>>((counts, frame) => {
-                  const reason = frame.diagnostics?.rawRejection;
-                  if (reason) counts[reason] = (counts[reason] ?? 0) + 1;
-                  return counts;
-                }, {}),
-              )
-                .map(([reason, count]) => `${reason}: ${count}`)
-                .join(" · ") || "None"}
-            </p>
-          </details>
+          {advanced && (
+            <details className="pitch-rejections">
+              <summary>Rejected-frame breakdown</summary>
+              <p>
+                Final decisions:{" "}
+                {Object.entries(
+                  frames.reduce<Record<string, number>>((counts, frame) => {
+                    if (frame.rejection)
+                      counts[frame.rejection] =
+                        (counts[frame.rejection] ?? 0) + 1;
+                    return counts;
+                  }, {}),
+                )
+                  .map(([reason, count]) => `${reason}: ${count}`)
+                  .join(" · ") || "No frames withheld"}
+              </p>
+              <p>
+                Raw Pitchy rejections before correction:{" "}
+                {Object.entries(
+                  frames.reduce<Record<string, number>>((counts, frame) => {
+                    const reason = frame.diagnostics?.rawRejection;
+                    if (reason) counts[reason] = (counts[reason] ?? 0) + 1;
+                    return counts;
+                  }, {}),
+                )
+                  .map(([reason, count]) => `${reason}: ${count}`)
+                  .join(" · ") || "None"}
+              </p>
+            </details>
+          )}
           {frames.length > 0 && (
             <>
-              <label className="pitch-raw-toggle">
-                <input
-                  type="checkbox"
-                  checked={showRaw}
-                  onChange={(event) => setShowRaw(event.target.checked)}
-                />
-                Show raw Pitchy estimates (dashed) beside the tracked pitch
-                (teal)
-              </label>
+              {advanced && (
+                <label className="pitch-raw-toggle">
+                  <input
+                    type="checkbox"
+                    checked={showRaw}
+                    onChange={(event) => setShowRaw(event.target.checked)}
+                  />
+                  Show raw Pitchy estimates (dashed) beside the tracked pitch
+                  (teal)
+                </label>
+              )}
               <div className="pitch-window">
-                <label htmlFor="pitch-window">
+                <label htmlFor={`${prefix}pitch-window`}>
                   Graph window: {preciseTime(windowStart)}–
                   {preciseTime(windowEnd)}
                 </label>
                 <input
-                  id="pitch-window"
+                  id={`${prefix}pitch-window`}
                   aria-label="Move graph time window"
                   type="range"
                   min={0}
@@ -508,6 +471,19 @@ function AnalysisSession({ recording }: { recording: Recording | null }) {
                             tick={{ fontSize: 11 }}
                           />
                           <Tooltip content={<MeasurementTooltip />} />
+                          {highlight?.graph === "pitch" &&
+                            highlight.interval.end >= windowStart &&
+                            highlight.interval.start <= windowEnd && (
+                              <ReferenceArea
+                                x1={Math.max(
+                                  windowStart,
+                                  highlight.interval.start,
+                                )}
+                                x2={Math.min(windowEnd, highlight.interval.end)}
+                                fill="#8dd4be"
+                                fillOpacity={0.16}
+                              />
+                            )}
                           {metric === "graphCents" && (
                             <ReferenceLine
                               y={0}
@@ -562,14 +538,14 @@ function AnalysisSession({ recording }: { recording: Recording | null }) {
                 </p>
               )}
               <div className="pitch-inspector">
-                <label htmlFor="pitch-timestamp">
+                <label htmlFor={`${prefix}pitch-timestamp`}>
                   Inspect a timestamp{" "}
                   <small>
                     Click either graph to inspect and seek, or use this slider.
                   </small>
                 </label>
                 <input
-                  id="pitch-timestamp"
+                  id={`${prefix}pitch-timestamp`}
                   aria-label="Inspect pitch measurement timestamp"
                   aria-valuetext={
                     selected
@@ -598,7 +574,7 @@ function AnalysisSession({ recording }: { recording: Recording | null }) {
                     </>
                   )}
                 </div>
-                {selected && <FrameDiagnostics frame={selected} />}
+                {advanced && selected && <FrameDiagnostics frame={selected} />}
                 <button
                   className="button secondary"
                   disabled={!selected || !playbackDuration}
@@ -610,70 +586,75 @@ function AnalysisSession({ recording }: { recording: Recording | null }) {
               </div>
             </>
           )}
-          <div className="pitch-observations">
-            <h3>Measured observations</h3>
-            {result.observations.length ? (
-              <ul>
-                {result.observations.map((observation) => (
-                  <li key={observation}>{observation}</li>
-                ))}
-              </ul>
-            ) : (
-              <p>
-                {result.sufficient
-                  ? "No stable above/below-reference pattern or widespread low clarity met the observation thresholds."
-                  : "Observations are withheld because usable pitch data is insufficient."}
-              </p>
-            )}
-            <small>
-              Calculated from these measurements using fixed rules; no LLM
-              assessment.
-            </small>
-          </div>
+          {advanced && (
+            <div className="pitch-observations">
+              <h3>Measured observations</h3>
+              {result.observations.length ? (
+                <ul>
+                  {result.observations.map((observation) => (
+                    <li key={observation}>{observation}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>
+                  {result.sufficient
+                    ? "No stable above/below-reference pattern or widespread low clarity met the observation thresholds."
+                    : "Observations are withheld because usable pitch data is insufficient."}
+                </p>
+              )}
+              <small>
+                Calculated from these measurements using fixed rules; no LLM
+                assessment.
+              </small>
+            </div>
+          )}
         </>
       )}
-      <details className="pitch-method">
-        <summary>Method and limits</summary>
-        <p>
-          Pitchy supplies a raw periodicity estimate. A separate Hann-windowed
-          spectrum proposes competing harmonic families, including missing
-          fundamentals. It favours families supported by distinct harmonic
-          numbers over unnecessary subharmonics. Windows remain{" "}
-          {CELLO_CONFIG.windowSize} samples (~186 ms), with{" "}
-          {CELLO_CONFIG.hopSize}-sample hops (~23 ms), at{" "}
-          {CELLO_CONFIG.sampleRate.toLocaleString()} Hz; range{" "}
-          {CELLO_CONFIG.minFrequency}–{CELLO_CONFIG.maxFrequency} Hz includes
-          C2. Frame times are window centres.
-        </p>
-        <p>
-          Minimum RMS: {CELLO_CONFIG.minRms}. The raw clarity threshold remains{" "}
-          {CELLO_CONFIG.minClarity * 100}% for comparison. Tracked candidates
-          instead require at least {CELLO_CONFIG.minHarmonicSupport * 100}%
-          spectral support, {CELLO_CONFIG.minCandidatePeriodicity * 100}%
-          periodicity, a score of {CELLO_CONFIG.minCandidateScore}, and a
-          winning margin of {CELLO_CONFIG.minCandidateMargin}. A single partial
-          also requires high periodicity. Up to {CELLO_CONFIG.neighbourFrames}{" "}
-          neighbouring frames on each side provide bounded support;
-          current-frame frequency is never rounded to a note or smoothed. Close
-          competing candidates remain uncertain. No expected open-string
-          sequence is built into the detector.
-        </p>
-        <p>
-          Silence and low-confidence measurements leave gaps. Octave errors can
-          still occur with weak fundamentals. Chords and accompanied music are
-          unsuitable. Transitions, vibrato, and musical tuning choices can
-          differ from equal temperament; no fingering, bowing, or wrong-note
-          diagnosis is made. One supplied open-string recording has been used
-          for regression testing. This is not broad real-cello validation, and
-          its note labels do not provide precise frequency ground truth.
-        </p>
-        <p>
-          Analysis stays on this device, supports files up to ten minutes and
-          100 MB, and is cancelled when you switch recordings or leave this
-          page. Results are temporary; original recordings and playlists are
-          unchanged.
-        </p>
-      </details>
+      {advanced && (
+        <details className="pitch-method">
+          <summary>Method and limits</summary>
+          <p>
+            Pitchy supplies a raw periodicity estimate. A separate Hann-windowed
+            spectrum proposes competing harmonic families, including missing
+            fundamentals. It favours families supported by distinct harmonic
+            numbers over unnecessary subharmonics. Windows remain{" "}
+            {CELLO_CONFIG.windowSize} samples (~186 ms), with{" "}
+            {CELLO_CONFIG.hopSize}-sample hops (~23 ms), at{" "}
+            {CELLO_CONFIG.sampleRate.toLocaleString()} Hz; range{" "}
+            {CELLO_CONFIG.minFrequency}–{CELLO_CONFIG.maxFrequency} Hz includes
+            C2. Frame times are window centres.
+          </p>
+          <p>
+            Minimum RMS: {CELLO_CONFIG.minRms}. The raw clarity threshold
+            remains {CELLO_CONFIG.minClarity * 100}% for comparison. Tracked
+            candidates instead require at least{" "}
+            {CELLO_CONFIG.minHarmonicSupport * 100}% spectral support,{" "}
+            {CELLO_CONFIG.minCandidatePeriodicity * 100}% periodicity, a score
+            of {CELLO_CONFIG.minCandidateScore}, and a winning margin of{" "}
+            {CELLO_CONFIG.minCandidateMargin}. A single partial also requires
+            high periodicity. Up to {CELLO_CONFIG.neighbourFrames} neighbouring
+            frames on each side provide bounded support; current-frame frequency
+            is never rounded to a note or smoothed. Close competing candidates
+            remain uncertain. No expected open-string sequence is built into the
+            detector.
+          </p>
+          <p>
+            Silence and low-confidence measurements leave gaps. Octave errors
+            can still occur with weak fundamentals. Chords and accompanied music
+            are unsuitable. Transitions, vibrato, and musical tuning choices can
+            differ from equal temperament; no fingering, bowing, or wrong-note
+            diagnosis is made. One supplied open-string recording has been used
+            for regression testing. This is not broad real-cello validation, and
+            its note labels do not provide precise frequency ground truth.
+          </p>
+          <p>
+            Analysis stays on this device, supports files up to ten minutes and
+            100 MB, and is cancelled when you switch recordings or leave this
+            page. Results are temporary; original recordings and playlists are
+            unchanged.
+          </p>
+        </details>
+      )}
     </section>
   );
 }

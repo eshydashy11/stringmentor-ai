@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     template: "%s · StringMentor AI",
   },
   description:
-    "A thoughtful practice space for cello and violin. Upload your own audio, listen closely, and build your practice routine. AI analysis is not yet implemented.",
+    "A thoughtful practice space for cello and violin. Record or upload audio, explore local cello measurements, and choose evidence-based practice investigations.",
 };
 
 export default function RootLayout({

@@ -52,17 +52,31 @@ Recording requires **HTTPS or localhost**, microphone permission, and a supporte
 
 Microphone access is requested only after clicking Record Audio. Tracks are released on stop, error, cancellation, page exit, or component disposal, including when a delayed permission grant arrives after cancellation. Leaving Practice Studio discards an unfinished take. Browser scheduling may delay automatic stopping in a suspended/background tab; keep the studio open while recording. The existing 100 MB validation limit applies to all takes. If storage is unavailable or full, the existing storage warning appears and the take remains playable for the current session.
 
+## Your Practice Mentor (Phase 2C)
+
+Practice Studio now has three analytical levels after the existing recording/player controls:
+
+1. **Your Practice Mentor** — choose Consistent dynamics, Smooth bow transitions, Pitch stability / intonation awareness, Consistent articulation, or Expressive variation. Click **Analyse for my goal** for up to three evidence-based findings, specific practice investigations and timestamp listening. Changing goals reuses measurements. No LLM or paid API is used.
+2. **Explore Your Performance** — keep pitch/cents, dynamics, brightness and stability graphs available for everyday practice. Highlight a mentor finding, inspect/seek a timestamp, select a sustained passage, and compare the same note.
+3. **Advanced Diagnostics** — expand raw/corrected pitch, candidates, rejection reasons, spectral flux/flatness/harmonic support, full event reviews, thresholds, methods and JSON export.
+
+A shared recording-scoped analysis returns pitch and tone from one DSP pass. A separate feedback worker caches those results and regenerates goal-specific observations without blocking the interface. Measurements, goals, algorithm interpretations, musician annotations and usefulness responses remain separate. Insufficient evidence produces an explicit message, not filler or a quality grade.
+
+For a possible bow transition, use **Listen here**, **Yes**, **No** or **Not sure**. These answers synchronise with Advanced Diagnostics; Not sure never confirms a reversal. Advanced timestamp/type adjustments remain available and do not move the original acoustic evidence. Mark findings useful/not useful or ask for another supported investigation. Export feedback and reviews before leaving, refreshing, switching recordings or reanalysing: these annotations are session-only and do not train a model.
+
+Your selected goal is an analytical objective, not proof of the original performer's intention. Dynamic variation may be expressive; cents offsets do not establish wrong notes without a verified target. Microphone position, rooms, gain control, compression and register affect measurements. [Read the Phase 2C rules, validation and live acceptance steps](docs/practice-mentor.md).
+
 ## Local cello intonation analysis
 
 Load an existing **cello** recording from the library, upload solo cello audio, or finish a microphone take. In **Practice Studio**, click **Analyse Intonation**. Decoding and progress are shown; **Cancel analysis** stops processing. No microphone permission is needed to analyse an existing file.
 
 The two graphs show actual detected note height and cents relative to the **nearest equal-tempered semitone**, using A4 = 440 Hz. Positive cents means sharp and negative means flat **relative to that reference**, not necessarily incorrect musical intonation. There is no verified score or intended-note target. Chords, accompaniment, background noise, and very quiet recordings are unsuitable; low-confidence frames leave gaps. Musical tuning choices, transitions, and vibrato are not judged as mistakes.
 
-Graphs show a movable 20-second window. Drag the graph-window slider to explore a long recording. Click a graph to inspect the measured frequency, note, cents, and periodicity and seek the existing player. The timestamp inspector also supports keyboard arrows and a **Seek player to timestamp** button. Use **Show raw Pitchy estimates** to compare the dashed raw trajectory with the teal tracked trajectory. Open **Frame diagnostics** to inspect raw/tracked Hz, the original rejection rule, RMS, competing harmonic candidates, and score margins. **Rejected-frame breakdown** separates the final decisions from the old raw rules. Clarity/periodicity and spectral support are evidence measures, not calibrated probabilities. Coverage includes quiet and rejected frames in its denominator.
+Graphs show a movable 20-second window. Drag the graph-window slider to explore a long recording. Click a graph to inspect the measured frequency, note, cents, and periodicity and seek the existing player. The timestamp inspector also supports keyboard arrows and a **Seek player to timestamp** button. In **Advanced Diagnostics**, use **Show raw Pitchy estimates** to compare the dashed raw trajectory with the teal tracked trajectory. Open **Frame diagnostics** to inspect raw/tracked Hz, the original rejection rule, RMS, competing harmonic candidates, and score margins. **Rejected-frame breakdown** separates the final decisions from the old raw rules. Clarity/periodicity and spectral support are evidence measures, not calibrated probabilities. Coverage includes quiet and rejected frames in its denominator.
 
 The small observation panel uses deterministic thresholds on actual measurements. Stable same-note regions lasting at least one second with a total spread of at most 12 cents may be described as averaging 8–35 cents above or below the nearest reference. Low-clarity observations require at least 25% of non-quiet frames to be rejected for clarity. Observations are withheld unless there are at least 0.5 seconds of usable frame hops and ten usable frames. Stable-region observations also require at least 75% spectral support and a 0.08 winning score margin. No LLM or paid service is involved.
 
-The analysis uses **Pitchy 4**, spectral harmonic candidates (`fft.js`), and bounded neighbouring-frame support in a dedicated Web Worker. Web Audio decodes and resamples a copy of the selected Blob to 22,050 Hz; channels are averaged with a phase-cancellation fallback. Windows remain 4,096 samples (~186 ms), with 512-sample hops (~23 ms), minimum RMS 0.003, and a 55–1,000 Hz cello range. A Hann-windowed spectrum tests competing harmonic families, including missing fundamentals, and penalises unsupported subharmonics. Candidates require spectral support ≥65%, periodicity ≥25%, score ≥0.60 and a winning margin ≥0.04; single-partial candidates require ≥90% periodicity. Up to three frames on either side contribute at most 0.05 to a score and cannot fill weak frames. Clear note changes are retained; no frequency smoothing, note quantisation, open-string sequence, or unconditional octave deletion is applied. Unresolved frames remain uncertain. All thresholds are explicit in `CELLO_CONFIG`. See [the validation report](docs/intonation-validation.md) for the algorithm, diagnostics, exact gates and remaining failure cases.
+The shared analysis uses **Pitchy 4**, spectral harmonic candidates (`fft.js`), and bounded neighbouring-frame support in a dedicated Web Worker. Web Audio decodes and resamples a copy of the selected Blob to 22,050 Hz; channels are averaged with a phase-cancellation fallback. Windows remain 4,096 samples (~186 ms), with 512-sample hops (~23 ms), minimum RMS 0.003, and a 55–1,000 Hz cello range. A Hann-windowed spectrum tests competing harmonic families, including missing fundamentals, and penalises unsupported subharmonics. Candidates require spectral support ≥65%, periodicity ≥25%, score ≥0.60 and a winning margin ≥0.04; single-partial candidates require ≥90% periodicity. Up to three frames on either side contribute at most 0.05 to a score and cannot fill weak frames. Clear note changes are retained; no frequency smoothing, note quantisation, open-string sequence, or unconditional octave deletion is applied. Unresolved frames remain uncertain. All thresholds are explicit in `CELLO_CONFIG`. See [the validation report](docs/intonation-validation.md) for the algorithm, diagnostics, exact gates and remaining failure cases.
 
 The supplied C2 → G2 → D3 → A3 recording is now a regression case. Its sustained labelled intervals improve from 74.17% to 96.67% C2 coverage, 48.28% to 96.55% D3 coverage, and 4.81% to 96.15% A3 coverage; G2 stays at 100%. Remaining frames are withheld, with no wrong semitone assignments in those evaluation intervals. This single development recording does not establish broad cello or cents-level accuracy. Its labels are never used by the runtime detector.
 
@@ -70,7 +84,7 @@ Initially analysis accepts recordings up to **ten minutes**, with the existing *
 
 ## Local tone and articulation analysis (Phase 2B)
 
-In **Practice Studio**, load a cello recording and click **Analyse Tone**. A separate local worker measures RMS/dBFS, spectral brightness, flatness, flux and harmonic-support indicators, with level and brightness variation over time. Four graphs show real calculated features, the player position and proposed acoustic events. Click a graph or use the keyboard timestamp inspector to seek. No result or quality score is invented.
+In **Practice Studio**, load a cello recording and click **Analyse Tone**. The shared local analysis worker measures RMS/dBFS, spectral brightness, flatness, flux and harmonic-support indicators, with level and brightness variation over time. Explore shows dynamics, brightness and stability graphs with the player position and proposed events; noise-related indicators remain in Advanced Diagnostics. Click a graph or use the keyboard timestamp inspector to seek. No result or quality score is invented.
 
 Select a detected sustained passage or enter start/end times. **Keep as comparison**, then select another stable passage of the same detected note to compare recorded level and brightness. The method panel explains units, thresholds, recording confounds and uncertainty. Features describe recorded acoustics; they do not diagnose bow pressure, speed, direction, location or technique. Microphone distance, room sound, gain control, compression and register affect comparisons.
 
@@ -97,7 +111,7 @@ Real-browser codec, microphone, touch-layout, and broader real-cello accuracy ch
 
 ## Not yet implemented
 
-**AI practice feedback remains explicitly labelled “Not yet implemented.”** Cello pitch and acoustic tone measurements use real audio; there are no invented analysis results, wrong-note scores, or technique diagnoses. There is no commercial streaming catalogue, authentication, cloud sync, or AI API integration.
+**LLM mentoring remains not yet implemented. Your Practice Mentor uses deterministic local rules.** Cello pitch and acoustic tone measurements use real audio; there are no invented analysis results, wrong-note scores, or technique diagnoses. There is no commercial streaming catalogue, authentication, cloud sync, or AI API integration.
 
 ## Storage and privacy
 
@@ -128,9 +142,9 @@ Each private-file test verifies its hash. The V1 test uses labelled pitch interv
 
 ```text
 src/app/                 Dashboard and four feature routes, layout, styles
-src/components/          Studio state, player, recording, intonation/tone UI, placeholders
-src/lib/                 Audio validation, separate pitch/tone engines, decoding, IndexedDB
-src/workers/             Background pitch and tone analysis
+src/components/          Studio state, player, recording, intonation/tone UI, mentor and review state
+src/lib/                 Audio validation, pitch/tone engines, feedback rules, decoding, IndexedDB
+src/workers/             Background pitch/tone analysis and cached feedback
 tests/                   Automated checks
 ```
 

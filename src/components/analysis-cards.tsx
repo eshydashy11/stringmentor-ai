@@ -14,8 +14,9 @@ const features = [
     icon: Waves,
   },
   {
-    title: "AI practice feedback",
-    description: "Thoughtful guidance for your next session.",
+    title: "Your Practice Mentor",
+    description:
+      "Choose a musical goal and explore evidence-based practice investigations.",
     icon: Sparkles,
   },
 ];
@@ -49,7 +50,11 @@ export function AnalysisCards({
               </span>
               <h3>{title}</h3>
               <p>{description}</p>
-              {title === "Tone & articulation" ? (
+              {title === "Your Practice Mentor" ? (
+                <Link className="teal" href="/practice">
+                  Open Your Practice Mentor →
+                </Link>
+              ) : title === "Tone & articulation" ? (
                 <Link className="teal" href="/practice#tone-analysis">
                   Open acoustic tone analysis →
                 </Link>

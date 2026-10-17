@@ -1,10 +1,8 @@
 "use client";
 import { AudioLines, NotebookPen } from "lucide-react";
 import { Player } from "@/components/player";
-import { AnalysisCards } from "@/components/analysis-cards";
+import { PracticeExperience } from "@/components/practice-experience";
 import { useStudio } from "@/components/studio-provider";
-import { ToneAnalysis } from "@/components/tone-analysis";
-import { IntonationAnalysis } from "@/components/intonation-analysis";
 import { MicrophoneRecorder } from "@/components/microphone-recorder";
 export default function Practice() {
   const studio = useStudio();
@@ -52,17 +50,15 @@ export default function Practice() {
           </div>
         </aside>
       </div>
-      <IntonationAnalysis />
-      <ToneAnalysis />
-      <AnalysisCards hideIntonation hideTone />
+      <PracticeExperience />
       <div className="disclosure panel">
         <AudioLines size={20} />
         <p>
           <strong>Your ears lead the way.</strong> Record with your microphone
           or upload audio to practise. Cello pitch measurements are available
           above, alongside acoustic tone measurements and reviewable
-          articulation candidates. AI feedback is not yet implemented. Audio
-          stays on your device.
+          articulation candidates. Goal-aware feedback uses transparent local
+          rules. Audio stays on your device.
         </p>
       </div>
     </>

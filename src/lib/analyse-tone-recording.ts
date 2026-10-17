@@ -1,10 +1,12 @@
 import { decodeRecording } from "./decode-audio.ts";
 import { TONE_CONFIG, type ToneResult } from "./tone.ts";
+import type { PitchResult } from "./pitch.ts";
 
 export async function analyseToneRecording(
   file: Blob,
   signal: AbortSignal,
   onProgress: (value: number) => void,
+  onPitch?: (pitch: PitchResult) => void,
 ): Promise<ToneResult> {
   if (
     typeof OfflineAudioContext === "undefined" ||
@@ -59,7 +61,7 @@ export async function analyseToneRecording(
     worker.onmessage = (
       event: MessageEvent<
         | { type: "progress"; progress: number }
-        | { type: "result"; result: ToneResult }
+        | { type: "result"; result: ToneResult; pitch?: PitchResult }
         | { type: "error"; message: string }
       >,
     ) => {
@@ -67,8 +69,10 @@ export async function analyseToneRecording(
       if (message.type === "progress") onProgress(message.progress);
       else {
         cleanup();
-        if (message.type === "result") resolve(message.result);
-        else reject(new Error(message.message));
+        if (message.type === "result") {
+          if (message.pitch) onPitch?.(message.pitch);
+          resolve(message.result);
+        } else reject(new Error(message.message));
       }
     };
     try {

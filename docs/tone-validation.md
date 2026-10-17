@@ -2,6 +2,8 @@
 
 Version **2B.1**, 17 October 2026. This is a development implementation with explicit measurements and conservative event hypotheses. It is not a validated bow-technique assessment or a tone-quality grading system.
 
+> Phase 2C now shares the pitch/tone result across all views and adds cached feedback processing and a unified review model. The acoustic algorithms and numerical validation below are unchanged; see [practice-mentor.md](practice-mentor.md) for the current UI and lifecycle.
+
 ## Architecture and preservation
 
 `src/lib/tone.ts` contains acoustic features, event proposals, interval statistics and deterministic observations. `tone.worker.ts` runs the unchanged harmonic-aware `analysePitch` for time-aligned context, then the independent tone module. It does not change the pitch algorithm, thresholds, raw/corrected diagnostics or intonation graphs. Tone analysis currently recalculates pitch context instead of sharing mutable results with the intonation UI; two independently launched jobs can run concurrently and use additional CPU/memory.

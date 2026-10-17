@@ -83,10 +83,11 @@ export default function Settings() {
           <p>
             StringMentor AI includes local cello pitch measurements in Practice
             Studio, alongside local acoustic tone measurements and exploratory
-            articulation review. AI feedback is not yet implemented.
+            articulation review. Your Practice Mentor connects these
+            measurements to your chosen goal using transparent local rules.
           </p>
           <span className="not-implemented">
-            AI analysis · Not yet implemented
+            LLM mentoring · Not yet implemented
           </span>
         </section>
       </div>

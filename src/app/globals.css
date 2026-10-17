@@ -2407,3 +2407,192 @@ input[type="range"] {
     align-items: start;
   }
 }
+
+/* Phase 2C: student-first practice hierarchy. */
+.mentor-panel {
+  padding: 28px;
+  margin-bottom: 24px;
+  border-color: #3a615d;
+  background: linear-gradient(130deg, #142b32, #121d29 65%);
+}
+.mentor-panel h2 {
+  margin: 9px 0;
+  font-size: clamp(1.45rem, 3vw, 1.85rem);
+}
+.mentor-controls {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 1.4fr;
+  gap: 24px;
+  align-items: end;
+  margin: 24px 0;
+}
+.mentor-controls label {
+  display: grid;
+  gap: 9px;
+  color: var(--ivory);
+  font-weight: 500;
+}
+.mentor-controls select {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px;
+  color: var(--ivory);
+  background: #101e29;
+  border: 1px solid #53736e;
+  border-radius: 9px;
+}
+.mentor-panel p,
+.mentor-panel li {
+  line-height: 1.7;
+  color: #b5c1c7;
+}
+.mentor-empty {
+  padding: 18px;
+  background: #101e29;
+  border-radius: 10px;
+}
+.mentor-findings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 18px;
+  margin-top: 22px;
+}
+.mentor-finding {
+  padding: 22px;
+  background: #101d29;
+  border: 1px solid #314650;
+  border-radius: 12px;
+  min-width: 0;
+}
+.mentor-finding-title {
+  display: flex;
+  gap: 12px;
+  align-items: start;
+}
+.mentor-finding-title .feature-icon {
+  flex-shrink: 0;
+}
+.mentor-finding h3 {
+  margin: 0 0 8px;
+  font-size: 1.08rem;
+}
+.mentor-finding h4 {
+  font-size: 0.84rem;
+  font-weight: 600;
+  margin: 22px 0 6px;
+  color: var(--ivory);
+}
+.mentor-finding p {
+  margin-top: 4px;
+}
+.mentor-finding small,
+.mentor-footer,
+.mentor-session-note {
+  font-size: 0.77rem;
+  color: #acb9c0;
+  line-height: 1.6;
+}
+.mentor-finding .button {
+  white-space: normal;
+  text-align: left;
+}
+.mentor-review {
+  border: 1px solid #45605d;
+  border-radius: 9px;
+  padding: 14px;
+  margin: 22px 0;
+  min-width: 0;
+}
+.mentor-review legend {
+  color: var(--ivory);
+  padding: 0 6px;
+  font-weight: 500;
+}
+.mentor-review .button[aria-pressed="true"],
+.mentor-usefulness .button[aria-pressed="true"] {
+  background: var(--teal-dark);
+  border-color: var(--teal);
+  color: var(--teal);
+}
+.mentor-evidence {
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.mentor-evidence summary {
+  cursor: pointer;
+  color: var(--teal);
+}
+.mentor-evidence ul {
+  padding-left: 20px;
+  font-size: 0.8rem;
+}
+.mentor-usefulness {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 20px;
+  font-size: 0.78rem;
+}
+.mentor-usefulness .button {
+  padding: 8px 10px;
+  min-height: 40px;
+}
+.mentor-footer {
+  margin-top: 22px;
+}
+.performance-level {
+  margin-top: 38px;
+}
+.performance-level > .section-heading {
+  margin-bottom: 0;
+}
+#explore-pitch,
+#explore-tone {
+  scroll-margin-top: 20px;
+  outline-offset: 5px;
+}
+.advanced-level {
+  padding: 24px;
+  margin: 28px 0;
+}
+.advanced-level > summary {
+  cursor: pointer;
+  color: var(--ivory);
+  line-height: 1.7;
+}
+.advanced-level > summary > span {
+  display: block;
+  margin-left: 18px;
+}
+.advanced-level .intonation-panel {
+  border-color: #33434f;
+}
+.mentor-rules {
+  max-height: 360px;
+  overflow: auto;
+  padding: 18px;
+  background: #0c131e;
+  color: var(--ivory);
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+@media (max-width: 760px) {
+  .mentor-controls {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .mentor-panel,
+  .advanced-level {
+    padding: 18px;
+  }
+  .mentor-findings {
+    grid-template-columns: 1fr;
+  }
+  .mentor-finding {
+    padding: 16px;
+  }
+  .advanced-level .intonation-panel {
+    padding: 14px;
+  }
+}
