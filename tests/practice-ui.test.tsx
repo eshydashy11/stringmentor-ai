@@ -11,6 +11,7 @@ import "fake-indexeddb/auto";
 import { StudioProvider } from "../src/components/studio-provider";
 import { PracticeAnalysisProvider } from "../src/components/practice-analysis-provider";
 import { PracticeLevels } from "../src/components/practice-experience";
+import { PracticeMentor } from "../src/components/practice-mentor";
 import { PracticeAnalysisSession } from "../src/lib/practice-session";
 import { generatePracticeFeedback } from "../src/lib/practice-feedback";
 import type { createFeedbackClient } from "../src/lib/practice-feedback-client";
@@ -24,6 +25,122 @@ function contents(node: ReactTestInstance): string {
 function button(node: ReactTestInstance, label: string) {
   return node.findAllByType("button").find((b) => contents(b).includes(label))!;
 }
+
+test("pitch mentor distinguishes insufficient, neutral and notable outcomes when the selected interval changes", async () => {
+  const oldWindow = Object.getOwnPropertyDescriptor(globalThis, "window");
+  const oldAct = Object.getOwnPropertyDescriptor(
+    globalThis,
+    "IS_REACT_ACT_ENVIRONMENT",
+  );
+  const events = new EventTarget();
+  Object.defineProperty(globalThis, "window", {
+    configurable: true,
+    value: {
+      addEventListener: events.addEventListener.bind(events),
+      removeEventListener: events.removeEventListener.bind(events),
+    },
+  });
+  Object.defineProperty(globalThis, "IS_REACT_ACT_ENVIRONMENT", {
+    configurable: true,
+    value: true,
+  });
+  const fixture = practiceFixture();
+  fixture.pitch.frames.forEach((f) => {
+    f.cents = f.time < 3 ? 2 : 15;
+    if (f.time >= 3 && f.time < 5) f.diagnostics!.margin = 0.01;
+  });
+  let calls = 0;
+  const session = new PracticeAnalysisSession(fixture.recordingId, async () => {
+    calls++;
+    return fixture;
+  });
+  const feedbackFactory: typeof createFeedbackClient = (analysis) => ({
+    request: async (input) => generatePracticeFeedback({ ...input, analysis }),
+    dispose() {},
+  });
+  let rendered: ReactTestRenderer | undefined;
+  try {
+    await act(async () => {
+      rendered = create(
+        <StudioProvider>
+          <PracticeAnalysisProvider
+            recording={{
+              id: fixture.recordingId,
+              name: "Cello.wav",
+              file: new Blob(["audio"]),
+              size: 5,
+              addedAt: 0,
+              instrument: "cello",
+            }}
+            session={session}
+            feedbackFactory={feedbackFactory}
+          >
+            <PracticeMentor />
+          </PracticeAnalysisProvider>
+        </StudioProvider>,
+      );
+    });
+    const root = rendered!.root;
+    await act(async () => {
+      root.findByType("select").props.onChange({ target: { value: "pitch" } });
+    });
+    await act(async () => {
+      button(root, "Analyse for my goal").props.onClick();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    const changeBoundary = async (label: string, value: number) => {
+      await act(async () =>
+        root
+          .findAllByType("label")
+          .find((n) => contents(n).includes(label))!
+          .findByType("input")
+          .props.onChange({ target: { valueAsNumber: value } }),
+      );
+    };
+    await changeBoundary("End (seconds)", 2);
+    let notice = root.findByProps({
+      "data-pitch-outcome": "no-qualifying-pattern",
+    });
+    assert.match(contents(notice), /measured|Measured/);
+    assert.match(contents(notice), /sustained same-note region/);
+    assert.doesNotMatch(contents(root), /Not enough reliable information/);
+    assert.equal(
+      root.findAllByProps({ className: "mentor-finding" }).length,
+      0,
+    );
+    await changeBoundary("End (seconds)", 4.5);
+    await changeBoundary("Start (seconds)", 3.2);
+    notice = root.findByProps({
+      "data-pitch-outcome": "insufficient-evidence",
+    });
+    assert.match(contents(notice), /candidate margin ≥ 0.06/);
+    assert.equal(notice.findByType("details").props.open, true);
+    await changeBoundary("End (seconds)", 7);
+    await changeBoundary("Start (seconds)", 5.2);
+    root.findByProps({ "data-pitch-outcome": "notable-pattern" });
+    const finding = root.findAllByProps({ className: "mentor-finding" })[0];
+    assert.match(contents(finding), /nearest equal-tempered reference/);
+    assert.ok(button(finding, "Listen"));
+    assert.match(contents(finding), /Try this/);
+    assert.equal(calls, 1, "interval changes reuse existing DSP measurements");
+    await act(async () =>
+      root
+        .findByType("select")
+        .props.onChange({ target: { value: "dynamics" } }),
+    );
+    assert.equal(
+      root.findAll((n) => !!n.props["data-pitch-outcome"]).length,
+      0,
+    );
+  } finally {
+    if (rendered) await act(async () => rendered!.unmount());
+    if (oldWindow) Object.defineProperty(globalThis, "window", oldWindow);
+    else Reflect.deleteProperty(globalThis, "window");
+    if (oldAct)
+      Object.defineProperty(globalThis, "IS_REACT_ACT_ENVIRONMENT", oldAct);
+    else Reflect.deleteProperty(globalThis, "IS_REACT_ACT_ENVIRONMENT");
+  }
+});
 
 test("student hierarchy keeps graphs outside Advanced and simple review synchronises with advanced editing", async () => {
   const oldWindow = Object.getOwnPropertyDescriptor(globalThis, "window");

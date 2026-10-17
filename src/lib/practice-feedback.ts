@@ -131,12 +131,34 @@ export type FeedbackInput = {
   comparison?: TimeInterval | null;
   recordingConditions: "unknown" | "consistent";
 };
+export type PitchAssessment = {
+  status: "insufficient-evidence" | "no-qualifying-pattern" | "notable-pattern";
+  title: string;
+  summary: string;
+  explanation: string;
+  limitations: string;
+  selectedFrames: number;
+  reliableFrames: number;
+  reliableFrameCoverage: number;
+  sustainedSeconds: number;
+  sustainedCoverage: number;
+  regions: {
+    interval: TimeInterval;
+    coverage: number;
+    spreadCents: number;
+    meanOffsetCents: number;
+    driftCents: number;
+    eligibleForPattern: boolean;
+  }[];
+  gateFailures: string[];
+};
 export type FeedbackOutput = {
   goal: PracticeGoal;
   findings: FeedbackFinding[];
   insufficient: string | null;
   nextEvidence: string;
   rules: FeedbackRules;
+  pitchAssessment: PitchAssessment | null;
 };
 const conditions =
   "Microphone position, room sound, automatic gain control and compression may change these measurements. A numerical difference does not establish audibility or musical relevance.";
@@ -169,7 +191,7 @@ export function framesIn<T extends { time: number }>(
   };
   return frames.slice(bound(interval.start, false), bound(interval.end, true));
 }
-function pitchEvidence(frame: PitchFrame, rules: FeedbackRules) {
+function pitchGateFailures(frame: PitchFrame, rules: FeedbackRules) {
   if (
     frame.frequency === null ||
     frame.cents === null ||
@@ -177,15 +199,16 @@ function pitchEvidence(frame: PitchFrame, rules: FeedbackRules) {
     !Number.isFinite(frame.cents) ||
     !Number.isFinite(frame.midi)
   )
-    return false;
+    return ["missingPitch"] as const;
   const d = frame.diagnostics;
   const candidate =
     d?.selectedCandidate != null ? d.candidates[d.selectedCandidate] : null;
-  return (
-    !!candidate &&
-    candidate.support >= rules.minHarmonicSupport &&
-    d!.margin >= rules.minPitchMargin
-  );
+  if (!candidate) return ["missingCandidate"] as const;
+  const failures: ("harmonicSupport" | "candidateMargin")[] = [];
+  if (!(candidate.support >= rules.minHarmonicSupport))
+    failures.push("harmonicSupport");
+  if (!(d!.margin >= rules.minPitchMargin)) failures.push("candidateMargin");
+  return failures;
 }
 export function generatePracticeFeedback(
   input: FeedbackInput,
@@ -199,6 +222,7 @@ export function generatePracticeFeedback(
     nextEvidence:
       "Select at least a second of clear solo cello, or compare two passages of the same note. Keep the microphone and recording settings consistent.",
     rules,
+    pitchAssessment: null,
   };
   const bundle = input.analysis;
   if (
@@ -661,11 +685,23 @@ export function generatePracticeFeedback(
   }
   if (input.goal === "pitch") {
     const selected = framesIn(pitch.frames, input.interval);
-    const reliable = selected.filter((f) => pitchEvidence(f, rules));
-    const rejected = selected.length - reliable.length;
-    output.nextEvidence = selected.length
-      ? `${rejected} of ${selected.length} selected pitch frames lack the feedback engine’s required pitch or harmonic evidence. No eligible sustained offset or drift crossed this goal’s thresholds; small deviations are not labelled mistakes. Try another clear sustained interval, and inspect rejection reasons in Advanced Diagnostics.`
-      : output.nextEvidence;
+    const failures = {
+      missingPitch: 0,
+      missingCandidate: 0,
+      harmonicSupport: 0,
+      candidateMargin: 0,
+    };
+    const reliable = new Set(
+      selected.filter((frame) => {
+        const rejectedBy = pitchGateFailures(frame, rules);
+        for (const gate of rejectedBy) failures[gate]++;
+        return rejectedBy.length === 0;
+      }),
+    );
+    const regions: PitchAssessment["regions"] = [];
+    let shortRegions = 0,
+      lowCoverageRegions = 0,
+      wideRegions = 0;
     let region: PitchFrame[] = [];
     const finish = () => {
       if (!region.length) return;
@@ -677,10 +713,23 @@ export function generatePracticeFeedback(
       const offset = mean(cents);
       const coverage =
         region.length / Math.max(1, framesIn(pitch.frames, interval).length);
-      const qualifies =
-        interval.end - interval.start >= rules.minSeconds &&
-        coverage >= rules.minPitchCoverage &&
-        spread <= rules.maxStablePitchSpreadCents;
+      const longEnough = interval.end - interval.start >= rules.minSeconds;
+      const covered = coverage >= rules.minPitchCoverage;
+      const limitedSpread = spread <= rules.maxStablePitchSpreadCents;
+      if (!longEnough) shortRegions++;
+      if (!covered) lowCoverageRegions++;
+      if (longEnough && covered) {
+        regions.push({
+          interval,
+          coverage,
+          spreadCents: spread,
+          meanOffsetCents: offset,
+          driftCents: drift,
+          eligibleForPattern: limitedSpread,
+        });
+        if (!limitedSpread) wideRegions++;
+      }
+      const qualifies = longEnough && covered && limitedSpread;
       const drifting = Math.abs(drift) >= rules.pitchDriftCents;
       if (qualifies && (drifting || Math.abs(offset) >= rules.pitchOffsetCents))
         add(drifting ? "pitch-drift" : "pitch-offset", {
@@ -732,16 +781,95 @@ export function generatePracticeFeedback(
     };
     for (const frame of selected) {
       if (
-        !pitchEvidence(frame, rules) ||
+        !reliable.has(frame) ||
         (region.length &&
           (frame.note !== region[0].note ||
             frame.time - region.at(-1)!.time >
               (pitch.config.hopSize / pitch.config.sampleRate) * 1.5))
       )
         finish();
-      if (pitchEvidence(frame, rules)) region.push(frame);
+      if (reliable.has(frame)) region.push(frame);
     }
     finish();
+    const gateFailures: string[] = [];
+    if (!selected.length)
+      gateFailures.push("No pitch frames fall inside the selected interval.");
+    if (failures.missingPitch)
+      gateFailures.push(
+        `${failures.missingPitch} frames have no usable tracked pitch/cents estimate; see detector rejection reasons in Advanced Diagnostics.`,
+      );
+    if (failures.missingCandidate)
+      gateFailures.push(
+        `${failures.missingCandidate} frames lack selected harmonic-candidate evidence.`,
+      );
+    if (failures.harmonicSupport)
+      gateFailures.push(
+        `${failures.harmonicSupport} frames do not meet harmonic support ≥ ${rules.minHarmonicSupport}.`,
+      );
+    if (failures.candidateMargin)
+      gateFailures.push(
+        `${failures.candidateMargin} frames do not meet candidate margin ≥ ${rules.minPitchMargin}.`,
+      );
+    if (shortRegions)
+      gateFailures.push(
+        `${shortRegions} contiguous same-note regions are shorter than ${rules.minSeconds} s. Rejected frames, gaps and detected note changes split regions; isolated frames are not sustained evidence.`,
+      );
+    if (lowCoverageRegions)
+      gateFailures.push(
+        `${lowCoverageRegions} regions fall below the ${(rules.minPitchCoverage * 100).toFixed(0)}% within-region pitch coverage requirement.`,
+      );
+    if (wideRegions)
+      gateFailures.push(
+        `${wideRegions} sustained regions exceed the ${rules.maxStablePitchSpreadCents}-cent spread limit for offset/drift interpretation. Their measured variation is reported, but wider motion is not graded or classified.`,
+      );
+    const sustainedSeconds = regions.reduce(
+      (sum, r) => sum + r.interval.end - r.interval.start,
+      0,
+    );
+    const sustainedCoverage =
+      sustainedSeconds / (input.interval.end - input.interval.start);
+    const reliableFrameCoverage = selected.length
+      ? reliable.size / selected.length
+      : 0;
+    const spreads = regions.map((r) => r.spreadCents);
+    const summary =
+      `${reliable.size} of ${selected.length} selected frames meet pitch reliability gates (${(reliableFrameCoverage * 100).toFixed(1)}% of frames). ` +
+      (regions.length
+        ? `${regions.length} sustained same-note region${regions.length === 1 ? "" : "s"} span ${sustainedSeconds.toFixed(2)} s (${(sustainedCoverage * 100).toFixed(1)}% of the selected interval). Within-region pitch range: ${Math.min(...spreads).toFixed(1)}–${Math.max(...spreads).toFixed(1)} cents.`
+        : `No contiguous same-note region meets the ${rules.minSeconds} s duration and ${(rules.minPitchCoverage * 100).toFixed(0)}% within-region coverage requirements.`);
+    const notable = all.length > 0;
+    const status = notable
+      ? "notable-pattern"
+      : regions.length
+        ? "no-qualifying-pattern"
+        : "insufficient-evidence";
+    const title = notable
+      ? "Supported pitch observations"
+      : regions.length
+        ? "Pitch measurements available — no qualifying pattern"
+        : "Not enough reliable information to provide feedback for this goal.";
+    const explanation = !regions.length
+      ? "Reliable contiguous pitch evidence is too limited for sustained offset or drift feedback. Select a longer clear sustained passage and inspect the evidence gates below."
+      : notable
+        ? "The passages below meet the reliability gates and a configured investigation threshold."
+        : `Measured pitch is available, but no supported sustained offset or drift meets the configured investigation thresholds: absolute mean offset ≥ ${rules.pitchOffsetCents} cents or absolute first-to-last-third drift ≥ ${rules.pitchDriftCents} cents.${wideRegions ? ` ${wideRegions} region(s) were excluded from these comparisons by the spread limit; their offsets and drifts are not established as below threshold.` : " This applies only to the eligible measured regions."}`;
+    output.pitchAssessment = {
+      status,
+      title,
+      summary,
+      explanation,
+      limitations:
+        "Coverage describes measured data, not confidence or musical quality. Ranges describe variation within detected notes, not between notes. Frame-centre spans exclude gaps; overlapping analysis windows smooth rapid motion. References use equal temperament at A4 = 440 Hz; intended notes and tuning are unknown. Absence of a finding is not proof of correct intonation.",
+      selectedFrames: selected.length,
+      reliableFrames: reliable.size,
+      reliableFrameCoverage,
+      sustainedSeconds,
+      sustainedCoverage,
+      regions,
+      gateFailures,
+    };
+    output.insufficient = status === "insufficient-evidence" ? title : null;
+    output.nextEvidence = explanation;
   }
   // Avoid filling the main view with multiple descriptions of the same passage.
   for (const finding of all.sort(

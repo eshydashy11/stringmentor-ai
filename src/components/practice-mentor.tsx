@@ -368,8 +368,13 @@ export function PracticeMentor() {
             reanalysing. Responses do not automatically improve a model.
           </p>
           <p className="sr-only" role="status">
-            {PRACTICE_GOALS[shared.goal]}: {shared.feedback.findings.length}{" "}
-            supported findings.
+            {PRACTICE_GOALS[shared.goal]}:{" "}
+            {shared.feedbackBusy
+              ? "Preparing feedback."
+              : shared.feedbackError
+                ? "Feedback unavailable."
+                : (shared.feedback.pitchAssessment?.title ??
+                  `${shared.feedback.findings.length} supported findings.`)}
           </p>
           {shared.feedbackBusy && (
             <p role="status">Preparing supported observations for this goal…</p>
@@ -381,6 +386,46 @@ export function PracticeMentor() {
           )}
           {!shared.feedbackBusy &&
             !shared.feedbackError &&
+            shared.feedback.pitchAssessment && (
+              <div
+                className="pitch-notice"
+                data-pitch-outcome={shared.feedback.pitchAssessment.status}
+              >
+                <strong>{shared.feedback.pitchAssessment.title}</strong>
+                <p>{shared.feedback.pitchAssessment.summary}</p>
+                <p>{shared.feedback.pitchAssessment.explanation}</p>
+                <p>
+                  These measurements do not establish correct intonation or
+                  musical quality.
+                </p>
+                <details
+                  open={
+                    shared.feedback.pitchAssessment.status ===
+                    "insufficient-evidence"
+                  }
+                >
+                  <summary>Pitch evidence and gates</summary>
+                  {shared.feedback.pitchAssessment.gateFailures.length > 0 ? (
+                    <ul>
+                      {shared.feedback.pitchAssessment.gateFailures.map(
+                        (reason) => (
+                          <li key={reason}>{reason}</li>
+                        ),
+                      )}
+                    </ul>
+                  ) : (
+                    <p>
+                      No selected frames or regions failed the pitch evidence
+                      gates.
+                    </p>
+                  )}
+                  <p>{shared.feedback.pitchAssessment.limitations}</p>
+                </details>
+              </div>
+            )}
+          {!shared.feedbackBusy &&
+            !shared.feedbackError &&
+            !shared.feedback.pitchAssessment &&
             shared.feedback.insufficient && (
               <div className="pitch-notice">
                 <strong>{shared.feedback.insufficient}</strong>

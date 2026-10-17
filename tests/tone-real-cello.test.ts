@@ -4,6 +4,7 @@ import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { analysePitch, mixToMono } from "../src/lib/pitch.ts";
+import { generatePracticeFeedback } from "../src/lib/practice-feedback.ts";
 import {
   analyseTone,
   clippingEvidence,
@@ -72,6 +73,22 @@ test(
       4,
     );
     assert.equal(result.clipping.nearFullScaleSamples, 0);
+    // Real measurements exist even though no sustained offset/drift reaches the gates.
+    const feedback = generatePracticeFeedback({
+      recordingId: "private-v2",
+      analysis: { recordingId: "private-v2", pitch, tone: result },
+      goal: "pitch",
+      interval: { start: 0, end: result.duration },
+      reviews: {},
+      recordingConditions: "unknown",
+    });
+    assert.equal(feedback.pitchAssessment!.status, "no-qualifying-pattern");
+    assert.equal(feedback.insufficient, null);
+    assert.equal(feedback.findings.length, 0);
+    assert.equal(feedback.pitchAssessment!.regions.length, 24);
+    assert.ok(
+      Math.abs(feedback.pitchAssessment!.sustainedSeconds - 22.0822) < 0.001,
+    );
     const counts = result.events.reduce<Record<string, number>>((all, e) => {
       all[e.kind] = (all[e.kind] ?? 0) + 1;
       return all;

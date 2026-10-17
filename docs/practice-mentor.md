@@ -53,7 +53,19 @@ The engine does not infer intended notes, phrase boundaries, physical technique 
 
 Base ordering priorities: same-note comparison 85; musician-identified event 90; unconfirmed event 75; pitch drift 80; pitch offset 70; sustained level variation 65; dynamic contour 80. Articulation-pair comparisons add 2 to comparison priority. Reviewed negative events subtract 20; dynamic-goal event findings subtract 15 so whole-passage dynamics take precedence. Equal priorities use timestamp and stable ID order. Priority values are **ordering rules, not quality scores or confidence percentages**. Findings overlapping more than 60% of the shorter primary interval are not repeated.
 
-These thresholds are empirical investigation gates, not validated perceptibility thresholds or standards for good/bad performance. The engine emits “Not enough reliable information to provide feedback for this goal.” when no supported finding qualifies, and explains coverage or threshold limitations. A quiet/uniform passage may simply produce no finding; that is not a grade.
+These thresholds are empirical investigation gates, not validated perceptibility thresholds or standards for good/bad performance. A quiet/uniform passage may simply produce no finding; that is not a grade. Pitch feedback distinguishes insufficient evidence from measurements with no qualifying pattern, as detailed below. Other goals retain their existing insufficient/threshold messaging.
+
+### Pitch evidence outcomes
+
+The typed `pitchAssessment` field (also included in review JSON) separates three outcomes:
+
+- `insufficient-evidence`: no reliable contiguous same-detected-note region meets the existing minimum duration and local coverage requirements. The UI reports actual missing-pitch/candidate, harmonic-support, candidate-margin and short-region failures, including counts. Multiple gates can reject one frame, so gate counts need not sum to rejected frames. Gaps, rejected frames and detected note changes break continuity; a high overall reliable-frame percentage alone is insufficient.
+- `no-qualifying-pattern`: sustained measurements exist, but no supported mean offset or first-to-last-third drift meets the investigation thresholds. This produces a neutral measured summary, not an insufficient-evidence warning or practice exercise. Reliable regions wider than the existing spread limit can still supply a factual variation summary, but are excluded from offset/drift interpretation and explicitly **not** described as below threshold.
+- `notable-pattern`: supported offset/drift findings retain their timestamps, measurements, uncertainty, playback links and investigations.
+
+Reliability gates and interpretation thresholds are unchanged: harmonic support ≥ 0.75, candidate margin ≥ 0.06, duration ≥ 0.7 s, within-region coverage ≥ 80%, spread ≤ 35 cents for offset/drift interpretation, and absolute mean offset ≥ 8 cents or absolute drift ≥ 12 cents. Overall selected-frame coverage is descriptive, not an additional global rejection gate.
+
+The summary reports reliable selected-frame counts, the number and combined duration of qualifying sustained regions, their fraction of the selected interval, and the minimum/maximum peak-to-peak variation **within** those regions. It never pools different notes into one cents range. Duration uses first/last frame centres without padding or filling gaps; overlapping analysis windows can smooth rapid variation. Region intervals and numerical values are included in the exported assessment. No finding establishes intended notes, correct intonation or musical quality.
 
 ### How goals change findings
 
@@ -93,7 +105,7 @@ Review state, practice goals, recording-condition statements, finding usefulness
 
 ## Validation
 
-Verified on 17 October 2026: `npm run typecheck`, `npm run lint`, `npm test` and `npm run build` passed. The full suite passed **73 tests with no failures or skips**, with both private cello recordings supplied for their existing regressions. A production-server HTTP smoke check passed for Dashboard, Practice Studio, Recordings, Playlists and Settings, the unknown-route 404, and delivery of the tone and feedback worker JavaScript. Targeted component/client tests also passed after test-only lint fixes. These checks do not establish browser rendering, mobile touch behaviour, microphone hardware compatibility or live Vercel deployment; use the acceptance steps below for those checks.
+Verified on 17 October 2026 after the pitch-outcome improvement: `npm run typecheck`, `npm run lint`, `npm test` and `npm run build` passed. The full suite passed **80 tests with no failures or skips**, with both private cello recordings supplied for their regressions. New cases cover all three pitch outcomes, gate failures, fragmented data, threshold boundaries, wider motion, interval scope, export and UI transitions without repeating DSP. The V2 regression now asserts the neutral outcome and sustained measurement coverage. All five goals' V2 finding arrays also matched the previous implementation exactly. A production-server HTTP smoke check passed for Dashboard, Practice Studio, Recordings, Playlists and Settings, the unknown-route 404, and delivery of the tone and feedback worker JavaScript. These checks do not establish browser rendering, mobile touch behaviour, microphone hardware compatibility or live Vercel deployment; use the acceptance steps below for those checks.
 
 Automated tests cover:
 
@@ -114,7 +126,7 @@ The same private V2 measurements documented in [tone-validation.md](tone-validat
 | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Consistent dynamics     | 3: a same-note C2 recorded-level contrast (~5.0 dB) and two qualifying rising C2 contours (~7.3 and 8.8 dB final-third differences)                |
 | Smooth bow transitions  | 1: the existing tentative dip at ~3.506 s, with pitch continuity and spectral evidence; still not a confirmed bow reversal                         |
-| Pitch awareness         | 0: no contiguous reliable region meets all offset/drift gates; the UI explains the threshold/coverage limitation without inventing a pitch problem |
+| Pitch awareness         | 0 notable findings, with a neutral measured summary: 1,178/1,574 reliable frames (74.8%), 24 sustained regions spanning 22.08 s (60.1% of the selected interval), and within-region peak-to-peak variation of 1.1–13.2 cents. None meets the supported offset/drift thresholds. |
 | Consistent articulation | 1: the comparable C2 passage profile; too few eligible same-register dip pairs for the stricter articulation-pair finding                          |
 | Expressive variation    | 3: the C2 contrast, another qualifying brightness contrast, and a changing level contour, without penalising variation                             |
 
@@ -126,7 +138,7 @@ After Vercel marks the new main-branch commit ready, open **https://stringmentor
 
 1. Confirm stored recordings, playlists, preferences and notes remain. Upload or select cello audio, or make a new microphone take. Verify playback, pause, seeking and replay.
 2. Click **Analyse for my goal**. Both pitch and tone graphs should populate from one run. Change all five goals; feedback should change without a new decoding or pitch-analysis progress cycle.
-3. Try a narrow interval, silence and a quiet/noisy recording. Expect honest insufficient-evidence messages rather than filler. Compare two non-overlapping passages of the same note in Explore.
+3. In Pitch awareness, try a short/noisy interval: expect insufficient evidence with specific gates. Load the supplied V2 sample: expect measured coverage and variation with no qualifying pattern. A reliably sustained offset or drift that meets the thresholds should retain its finding cards. No outcome should claim correct intonation. Compare two non-overlapping passages of the same note in Explore.
 4. Use Listen here and Highlight on graph. Verify the correct passage is sought/highlighted and graphs are accessible before Advanced is opened. Try keyboard inputs and narrow phone/tablet layouts.
 5. For Smooth bow transitions, answer Yes, No and Not sure. Open Advanced and verify the same review state. Adjust the timestamp/type there and check the mentor wording distinguishes annotations from original evidence.
 6. Mark a finding useful/not useful and request another investigation. Export JSON; inspect separate `algorithmEvents`, `manualReviews`, feedback and responses. No audio should appear.
