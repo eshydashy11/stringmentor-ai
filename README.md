@@ -1,7 +1,7 @@
 # StringMentor AI
 
 A responsive music practice studio built with **Next.js App Router, TypeScript, React, and Tailwind CSS 4**. The first version begins with cello, with violin available in the instrument selector.
-
+**Live website:** https://stringmentor-ai.vercel.app
 ## Preview locally
 
 Use **Node.js 22.18 or later** and npm.
