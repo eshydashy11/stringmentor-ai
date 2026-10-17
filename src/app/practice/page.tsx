@@ -3,6 +3,7 @@ import { AudioLines, NotebookPen } from "lucide-react";
 import { Player } from "@/components/player";
 import { AnalysisCards } from "@/components/analysis-cards";
 import { useStudio } from "@/components/studio-provider";
+import { IntonationAnalysis } from "@/components/intonation-analysis";
 import { MicrophoneRecorder } from "@/components/microphone-recorder";
 export default function Practice() {
   const studio = useStudio();
@@ -50,13 +51,15 @@ export default function Practice() {
           </div>
         </aside>
       </div>
-      <AnalysisCards />
+      <IntonationAnalysis />
+      <AnalysisCards hideIntonation />
       <div className="disclosure panel">
         <AudioLines size={20} />
         <p>
           <strong>Your ears lead the way.</strong> Record with your microphone
-          or upload audio to practise. Intonation, tone analysis, and AI
-          feedback are not yet implemented. No audio is sent to an AI service.
+          or upload audio to practise. Cello pitch measurements are available
+          above. Tone analysis and AI feedback are not yet implemented. Audio
+          stays on your device.
         </p>
       </div>
     </>

@@ -81,8 +81,8 @@ export default function Settings() {
           </span>
           <h2>The first movement</h2>
           <p>
-            StringMentor AI v0.1 is a working audio practice space. Intonation,
-            tone analysis, and AI feedback are not yet implemented.
+            StringMentor AI includes local cello pitch measurements in Practice
+            Studio. Tone analysis and AI feedback are not yet implemented.
           </p>
           <span className="not-implemented">
             AI analysis · Not yet implemented
