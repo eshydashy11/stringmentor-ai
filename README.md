@@ -159,3 +159,7 @@ tests/                   Automated checks
 ```
 
 Deploy as a standard Next.js application on a compatible Node.js host (for example Vercel). `npm run build` produces `.next`; `npm start` serves the production application. No deployment or AI-service credentials are included in the repository.
+
+### Offline CREPE benchmark
+
+The [CREPE benchmark report](docs/crepe-benchmark.md) compares verified Tiny/Full models with Standard and Experimental on aligned synthetic and available private recordings. Its [numerical results](docs/data/crepe-benchmark/results.json) include correct/wrong/withheld counts, confidence sensitivity, timing, provenance and a separate browser feasibility test. No neural model is added to the website's production analysis. Follow the report's isolated Python/browser setup, then run `npm run benchmark:crepe -- --browser`; private recordings remain local.

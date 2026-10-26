@@ -9,3 +9,7 @@ next-env.d.ts
 !.env.example
 .DS_Store
 *.log
+
+# Offline Python benchmark caches
+__pycache__/
+*.py[cod]

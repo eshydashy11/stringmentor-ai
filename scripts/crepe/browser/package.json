@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "onnxruntime-web": "1.22.0",
+    "playwright-core": "1.51.1"
+  }
+}
