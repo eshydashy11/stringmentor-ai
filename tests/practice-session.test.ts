@@ -6,6 +6,7 @@ import {
   type AnalysisBundle,
 } from "../src/lib/practice-session.ts";
 import { practiceFixture } from "./helpers/practice-fixture.ts";
+import { experimentalFixture } from "./helpers/experimental-fixture.ts";
 
 test("a recording session deduplicates jobs and reuses measured results until explicit reanalysis", async () => {
   let count = 0;
@@ -91,8 +92,12 @@ test("shared adapter receives pitch and tone from one worker response and reject
   let workers = 0;
   let terminated = 0;
   let includePitch = true;
+  let decodes = 0;
+  let experimentalRequests = 0;
+  let includeExperimental = false;
   class Decoder {
     async decodeAudioData() {
+      decodes++;
       return {
         sampleRate: 22050,
         duration: 8,
@@ -112,13 +117,17 @@ test("shared adapter receives pitch and tone from one worker response and reject
     terminate() {
       terminated++;
     }
-    postMessage() {
+    postMessage(data: { experimental?: boolean }) {
+      if (data.experimental) experimentalRequests++;
       queueMicrotask(() =>
         this.onmessage?.({
           data: {
             type: "result",
             result: fixture.tone,
             ...(includePitch ? { pitch: fixture.pitch } : {}),
+            ...(data.experimental && includeExperimental
+              ? { experimental: experimentalFixture(fixture) }
+              : {}),
           },
         }),
       );
@@ -143,6 +152,43 @@ test("shared adapter receives pitch and tone from one worker response and reject
     assert.equal(bundle.tone, fixture.tone);
     assert.equal(workers, 1);
     assert.equal(terminated, 1);
+    assert.equal(decodes, 1);
+    assert.equal(
+      experimentalRequests,
+      0,
+      "Standard is the default worker path",
+    );
+    await assert.rejects(
+      analysePracticeRecording(
+        fixture.recordingId,
+        new Blob(["audio"]),
+        new AbortController().signal,
+        () => {},
+        true,
+      ),
+      /Experimental comparison is unavailable/,
+    );
+    assert.equal(
+      decodes,
+      2,
+      "experimental request decodes once, not once per window",
+    );
+    assert.equal(experimentalRequests, 1);
+    includeExperimental = true;
+    const comparison = await analysePracticeRecording(
+      fixture.recordingId,
+      new Blob(["audio"]),
+      new AbortController().signal,
+      () => {},
+      true,
+    );
+    assert.equal(comparison.pitch, fixture.pitch);
+    assert.equal(comparison.tone, fixture.tone);
+    assert.equal(comparison.experimental?.version, "2D.2A.1");
+    assert.equal(validateBundle(comparison, fixture.recordingId), true);
+    const malformed = structuredClone(comparison);
+    malformed.experimental!.pitch.frames[0].time = -1;
+    assert.equal(validateBundle(malformed, fixture.recordingId), false);
     includePitch = false;
     await assert.rejects(
       analysePracticeRecording(
@@ -153,7 +199,7 @@ test("shared adapter receives pitch and tone from one worker response and reject
       ),
       /shared pitch result/,
     );
-    assert.equal(terminated, 2);
+    assert.equal(terminated, 4);
   } finally {
     if (oldWorker) Object.defineProperty(globalThis, "Worker", oldWorker);
     else Reflect.deleteProperty(globalThis, "Worker");

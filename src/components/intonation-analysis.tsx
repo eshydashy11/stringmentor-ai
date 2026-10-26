@@ -1,5 +1,6 @@
 "use client";
 
+import { ExperimentalPitchControls } from "./experimental-pitch-controls";
 import { useState } from "react";
 import { Activity, ArrowDown, ArrowUp, Crosshair, X } from "lucide-react";
 import {
@@ -191,8 +192,13 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
     setWindowStart,
     highlight,
   } = shared;
-  const result = shared.result?.pitch ?? null;
-  const run = () => shared.run(!!result);
+  const experimental =
+    advanced && shared.pitchMode === "experimental"
+      ? shared.result?.experimental
+      : undefined;
+  const result = experimental?.pitch ?? shared.result?.pitch ?? null;
+  const run = () =>
+    shared.run(!!result, advanced && shared.pitchMode === "experimental");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [showRaw, setShowRaw] = useState(advanced);
   const prefix = advanced ? "advanced-" : "";
@@ -206,6 +212,11 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
     .filter((f) => f.time >= windowStart && f.time <= windowEnd)
     .map((frame, index, visible) => ({
       ...frame,
+      standardMidi: experimental
+        ? (shared.result!.pitch.frames[
+            Math.round((frame.time * 22050 - 2048) / 512)
+          ]?.midi ?? null)
+        : null,
       rawMidi:
         frame.diagnostics?.rawFrequency &&
         frame.diagnostics.rawFrequency >= CELLO_CONFIG.minFrequency &&
@@ -220,6 +231,7 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
     }));
   const visibleMidi = data.flatMap((f) => [
     ...(f.midi === null ? [] : [f.midi]),
+    ...(f.standardMidi === null ? [] : [f.standardMidi]),
     ...(showRaw && f.rawMidi !== null ? [f.rawMidi] : []),
   ]);
   const pitchDomain = visibleMidi.length
@@ -290,6 +302,7 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
           </button>
         )}
       </div>
+      {advanced && <ExperimentalPitchControls selectedIndex={selectedIndex} />}
       <p className="pitch-explanation">
         Single cello notes, measured against the nearest equal-tempered pitch at
         A4 = 440 Hz. Positive cents means sharp; negative means flat. These
@@ -503,6 +516,18 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
                                 strokeDasharray="2 2"
                               />
                             )}
+                          {metric === "midi" && experimental && (
+                            <Line
+                              dataKey="standardMidi"
+                              name="Standard reference"
+                              stroke="#e5dfca"
+                              strokeDasharray="6 3"
+                              strokeWidth={1.3}
+                              dot={false}
+                              connectNulls={false}
+                              isAnimationActive={false}
+                            />
+                          )}
                           {metric === "midi" && showRaw && (
                             <Line
                               dataKey="rawMidi"

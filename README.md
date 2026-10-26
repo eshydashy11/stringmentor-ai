@@ -140,6 +140,10 @@ Each private-file test verifies its hash. The V1 test uses labelled pitch interv
 
 ## Fast-passage audit (Phase 2D.1)
 
+### Experimental comparison (Phase 2D.2A)
+
+An opt-in **Experimental** pitch mode is available under Advanced Diagnostics → Pitch diagnostics. Standard remains the default and supplies Practice Mentor, Explore and tone analysis. Reanalyse after selecting Experimental to compare aligned estimates, recoveries, gaps, disagreements and processing time. The experiment does **not** meet release criteria: gains are limited and one previously accepted real open-string frame is withheld. See [implementation, benchmark results and limitations](docs/experimental-pitch.md). Run `npm run benchmark:pitch` to reproduce the evaluation; the report lists private-audio environment variables. No recording or PCM is committed.
+
 The [fast-passage investigation](docs/fast-passage-pitch-audit.md) records the current detector's rejection causes, the supplied Bach excerpt, controlled rapid-note sequences, window-size tradeoffs, onset-response metrics and processing times. It includes reproducible data and plots and a [specific Phase 2D.2 implementation plan](docs/fast-passage-phase2d2-plan.md). The production pitch engine remains unchanged. Higher coverage with a shorter window is not established as higher real-recording accuracy.
 
 Run the offline audit with `npm run audit:pitch`; set `STRINGMENTOR_BACH_PATH` to analyse the private Bach file and optionally `STRINGMENTOR_CELLO_SAMPLE_PATH` for the original open-string control. FFmpeg/ffprobe is required. Files default to ignored `work/fast-pitch/`; no audio is uploaded or committed. The report documents the exact reproduction command and scientific limitations.

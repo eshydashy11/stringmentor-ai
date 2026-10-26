@@ -1,3 +1,4 @@
+import type { ExperimentalResult } from "./experimental-pitch.ts";
 import { analyseToneRecording } from "./analyse-tone-recording.ts";
 import type { PitchResult } from "./pitch.ts";
 import type { ToneResult } from "./tone.ts";
@@ -6,6 +7,7 @@ export type AnalysisBundle = {
   recordingId: string;
   pitch: PitchResult;
   tone: ToneResult;
+  experimental?: ExperimentalResult;
 };
 export type AnalysisStatus =
   "idle" | "decoding" | "analysing" | "complete" | "cancelled" | "error";
@@ -38,6 +40,23 @@ export function validateBundle(
         (!i || f.time > frames[i - 1].time),
     );
   return (
+    (!bundle.experimental ||
+      (bundle.experimental.version === "2D.2A.1" &&
+        bundle.experimental.pitch.duration === duration &&
+        bundle.experimental.pitch.frames.length ===
+          bundle.pitch.frames.length &&
+        bundle.experimental.decisions.length === bundle.pitch.frames.length &&
+        bundle.experimental.pitch.frames.every(
+          (f, i) =>
+            f.time === bundle.pitch.frames[i].time &&
+            (f.frequency === null ||
+              (Number.isFinite(f.frequency) &&
+                f.frequency > 0 &&
+                f.cents !== null &&
+                Number.isFinite(f.cents) &&
+                f.midi !== null &&
+                Number.isFinite(f.midi))),
+        ))) &&
     ordered(bundle.pitch.frames) &&
     ordered(bundle.tone.frames) &&
     bundle.pitch.frames.every(
@@ -69,17 +88,35 @@ export async function analysePracticeRecording(
   file: Blob,
   signal: AbortSignal,
   progress: (p: number) => void,
+  includeExperimental = false,
 ): Promise<AnalysisBundle> {
   let pitch: PitchResult | null = null;
-  const tone = await analyseToneRecording(file, signal, progress, (result) => {
-    pitch = result;
-  });
+  let experimental: ExperimentalResult | undefined;
+  const tone = await analyseToneRecording(
+    file,
+    signal,
+    progress,
+    (result) => {
+      pitch = result;
+    },
+    includeExperimental
+      ? {
+          onResult: (result) => {
+            experimental = result;
+          },
+        }
+      : undefined,
+  );
+  if (includeExperimental && !experimental)
+    throw new Error(
+      "Experimental comparison is unavailable. Reload and analyse again.",
+    );
   signal.throwIfAborted();
   if (!pitch)
     throw new Error(
       "The shared pitch result is unavailable. Reload the app and analyse again.",
     );
-  const bundle = { recordingId, pitch, tone };
+  const bundle = { recordingId, pitch, tone, experimental };
   if (!validateBundle(bundle, recordingId))
     throw new Error(
       "The analysis returned inconsistent measurements. Please analyse again.",
@@ -116,9 +153,14 @@ export class PracticeAnalysisSession {
     this.state = state;
     this.listeners.forEach((listener) => listener());
   }
-  run(file: Blob, force = false): Promise<void> {
+  run(file: Blob, force = false, includeExperimental = false): Promise<void> {
     if (this.job) return this.job;
-    if (this.state.result && !force) return Promise.resolve();
+    if (
+      this.state.result &&
+      !force &&
+      (!includeExperimental || this.state.result.experimental)
+    )
+      return Promise.resolve();
     const controller = new AbortController();
     this.controller = controller;
     this.publish({
@@ -142,6 +184,7 @@ export class PracticeAnalysisSession {
                 progress: Math.round(progress * 100),
               });
           },
+          includeExperimental,
         );
         if (controller.signal.aborted || this.controller !== controller) return;
         if (!validateBundle(result, this.recordingId))

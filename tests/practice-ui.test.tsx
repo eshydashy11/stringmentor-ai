@@ -15,6 +15,7 @@ import { PracticeMentor } from "../src/components/practice-mentor";
 import { PracticeAnalysisSession } from "../src/lib/practice-session";
 import { generatePracticeFeedback } from "../src/lib/practice-feedback";
 import type { createFeedbackClient } from "../src/lib/practice-feedback-client";
+import { experimentalFixture } from "./helpers/experimental-fixture";
 import { practiceFixture } from "./helpers/practice-fixture";
 
 function contents(node: ReactTestInstance): string {
@@ -50,10 +51,15 @@ test("pitch mentor distinguishes insufficient, neutral and notable outcomes when
     if (f.time >= 3 && f.time < 5) f.diagnostics!.margin = 0.01;
   });
   let calls = 0;
-  const session = new PracticeAnalysisSession(fixture.recordingId, async () => {
-    calls++;
-    return fixture;
-  });
+  const session = new PracticeAnalysisSession(
+    fixture.recordingId,
+    async (_id, _file, _signal, _progress, experimental) => {
+      calls++;
+      return experimental
+        ? { ...fixture, experimental: experimentalFixture(fixture) }
+        : fixture;
+    },
+  );
   const feedbackFactory: typeof createFeedbackClient = (analysis) => ({
     request: async (input) => generatePracticeFeedback({ ...input, analysis }),
     dispose() {},
@@ -174,10 +180,15 @@ test("student hierarchy keeps graphs outside Advanced and simple review synchron
     request: async (input) => generatePracticeFeedback({ ...input, analysis }),
     dispose() {},
   });
-  const session = new PracticeAnalysisSession(fixture.recordingId, async () => {
-    calls++;
-    return fixture;
-  });
+  const session = new PracticeAnalysisSession(
+    fixture.recordingId,
+    async (_id, _file, _signal, _progress, experimental) => {
+      calls++;
+      return experimental
+        ? { ...fixture, experimental: experimentalFixture(fixture) }
+        : fixture;
+    },
+  );
   const recording = {
     id: fixture.recordingId,
     name: "Test cello.wav",
@@ -235,6 +246,22 @@ test("student hierarchy keeps graphs outside Advanced and simple review synchron
     );
     assert.ok(contents(advanced).includes("Noise-related & change indicators"));
     assert.ok(contents(advanced).includes("Review articulation candidates"));
+    const mode = root.findByProps({ "aria-label": "Pitch analysis mode" });
+    assert.equal(mode.props.value, "standard");
+    await act(async () =>
+      mode.props.onChange({ target: { value: "experimental" } }),
+    );
+    assert.match(contents(advanced), /not validated for musical accuracy/);
+    assert.match(contents(advanced), /No experimental comparison/);
+    assert.equal(
+      calls,
+      1,
+      "mode view selection does not duplicate DSP or decoding",
+    );
+    assert.match(contents(explore), /Detected pitch trajectory/);
+    await act(async () =>
+      mode.props.onChange({ target: { value: "standard" } }),
+    );
     let firstEvent = root.findAllByProps({ className: "tone-event" })[0];
     assert.match(contents(firstEvent), /bow change: yes/);
     await act(async () => button(root, "Not sure").props.onClick());
@@ -271,6 +298,32 @@ test("student hierarchy keeps graphs outside Advanced and simple review synchron
       button(finding, "Another supported investigation").props.onClick(),
     );
     assert.notEqual(contents(finding), before);
+    await act(async () =>
+      mode.props.onChange({ target: { value: "experimental" } }),
+    );
+    await act(async () => {
+      button(advanced, "Analyse again").props.onClick();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    assert.equal(calls, 2);
+    const updatedAdvanced = root.findByProps({
+      className: "panel advanced-level",
+    });
+    assert.match(contents(updatedAdvanced), /experimental additional work/);
+    assert.match(
+      contents(root.findByProps({ className: "performance-level" })),
+      /Detected pitch trajectory/,
+    );
+    assert.match(
+      contents(updatedAdvanced),
+      /Practice Mentor, Explore and tone analysis still use Standard/,
+    );
+    await act(async () =>
+      root
+        .findByProps({ "aria-label": "Pitch analysis mode" })
+        .props.onChange({ target: { value: "standard" } }),
+    );
+    assert.equal(calls, 2);
     // Every input/select has an associated label, including both diagnostic views.
     const controls = root.findAll(
       (n) => n.type === "input" || n.type === "select",

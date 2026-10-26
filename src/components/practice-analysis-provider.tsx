@@ -39,6 +39,9 @@ function useSession(
     session.getSnapshot,
     session.getSnapshot,
   );
+  const [pitchMode, setPitchMode] = useState<"standard" | "experimental">(
+    "standard",
+  );
   const [goal, setGoal] = useState<PracticeGoal>("dynamics");
   const [interval, setInterval] = useState<TimeInterval>({ start: 0, end: 1 });
   const [comparison, setComparison] = useState<TimeInterval | null>(null);
@@ -67,18 +70,23 @@ function useSession(
       window.removeEventListener("pagehide", session.cancel);
     };
   }, [session]);
-  const run = async (force = false) => {
+  const run = async (force = false, includeExperimental = false) => {
     if (!recording || recording.instrument !== "cello") return;
     const before = session.getSnapshot();
     if (before.status === "decoding" || before.status === "analysing") return;
-    if (before.result && !force) return;
+    if (
+      before.result &&
+      !force &&
+      (!includeExperimental || before.result.experimental)
+    )
+      return;
     setReviews({});
     setRatings({});
     setInvestigations({});
     setComparison(null);
     setHighlight(null);
     setWindowStart(0);
-    await session.run(recording.file, force);
+    await session.run(recording.file, force, includeExperimental);
     const result = session.getSnapshot().result;
     if (result) setInterval({ start: 0, end: result.tone.duration });
   };
@@ -107,7 +115,11 @@ function useSession(
     if (!state.result) return;
     let client: FeedbackClient | null = null;
     try {
-      client = feedbackFactory(state.result);
+      client = feedbackFactory({
+        recordingId: state.result.recordingId,
+        pitch: state.result.pitch,
+        tone: state.result.tone,
+      });
       feedbackSlot.current = { client, error: "" };
     } catch (error) {
       feedbackSlot.current = {
@@ -209,6 +221,7 @@ function useSession(
         JSON.stringify(
           {
             ...payload,
+            experimentalComparison: state.result.experimental ?? null,
             feedback: feedbackBusy || feedbackError ? null : payload.feedback,
             feedbackStatus: feedbackBusy
               ? "pending"
@@ -233,6 +246,8 @@ function useSession(
     recording,
     busy: state.status === "decoding" || state.status === "analysing",
     run,
+    pitchMode,
+    setPitchMode,
     cancel: session.cancel,
     goal,
     setGoal,

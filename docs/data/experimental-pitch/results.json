@@ -1,0 +1,5543 @@
+{
+  "version": "2D.2A.1",
+  "rules": {
+    "support": 0.8,
+    "periodicity": 0.75,
+    "score": 0.65,
+    "margin": 0.08,
+    "minCycles": 6,
+    "agreementCents": 35,
+    "neighbourCents": 80
+  },
+  "node": "v24.19.0",
+  "date": "2026-10-26T14:57:56.352Z",
+  "seeds": [
+    701,
+    809,
+    997,
+    1237
+  ],
+  "timing": "One wall-clock run per case; includes cold/JIT effects. Peak RSS is cumulative process high-water, not per-case browser memory. No decode time included.",
+  "cases": [
+    {
+      "id": "low-0.5-clean",
+      "group": "development-baseline",
+      "texture": "clean",
+      "duration": 4,
+      "frames": 165,
+      "standardMs": 3479.557224,
+      "adaptiveMs": 2126.4548049999994,
+      "standardCoverage": 0.9515151515151515,
+      "adaptiveCoverage": 0.9454545454545454,
+      "stats": {
+        "recovered": 1,
+        "disagreements": 2,
+        "withheld": 9,
+        "evaluated2048": 66,
+        "evaluated1024": 24
+      },
+      "acceptedStandardPreserved": false,
+      "baselineWithheld": 2,
+      "standard": {
+        "total": 165,
+        "usable": 157,
+        "correct": 151,
+        "wrong": 6,
+        "withheld": 8,
+        "octaveWrong": 3,
+        "previousNoteMatches": 0,
+        "coverage": 0.9515151515151515,
+        "correctFraction": 0.9151515151515152,
+        "acceptedAccuracy": 0.9617834394904459,
+        "acceptedAbsoluteCentsMedian": 0.0073324102650141705,
+        "acceptedAbsoluteCentsP95": 2.770713451163213,
+        "byContext": {
+          "mixedWindow": {
+            "total": 56,
+            "correct": 42,
+            "wrong": 6,
+            "withheld": 8
+          },
+          "singleNoteWindow": {
+            "total": 109,
+            "correct": 109,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 165,
+        "usable": 156,
+        "correct": 152,
+        "wrong": 4,
+        "withheld": 9,
+        "octaveWrong": 2,
+        "previousNoteMatches": 0,
+        "coverage": 0.9454545454545454,
+        "correctFraction": 0.9212121212121213,
+        "acceptedAccuracy": 0.9743589743589743,
+        "acceptedAbsoluteCentsMedian": 0.007293341471420621,
+        "acceptedAbsoluteCentsP95": 1.7959051724583626,
+        "byContext": {
+          "mixedWindow": {
+            "total": 56,
+            "correct": 43,
+            "wrong": 4,
+            "withheld": 9
+          },
+          "singleNoteWindow": {
+            "total": 109,
+            "correct": 109,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 7,
+        "found": 7,
+        "missed": 0,
+        "signedMedianMs": 21.678004535147455,
+        "absoluteMedianMs": 21.678004535147455,
+        "absoluteP95Ms": 54.81179138321988,
+        "responses": [
+          {
+            "onset": 0.5,
+            "frequency": 97.99885899543733,
+            "response": 0.5108390022675737,
+            "errorMs": 10.839002267573727
+          },
+          {
+            "onset": 1,
+            "frequency": 146.8323839587038,
+            "response": 1.0216780045351475,
+            "errorMs": 21.678004535147455
+          },
+          {
+            "onset": 1.5,
+            "frequency": 220,
+            "response": 1.555736961451247,
+            "errorMs": 55.73696145124707
+          },
+          {
+            "onset": 2,
+            "frequency": 65.40639132514966,
+            "response": 2.020136054421769,
+            "errorMs": 20.1360544217688
+          },
+          {
+            "onset": 2.5,
+            "frequency": 97.99885899543733,
+            "response": 2.5309750566893423,
+            "errorMs": 30.975056689342306
+          },
+          {
+            "onset": 3,
+            "frequency": 146.8323839587038,
+            "response": 3.01859410430839,
+            "errorMs": 18.594104308390147
+          },
+          {
+            "onset": 3.5,
+            "frequency": 220,
+            "response": 3.5526530612244898,
+            "errorMs": 52.65306122448976
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 7,
+        "found": 7,
+        "missed": 0,
+        "signedMedianMs": 21.678004535147455,
+        "absoluteMedianMs": 21.678004535147455,
+        "absoluteP95Ms": 54.81179138321988,
+        "responses": [
+          {
+            "onset": 0.5,
+            "frequency": 97.99885899543733,
+            "response": 0.5108390022675737,
+            "errorMs": 10.839002267573727
+          },
+          {
+            "onset": 1,
+            "frequency": 146.8323839587038,
+            "response": 1.0216780045351475,
+            "errorMs": 21.678004535147455
+          },
+          {
+            "onset": 1.5,
+            "frequency": 220,
+            "response": 1.555736961451247,
+            "errorMs": 55.73696145124707
+          },
+          {
+            "onset": 2,
+            "frequency": 65.40639132514966,
+            "response": 2.020136054421769,
+            "errorMs": 20.1360544217688
+          },
+          {
+            "onset": 2.5,
+            "frequency": 97.99885899543733,
+            "response": 2.5309750566893423,
+            "errorMs": 30.975056689342306
+          },
+          {
+            "onset": 3,
+            "frequency": 146.8323839587038,
+            "response": 3.01859410430839,
+            "errorMs": 18.594104308390147
+          },
+          {
+            "onset": 3.5,
+            "frequency": 220,
+            "response": 3.5526530612244898,
+            "errorMs": 52.65306122448976
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 7,
+        "truth": 7,
+        "matched": 7,
+        "precision": 1,
+        "recall": 1,
+        "signedMedianMs": 6.2131519274375435,
+        "absoluteMedianMs": 6.2131519274375435,
+        "absoluteP95Ms": 16.884353741496675
+      },
+      "boundaryProposals": 7,
+      "memory": {
+        "heapDeltaBytes": 6513456,
+        "arrayBufferDeltaBytes": 701128,
+        "processPeakRssKiB": 88336,
+        "comparisonJsonBytes": 348046
+      },
+      "decisionCounts": {
+        "Standard estimate retained away from acoustic boundary proposals.": 99,
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 56,
+        "2048 candidate failed independent gates.": 6,
+        "Eligible estimates disagree near changing content. Adaptive pitch withheld; inspect the unchanged Standard overlay.": 2,
+        "Frame centre lies inside an uncertain boundary interval.": 1,
+        "2048 evidence agrees with cycle-eligible 1024 and a within-segment neighbour; recovery is not ground-truth correctness.": 1
+      }
+    },
+    {
+      "id": "low-0.125-clean",
+      "group": "development-baseline",
+      "texture": "clean",
+      "duration": 0.9999092970521541,
+      "frames": 36,
+      "standardMs": 383.6264579999988,
+      "adaptiveMs": 161.50519899999927,
+      "standardCoverage": 0.7222222222222222,
+      "adaptiveCoverage": 0.75,
+      "stats": {
+        "recovered": 3,
+        "disagreements": 2,
+        "withheld": 9,
+        "evaluated2048": 36,
+        "evaluated1024": 11
+      },
+      "acceptedStandardPreserved": false,
+      "baselineWithheld": 2,
+      "standard": {
+        "total": 36,
+        "usable": 26,
+        "correct": 20,
+        "wrong": 6,
+        "withheld": 10,
+        "octaveWrong": 3,
+        "previousNoteMatches": 0,
+        "coverage": 0.7222222222222222,
+        "correctFraction": 0.5555555555555556,
+        "acceptedAccuracy": 0.7692307692307693,
+        "acceptedAbsoluteCentsMedian": 0.8481732783490141,
+        "acceptedAbsoluteCentsP95": 1901.3179007538681,
+        "byContext": {
+          "mixedWindow": {
+            "total": 36,
+            "correct": 20,
+            "wrong": 6,
+            "withheld": 10
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 36,
+        "usable": 27,
+        "correct": 23,
+        "wrong": 4,
+        "withheld": 9,
+        "octaveWrong": 2,
+        "previousNoteMatches": 0,
+        "coverage": 0.75,
+        "correctFraction": 0.6388888888888888,
+        "acceptedAccuracy": 0.8518518518518519,
+        "acceptedAbsoluteCentsMedian": 0.42139013536718617,
+        "acceptedAbsoluteCentsP95": 1691.1753476783715,
+        "byContext": {
+          "mixedWindow": {
+            "total": 36,
+            "correct": 23,
+            "wrong": 4,
+            "withheld": 9
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 7,
+        "found": 6,
+        "missed": 1,
+        "signedMedianMs": 26.9387755102041,
+        "absoluteMedianMs": 26.9387755102041,
+        "absoluteP95Ms": 59.04761904761905,
+        "responses": [
+          {
+            "onset": 0.12498866213151927,
+            "frequency": 97.99885899543733,
+            "response": 0.16253968253968254,
+            "errorMs": 37.55102040816327
+          },
+          {
+            "onset": 0.24997732426303854,
+            "frequency": 146.8323839587038,
+            "response": 0.2786394557823129,
+            "errorMs": 28.662131519274382
+          },
+          {
+            "onset": 0.3749659863945578,
+            "frequency": 220,
+            "response": 0.44117913832199546,
+            "errorMs": 66.21315192743765
+          },
+          {
+            "onset": 0.4999546485260771,
+            "frequency": 65.40639132514966,
+            "response": 0.5108390022675737,
+            "errorMs": 10.884353741496655
+          },
+          {
+            "onset": 0.6249433106575963,
+            "frequency": 97.99885899543733,
+            "response": 0.6501587301587302,
+            "errorMs": 25.215419501133816
+          },
+          {
+            "onset": 0.7499319727891156,
+            "frequency": 146.8323839587038,
+            "response": 0.7662585034013606,
+            "errorMs": 16.326530612244984
+          },
+          {
+            "onset": 0.8749206349206349,
+            "frequency": 220,
+            "response": null,
+            "errorMs": null
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 7,
+        "found": 6,
+        "missed": 1,
+        "signedMedianMs": 26.9387755102041,
+        "absoluteMedianMs": 26.9387755102041,
+        "absoluteP95Ms": 41.63265306122452,
+        "responses": [
+          {
+            "onset": 0.12498866213151927,
+            "frequency": 97.99885899543733,
+            "response": 0.16253968253968254,
+            "errorMs": 37.55102040816327
+          },
+          {
+            "onset": 0.24997732426303854,
+            "frequency": 146.8323839587038,
+            "response": 0.2786394557823129,
+            "errorMs": 28.662131519274382
+          },
+          {
+            "onset": 0.3749659863945578,
+            "frequency": 220,
+            "response": 0.4179591836734694,
+            "errorMs": 42.9931972789116
+          },
+          {
+            "onset": 0.4999546485260771,
+            "frequency": 65.40639132514966,
+            "response": 0.5108390022675737,
+            "errorMs": 10.884353741496655
+          },
+          {
+            "onset": 0.6249433106575963,
+            "frequency": 97.99885899543733,
+            "response": 0.6501587301587302,
+            "errorMs": 25.215419501133816
+          },
+          {
+            "onset": 0.7499319727891156,
+            "frequency": 146.8323839587038,
+            "response": 0.7662585034013606,
+            "errorMs": 16.326530612244984
+          },
+          {
+            "onset": 0.8749206349206349,
+            "frequency": 220,
+            "response": null,
+            "errorMs": null
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 7,
+        "truth": 7,
+        "matched": 7,
+        "precision": 1,
+        "recall": 1,
+        "signedMedianMs": 5.442176870748328,
+        "absoluteMedianMs": 7.437641723356037,
+        "absoluteP95Ms": 18.630385487528393
+      },
+      "boundaryProposals": 7,
+      "memory": {
+        "heapDeltaBytes": -4745496,
+        "arrayBufferDeltaBytes": -27192,
+        "processPeakRssKiB": 97272,
+        "comparisonJsonBytes": 117485
+      },
+      "decisionCounts": {
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 24,
+        "2048 candidate failed independent gates.": 7,
+        "2048 evidence agrees with cycle-eligible 1024 and a within-segment neighbour; recovery is not ground-truth correctness.": 3,
+        "Eligible estimates disagree near changing content. Adaptive pitch withheld; inspect the unchanged Standard overlay.": 2
+      }
+    },
+    {
+      "id": "low-0.08-clean",
+      "group": "development-baseline",
+      "texture": "clean",
+      "duration": 0.64,
+      "frames": 20,
+      "standardMs": 120.7217759999985,
+      "adaptiveMs": 75.09234600000127,
+      "standardCoverage": 0.05,
+      "adaptiveCoverage": 0.05,
+      "stats": {
+        "recovered": 0,
+        "disagreements": 0,
+        "withheld": 19,
+        "evaluated2048": 20,
+        "evaluated1024": 3
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 20,
+        "usable": 1,
+        "correct": 0,
+        "wrong": 1,
+        "withheld": 19,
+        "octaveWrong": 1,
+        "previousNoteMatches": 0,
+        "coverage": 0.05,
+        "correctFraction": 0,
+        "acceptedAccuracy": 0,
+        "acceptedAbsoluteCentsMedian": 1204.343797296531,
+        "acceptedAbsoluteCentsP95": 1204.343797296531,
+        "byContext": {
+          "mixedWindow": {
+            "total": 20,
+            "correct": 0,
+            "wrong": 1,
+            "withheld": 19
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 20,
+        "usable": 1,
+        "correct": 0,
+        "wrong": 1,
+        "withheld": 19,
+        "octaveWrong": 1,
+        "previousNoteMatches": 0,
+        "coverage": 0.05,
+        "correctFraction": 0,
+        "acceptedAccuracy": 0,
+        "acceptedAbsoluteCentsMedian": 1204.343797296531,
+        "acceptedAbsoluteCentsP95": 1204.343797296531,
+        "byContext": {
+          "mixedWindow": {
+            "total": 20,
+            "correct": 0,
+            "wrong": 1,
+            "withheld": 19
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 7,
+        "found": 0,
+        "missed": 7,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null,
+        "responses": [
+          {
+            "onset": 0.08,
+            "frequency": 97.99885899543733,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.16,
+            "frequency": 146.8323839587038,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.24,
+            "frequency": 220,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.32,
+            "frequency": 65.40639132514966,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.4,
+            "frequency": 97.99885899543733,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.48,
+            "frequency": 146.8323839587038,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.56,
+            "frequency": 220,
+            "response": null,
+            "errorMs": null
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 7,
+        "found": 0,
+        "missed": 7,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null,
+        "responses": [
+          {
+            "onset": 0.08,
+            "frequency": 97.99885899543733,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.16,
+            "frequency": 146.8323839587038,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.24,
+            "frequency": 220,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.32,
+            "frequency": 65.40639132514966,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.4,
+            "frequency": 97.99885899543733,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.48,
+            "frequency": 146.8323839587038,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.56,
+            "frequency": 220,
+            "response": null,
+            "errorMs": null
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 7,
+        "truth": 7,
+        "matched": 7,
+        "precision": 1,
+        "recall": 1,
+        "signedMedianMs": 3.809523809523818,
+        "absoluteMedianMs": 5.260770975056728,
+        "absoluteP95Ms": 14.349206349206334
+      },
+      "boundaryProposals": 7,
+      "memory": {
+        "heapDeltaBytes": -645352,
+        "arrayBufferDeltaBytes": 158624,
+        "processPeakRssKiB": 97272,
+        "comparisonJsonBytes": 62139
+      },
+      "decisionCounts": {
+        "2048 candidate failed independent gates.": 12,
+        "No independently eligible neighbouring frame within the proposed segment.": 4,
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 1,
+        "Frame centre lies inside an uncertain boundary interval.": 3
+      }
+    },
+    {
+      "id": "arpeggio-0.5-clean",
+      "group": "development-baseline",
+      "texture": "clean",
+      "duration": 8,
+      "frames": 337,
+      "standardMs": 10034.928867999999,
+      "adaptiveMs": 1900.8295959999996,
+      "standardCoverage": 0.9258160237388724,
+      "adaptiveCoverage": 0.9317507418397626,
+      "stats": {
+        "recovered": 2,
+        "disagreements": 0,
+        "withheld": 23,
+        "evaluated2048": 144,
+        "evaluated1024": 104
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 337,
+        "usable": 312,
+        "correct": 312,
+        "wrong": 0,
+        "withheld": 25,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 0.9258160237388724,
+        "correctFraction": 0.9258160237388724,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.021512694532487137,
+        "acceptedAbsoluteCentsP95": 0.676013682060065,
+        "byContext": {
+          "mixedWindow": {
+            "total": 120,
+            "correct": 95,
+            "wrong": 0,
+            "withheld": 25
+          },
+          "singleNoteWindow": {
+            "total": 217,
+            "correct": 217,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 337,
+        "usable": 314,
+        "correct": 314,
+        "wrong": 0,
+        "withheld": 23,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 0.9317507418397626,
+        "correctFraction": 0.9317507418397626,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.021992667705130878,
+        "acceptedAbsoluteCentsP95": 0.7149309865181769,
+        "byContext": {
+          "mixedWindow": {
+            "total": 120,
+            "correct": 97,
+            "wrong": 0,
+            "withheld": 23
+          },
+          "singleNoteWindow": {
+            "total": 217,
+            "correct": 217,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 15,
+        "found": 15,
+        "missed": 0,
+        "signedMedianMs": 30.975056689342306,
+        "absoluteMedianMs": 30.975056689342306,
+        "absoluteP95Ms": 59.7913832199545,
+        "responses": [
+          {
+            "onset": 0.5,
+            "frequency": 146.8323839587038,
+            "response": 0.5340589569160997,
+            "errorMs": 34.058956916099724
+          },
+          {
+            "onset": 1,
+            "frequency": 195.99771799087463,
+            "response": 1.0448979591836736,
+            "errorMs": 44.897959183673564
+          },
+          {
+            "onset": 1.5,
+            "frequency": 246.94165062806206,
+            "response": 1.5325170068027212,
+            "errorMs": 32.517006802721184
+          },
+          {
+            "onset": 2,
+            "frequency": 293.6647679174076,
+            "response": 2.020136054421769,
+            "errorMs": 20.1360544217688
+          },
+          {
+            "onset": 2.5,
+            "frequency": 246.94165062806206,
+            "response": 2.5309750566893423,
+            "errorMs": 30.975056689342306
+          },
+          {
+            "onset": 3,
+            "frequency": 195.99771799087463,
+            "response": 3.01859410430839,
+            "errorMs": 18.594104308390147
+          },
+          {
+            "onset": 3.5,
+            "frequency": 146.8323839587038,
+            "response": 3.5294331065759637,
+            "errorMs": 29.433106575963652
+          },
+          {
+            "onset": 4,
+            "frequency": 97.99885899543733,
+            "response": 4.040272108843538,
+            "errorMs": 40.2721088435376
+          },
+          {
+            "onset": 4.5,
+            "frequency": 146.8323839587038,
+            "response": 4.527891156462585,
+            "errorMs": 27.891156462585442
+          },
+          {
+            "onset": 5,
+            "frequency": 195.99771799087463,
+            "response": 5.061950113378685,
+            "errorMs": 61.95011337868461
+          },
+          {
+            "onset": 5.5,
+            "frequency": 246.94165062806206,
+            "response": 5.526349206349207,
+            "errorMs": 26.34920634920679
+          },
+          {
+            "onset": 6,
+            "frequency": 293.6647679174076,
+            "response": 6.03718820861678,
+            "errorMs": 37.188208616780294
+          },
+          {
+            "onset": 6.5,
+            "frequency": 246.94165062806206,
+            "response": 6.524807256235827,
+            "errorMs": 24.807256235827246
+          },
+          {
+            "onset": 7,
+            "frequency": 195.99771799087463,
+            "response": 7.058866213151927,
+            "errorMs": 58.866213151927305
+          },
+          {
+            "onset": 7.5,
+            "frequency": 146.8323839587038,
+            "response": 7.523265306122449,
+            "errorMs": 23.265306122448592
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 15,
+        "found": 15,
+        "missed": 0,
+        "signedMedianMs": 30.975056689342306,
+        "absoluteMedianMs": 30.975056689342306,
+        "absoluteP95Ms": 41.65986394557839,
+        "responses": [
+          {
+            "onset": 0.5,
+            "frequency": 146.8323839587038,
+            "response": 0.5340589569160997,
+            "errorMs": 34.058956916099724
+          },
+          {
+            "onset": 1,
+            "frequency": 195.99771799087463,
+            "response": 1.0448979591836736,
+            "errorMs": 44.897959183673564
+          },
+          {
+            "onset": 1.5,
+            "frequency": 246.94165062806206,
+            "response": 1.5325170068027212,
+            "errorMs": 32.517006802721184
+          },
+          {
+            "onset": 2,
+            "frequency": 293.6647679174076,
+            "response": 2.020136054421769,
+            "errorMs": 20.1360544217688
+          },
+          {
+            "onset": 2.5,
+            "frequency": 246.94165062806206,
+            "response": 2.5309750566893423,
+            "errorMs": 30.975056689342306
+          },
+          {
+            "onset": 3,
+            "frequency": 195.99771799087463,
+            "response": 3.01859410430839,
+            "errorMs": 18.594104308390147
+          },
+          {
+            "onset": 3.5,
+            "frequency": 146.8323839587038,
+            "response": 3.5294331065759637,
+            "errorMs": 29.433106575963652
+          },
+          {
+            "onset": 4,
+            "frequency": 97.99885899543733,
+            "response": 4.040272108843538,
+            "errorMs": 40.2721088435376
+          },
+          {
+            "onset": 4.5,
+            "frequency": 146.8323839587038,
+            "response": 4.527891156462585,
+            "errorMs": 27.891156462585442
+          },
+          {
+            "onset": 5,
+            "frequency": 195.99771799087463,
+            "response": 5.038730158730159,
+            "errorMs": 38.73015873015895
+          },
+          {
+            "onset": 5.5,
+            "frequency": 246.94165062806206,
+            "response": 5.526349206349207,
+            "errorMs": 26.34920634920679
+          },
+          {
+            "onset": 6,
+            "frequency": 293.6647679174076,
+            "response": 6.03718820861678,
+            "errorMs": 37.188208616780294
+          },
+          {
+            "onset": 6.5,
+            "frequency": 246.94165062806206,
+            "response": 6.524807256235827,
+            "errorMs": 24.807256235827246
+          },
+          {
+            "onset": 7,
+            "frequency": 195.99771799087463,
+            "response": 7.035646258503402,
+            "errorMs": 35.64625850340164
+          },
+          {
+            "onset": 7.5,
+            "frequency": 146.8323839587038,
+            "response": 7.523265306122449,
+            "errorMs": 23.265306122448592
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 15,
+        "truth": 15,
+        "matched": 15,
+        "precision": 1,
+        "recall": 1,
+        "signedMedianMs": 5.442176870748661,
+        "absoluteMedianMs": 5.442176870748661,
+        "absoluteP95Ms": 11.006802721088535
+      },
+      "boundaryProposals": 15,
+      "memory": {
+        "heapDeltaBytes": -237576,
+        "arrayBufferDeltaBytes": 749024,
+        "processPeakRssKiB": 121380,
+        "comparisonJsonBytes": 810673
+      },
+      "decisionCounts": {
+        "Standard estimate retained away from acoustic boundary proposals.": 193,
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 119,
+        "2048 candidate failed independent gates.": 23,
+        "2048 evidence agrees with cycle-eligible 1024 and a within-segment neighbour; recovery is not ground-truth correctness.": 2
+      }
+    },
+    {
+      "id": "arpeggio-0.125-clean",
+      "group": "development-baseline",
+      "texture": "clean",
+      "duration": 1.9998185941043083,
+      "frames": 79,
+      "standardMs": 1578.0661660000005,
+      "adaptiveMs": 1488.7830840000024,
+      "standardCoverage": 0.7088607594936709,
+      "adaptiveCoverage": 0.7341772151898734,
+      "stats": {
+        "recovered": 2,
+        "disagreements": 0,
+        "withheld": 21,
+        "evaluated2048": 79,
+        "evaluated1024": 47
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 79,
+        "usable": 56,
+        "correct": 56,
+        "wrong": 0,
+        "withheld": 23,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 0.7088607594936709,
+        "correctFraction": 0.7088607594936709,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.2822225079817192,
+        "acceptedAbsoluteCentsP95": 1.5252859309810003,
+        "byContext": {
+          "mixedWindow": {
+            "total": 79,
+            "correct": 56,
+            "wrong": 0,
+            "withheld": 23
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 79,
+        "usable": 58,
+        "correct": 58,
+        "wrong": 0,
+        "withheld": 21,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 0.7341772151898734,
+        "correctFraction": 0.7341772151898734,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.2974473179181328,
+        "acceptedAbsoluteCentsP95": 1.5172351476831532,
+        "byContext": {
+          "mixedWindow": {
+            "total": 79,
+            "correct": 58,
+            "wrong": 0,
+            "withheld": 21
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 15,
+        "found": 15,
+        "missed": 0,
+        "signedMedianMs": 23.764172335601017,
+        "absoluteMedianMs": 23.764172335601017,
+        "absoluteP95Ms": 50.86621315192749,
+        "responses": [
+          {
+            "onset": 0.12498866213151927,
+            "frequency": 146.8323839587038,
+            "response": 0.16253968253968254,
+            "errorMs": 37.55102040816327
+          },
+          {
+            "onset": 0.24997732426303854,
+            "frequency": 195.99771799087463,
+            "response": 0.301859410430839,
+            "errorMs": 51.88208616780049
+          },
+          {
+            "onset": 0.3749659863945578,
+            "frequency": 246.94165062806206,
+            "response": 0.3947392290249433,
+            "errorMs": 19.77324263038549
+          },
+          {
+            "onset": 0.4999546485260771,
+            "frequency": 293.6647679174076,
+            "response": 0.5108390022675737,
+            "errorMs": 10.884353741496655
+          },
+          {
+            "onset": 0.6249433106575963,
+            "frequency": 246.94165062806206,
+            "response": 0.6501587301587302,
+            "errorMs": 25.215419501133816
+          },
+          {
+            "onset": 0.7499319727891156,
+            "frequency": 195.99771799087463,
+            "response": 0.7662585034013606,
+            "errorMs": 16.326530612244984
+          },
+          {
+            "onset": 0.8749206349206349,
+            "frequency": 146.8323839587038,
+            "response": 0.905578231292517,
+            "errorMs": 30.657596371882146
+          },
+          {
+            "onset": 0.9999092970521541,
+            "frequency": 97.99885899543733,
+            "response": 1.0216780045351475,
+            "errorMs": 21.76870748299331
+          },
+          {
+            "onset": 1.1248979591836734,
+            "frequency": 146.8323839587038,
+            "response": 1.1377777777777778,
+            "errorMs": 12.879818594104364
+          },
+          {
+            "onset": 1.2498866213151927,
+            "frequency": 195.99771799087463,
+            "response": 1.3003174603174603,
+            "errorMs": 50.43083900226763
+          },
+          {
+            "onset": 1.374875283446712,
+            "frequency": 246.94165062806206,
+            "response": 1.3931972789115645,
+            "errorMs": 18.32199546485258
+          },
+          {
+            "onset": 1.4998639455782312,
+            "frequency": 293.6647679174076,
+            "response": 1.5325170068027212,
+            "errorMs": 32.65306122448997
+          },
+          {
+            "onset": 1.6248526077097505,
+            "frequency": 246.94165062806206,
+            "response": 1.6486167800453515,
+            "errorMs": 23.764172335601017
+          },
+          {
+            "onset": 1.7498412698412698,
+            "frequency": 195.99771799087463,
+            "response": 1.7647165532879818,
+            "errorMs": 14.875283446712073
+          },
+          {
+            "onset": 1.874829931972789,
+            "frequency": 146.8323839587038,
+            "response": 1.9040362811791383,
+            "errorMs": 29.206349206349238
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 15,
+        "found": 15,
+        "missed": 0,
+        "signedMedianMs": 23.764172335601017,
+        "absoluteMedianMs": 23.764172335601017,
+        "absoluteP95Ms": 50.86621315192749,
+        "responses": [
+          {
+            "onset": 0.12498866213151927,
+            "frequency": 146.8323839587038,
+            "response": 0.16253968253968254,
+            "errorMs": 37.55102040816327
+          },
+          {
+            "onset": 0.24997732426303854,
+            "frequency": 195.99771799087463,
+            "response": 0.301859410430839,
+            "errorMs": 51.88208616780049
+          },
+          {
+            "onset": 0.3749659863945578,
+            "frequency": 246.94165062806206,
+            "response": 0.3947392290249433,
+            "errorMs": 19.77324263038549
+          },
+          {
+            "onset": 0.4999546485260771,
+            "frequency": 293.6647679174076,
+            "response": 0.5108390022675737,
+            "errorMs": 10.884353741496655
+          },
+          {
+            "onset": 0.6249433106575963,
+            "frequency": 246.94165062806206,
+            "response": 0.6501587301587302,
+            "errorMs": 25.215419501133816
+          },
+          {
+            "onset": 0.7499319727891156,
+            "frequency": 195.99771799087463,
+            "response": 0.7662585034013606,
+            "errorMs": 16.326530612244984
+          },
+          {
+            "onset": 0.8749206349206349,
+            "frequency": 146.8323839587038,
+            "response": 0.905578231292517,
+            "errorMs": 30.657596371882146
+          },
+          {
+            "onset": 0.9999092970521541,
+            "frequency": 97.99885899543733,
+            "response": 1.0216780045351475,
+            "errorMs": 21.76870748299331
+          },
+          {
+            "onset": 1.1248979591836734,
+            "frequency": 146.8323839587038,
+            "response": 1.1377777777777778,
+            "errorMs": 12.879818594104364
+          },
+          {
+            "onset": 1.2498866213151927,
+            "frequency": 195.99771799087463,
+            "response": 1.3003174603174603,
+            "errorMs": 50.43083900226763
+          },
+          {
+            "onset": 1.374875283446712,
+            "frequency": 246.94165062806206,
+            "response": 1.3931972789115645,
+            "errorMs": 18.32199546485258
+          },
+          {
+            "onset": 1.4998639455782312,
+            "frequency": 293.6647679174076,
+            "response": 1.5325170068027212,
+            "errorMs": 32.65306122448997
+          },
+          {
+            "onset": 1.6248526077097505,
+            "frequency": 246.94165062806206,
+            "response": 1.6486167800453515,
+            "errorMs": 23.764172335601017
+          },
+          {
+            "onset": 1.7498412698412698,
+            "frequency": 195.99771799087463,
+            "response": 1.7647165532879818,
+            "errorMs": 14.875283446712073
+          },
+          {
+            "onset": 1.874829931972789,
+            "frequency": 146.8323839587038,
+            "response": 1.9040362811791383,
+            "errorMs": 29.206349206349238
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 15,
+        "truth": 15,
+        "matched": 15,
+        "precision": 1,
+        "recall": 1,
+        "signedMedianMs": 5.442176870748328,
+        "absoluteMedianMs": 5.442176870748328,
+        "absoluteP95Ms": 12.589569160997803
+      },
+      "boundaryProposals": 15,
+      "memory": {
+        "heapDeltaBytes": 12427720,
+        "arrayBufferDeltaBytes": 868328,
+        "processPeakRssKiB": 127792,
+        "comparisonJsonBytes": 293267
+      },
+      "decisionCounts": {
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 56,
+        "2048 candidate failed independent gates.": 19,
+        "Frame centre lies inside an uncertain boundary interval.": 2,
+        "2048 evidence agrees with cycle-eligible 1024 and a within-segment neighbour; recovery is not ground-truth correctness.": 2
+      }
+    },
+    {
+      "id": "arpeggio-0.08-clean",
+      "group": "development-baseline",
+      "texture": "clean",
+      "duration": 1.28,
+      "frames": 48,
+      "standardMs": 1204.3855269999985,
+      "adaptiveMs": 433.08697799999936,
+      "standardCoverage": 0,
+      "adaptiveCoverage": 0.16666666666666666,
+      "stats": {
+        "recovered": 8,
+        "disagreements": 0,
+        "withheld": 40,
+        "evaluated2048": 48,
+        "evaluated1024": 22
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 48,
+        "usable": 0,
+        "correct": 0,
+        "wrong": 0,
+        "withheld": 48,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 0,
+        "correctFraction": 0,
+        "acceptedAccuracy": null,
+        "acceptedAbsoluteCentsMedian": null,
+        "acceptedAbsoluteCentsP95": null,
+        "byContext": {
+          "mixedWindow": {
+            "total": 48,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 48
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 48,
+        "usable": 8,
+        "correct": 8,
+        "wrong": 0,
+        "withheld": 40,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 0.16666666666666666,
+        "correctFraction": 0.16666666666666666,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.12379250004131481,
+        "acceptedAbsoluteCentsP95": 0.6062208391025778,
+        "byContext": {
+          "mixedWindow": {
+            "total": 48,
+            "correct": 8,
+            "wrong": 0,
+            "withheld": 40
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 15,
+        "found": 0,
+        "missed": 15,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null,
+        "responses": [
+          {
+            "onset": 0.08,
+            "frequency": 146.8323839587038,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.16,
+            "frequency": 195.99771799087463,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.24,
+            "frequency": 246.94165062806206,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.32,
+            "frequency": 293.6647679174076,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.4,
+            "frequency": 246.94165062806206,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.48,
+            "frequency": 195.99771799087463,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.56,
+            "frequency": 146.8323839587038,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.64,
+            "frequency": 97.99885899543733,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.72,
+            "frequency": 146.8323839587038,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.8,
+            "frequency": 195.99771799087463,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.88,
+            "frequency": 246.94165062806206,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.96,
+            "frequency": 293.6647679174076,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.04,
+            "frequency": 246.94165062806206,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.12,
+            "frequency": 195.99771799087463,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.2,
+            "frequency": 146.8323839587038,
+            "response": null,
+            "errorMs": null
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 15,
+        "found": 8,
+        "missed": 7,
+        "signedMedianMs": 48.888888888888914,
+        "absoluteMedianMs": 48.888888888888914,
+        "absoluteP95Ms": 53.17006802721087,
+        "responses": [
+          {
+            "onset": 0.08,
+            "frequency": 146.8323839587038,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.16,
+            "frequency": 195.99771799087463,
+            "response": 0.2089795918367347,
+            "errorMs": 48.9795918367347
+          },
+          {
+            "onset": 0.24,
+            "frequency": 246.94165062806206,
+            "response": 0.2786394557823129,
+            "errorMs": 38.63945578231293
+          },
+          {
+            "onset": 0.32,
+            "frequency": 293.6647679174076,
+            "response": 0.37151927437641724,
+            "errorMs": 51.519274376417236
+          },
+          {
+            "onset": 0.4,
+            "frequency": 246.94165062806206,
+            "response": 0.44117913832199546,
+            "errorMs": 41.17913832199543
+          },
+          {
+            "onset": 0.48,
+            "frequency": 195.99771799087463,
+            "response": 0.5340589569160997,
+            "errorMs": 54.058956916099746
+          },
+          {
+            "onset": 0.56,
+            "frequency": 146.8323839587038,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.64,
+            "frequency": 97.99885899543733,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.72,
+            "frequency": 146.8323839587038,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.8,
+            "frequency": 195.99771799087463,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.88,
+            "frequency": 246.94165062806206,
+            "response": 0.9287981859410431,
+            "errorMs": 48.79818594104313
+          },
+          {
+            "onset": 0.96,
+            "frequency": 293.6647679174076,
+            "response": 0.9984580498866213,
+            "errorMs": 38.45804988662138
+          },
+          {
+            "onset": 1.04,
+            "frequency": 246.94165062806206,
+            "response": 1.0913378684807256,
+            "errorMs": 51.337868480725525
+          },
+          {
+            "onset": 1.12,
+            "frequency": 195.99771799087463,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.2,
+            "frequency": 146.8323839587038,
+            "response": null,
+            "errorMs": null
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 15,
+        "truth": 15,
+        "matched": 15,
+        "precision": 1,
+        "recall": 1,
+        "signedMedianMs": 5.079365079365072,
+        "absoluteMedianMs": 5.079365079365072,
+        "absoluteP95Ms": 10.920634920634894
+      },
+      "boundaryProposals": 15,
+      "memory": {
+        "heapDeltaBytes": -13980856,
+        "arrayBufferDeltaBytes": -346608,
+        "processPeakRssKiB": 128432,
+        "comparisonJsonBytes": 171154
+      },
+      "decisionCounts": {
+        "2048 candidate failed independent gates.": 25,
+        "No independently eligible neighbouring frame within the proposed segment.": 4,
+        "Frame centre lies inside an uncertain boundary interval.": 11,
+        "2048 evidence agrees with cycle-eligible 1024 and a within-segment neighbour; recovery is not ground-truth correctness.": 8
+      }
+    },
+    {
+      "id": "arpeggio-0.125-resonance",
+      "group": "development-baseline",
+      "texture": "resonance",
+      "duration": 1.9998185941043083,
+      "frames": 79,
+      "standardMs": 510.65794599999936,
+      "adaptiveMs": 449.77678300000116,
+      "standardCoverage": 0.5822784810126582,
+      "adaptiveCoverage": 0.569620253164557,
+      "stats": {
+        "recovered": 0,
+        "disagreements": 1,
+        "withheld": 34,
+        "evaluated2048": 79,
+        "evaluated1024": 16
+      },
+      "acceptedStandardPreserved": false,
+      "baselineWithheld": 1,
+      "standard": {
+        "total": 79,
+        "usable": 46,
+        "correct": 28,
+        "wrong": 18,
+        "withheld": 33,
+        "octaveWrong": 17,
+        "previousNoteMatches": 0,
+        "coverage": 0.5822784810126582,
+        "correctFraction": 0.35443037974683544,
+        "acceptedAccuracy": 0.6086956521739131,
+        "acceptedAbsoluteCentsMedian": 0.8192109704385342,
+        "acceptedAbsoluteCentsP95": 1200.1882569824133,
+        "byContext": {
+          "mixedWindow": {
+            "total": 79,
+            "correct": 28,
+            "wrong": 18,
+            "withheld": 33
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 79,
+        "usable": 45,
+        "correct": 28,
+        "wrong": 17,
+        "withheld": 34,
+        "octaveWrong": 16,
+        "previousNoteMatches": 0,
+        "coverage": 0.569620253164557,
+        "correctFraction": 0.35443037974683544,
+        "acceptedAccuracy": 0.6222222222222222,
+        "acceptedAbsoluteCentsMedian": 0.7584697852625808,
+        "acceptedAbsoluteCentsP95": 1200.1721349878726,
+        "byContext": {
+          "mixedWindow": {
+            "total": 79,
+            "correct": 28,
+            "wrong": 17,
+            "withheld": 34
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 15,
+        "found": 11,
+        "missed": 4,
+        "signedMedianMs": 60.77097505668935,
+        "absoluteMedianMs": 60.77097505668935,
+        "absoluteP95Ms": 78.09523809523816,
+        "responses": [
+          {
+            "onset": 0.12498866213151927,
+            "frequency": 146.8323839587038,
+            "response": 0.18575963718820862,
+            "errorMs": 60.77097505668935
+          },
+          {
+            "onset": 0.24997732426303854,
+            "frequency": 195.99771799087463,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.3749659863945578,
+            "frequency": 246.94165062806206,
+            "response": 0.44117913832199546,
+            "errorMs": 66.21315192743765
+          },
+          {
+            "onset": 0.4999546485260771,
+            "frequency": 293.6647679174076,
+            "response": 0.5572789115646258,
+            "errorMs": 57.324263038548764
+          },
+          {
+            "onset": 0.6249433106575963,
+            "frequency": 246.94165062806206,
+            "response": 0.6965986394557823,
+            "errorMs": 71.65532879818592
+          },
+          {
+            "onset": 0.7499319727891156,
+            "frequency": 195.99771799087463,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.8749206349206349,
+            "frequency": 146.8323839587038,
+            "response": 0.9287981859410431,
+            "errorMs": 53.877551020408255
+          },
+          {
+            "onset": 0.9999092970521541,
+            "frequency": 97.99885899543733,
+            "response": 1.0216780045351475,
+            "errorMs": 21.76870748299331
+          },
+          {
+            "onset": 1.1248979591836734,
+            "frequency": 146.8323839587038,
+            "response": 1.18421768707483,
+            "errorMs": 59.31972789115658
+          },
+          {
+            "onset": 1.2498866213151927,
+            "frequency": 195.99771799087463,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.374875283446712,
+            "frequency": 246.94165062806206,
+            "response": 1.4396371882086167,
+            "errorMs": 64.7619047619048
+          },
+          {
+            "onset": 1.4998639455782312,
+            "frequency": 293.6647679174076,
+            "response": 1.555736961451247,
+            "errorMs": 55.87301587301585
+          },
+          {
+            "onset": 1.6248526077097505,
+            "frequency": 246.94165062806206,
+            "response": 1.6950566893424037,
+            "errorMs": 70.20408163265324
+          },
+          {
+            "onset": 1.7498412698412698,
+            "frequency": 195.99771799087463,
+            "response": 1.8343764172335602,
+            "errorMs": 84.5351473922904
+          },
+          {
+            "onset": 1.874829931972789,
+            "frequency": 146.8323839587038,
+            "response": null,
+            "errorMs": null
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 15,
+        "found": 11,
+        "missed": 4,
+        "signedMedianMs": 60.77097505668935,
+        "absoluteMedianMs": 60.77097505668935,
+        "absoluteP95Ms": 78.09523809523816,
+        "responses": [
+          {
+            "onset": 0.12498866213151927,
+            "frequency": 146.8323839587038,
+            "response": 0.18575963718820862,
+            "errorMs": 60.77097505668935
+          },
+          {
+            "onset": 0.24997732426303854,
+            "frequency": 195.99771799087463,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.3749659863945578,
+            "frequency": 246.94165062806206,
+            "response": 0.44117913832199546,
+            "errorMs": 66.21315192743765
+          },
+          {
+            "onset": 0.4999546485260771,
+            "frequency": 293.6647679174076,
+            "response": 0.5572789115646258,
+            "errorMs": 57.324263038548764
+          },
+          {
+            "onset": 0.6249433106575963,
+            "frequency": 246.94165062806206,
+            "response": 0.6965986394557823,
+            "errorMs": 71.65532879818592
+          },
+          {
+            "onset": 0.7499319727891156,
+            "frequency": 195.99771799087463,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.8749206349206349,
+            "frequency": 146.8323839587038,
+            "response": 0.9287981859410431,
+            "errorMs": 53.877551020408255
+          },
+          {
+            "onset": 0.9999092970521541,
+            "frequency": 97.99885899543733,
+            "response": 1.0216780045351475,
+            "errorMs": 21.76870748299331
+          },
+          {
+            "onset": 1.1248979591836734,
+            "frequency": 146.8323839587038,
+            "response": 1.18421768707483,
+            "errorMs": 59.31972789115658
+          },
+          {
+            "onset": 1.2498866213151927,
+            "frequency": 195.99771799087463,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.374875283446712,
+            "frequency": 246.94165062806206,
+            "response": 1.4396371882086167,
+            "errorMs": 64.7619047619048
+          },
+          {
+            "onset": 1.4998639455782312,
+            "frequency": 293.6647679174076,
+            "response": 1.555736961451247,
+            "errorMs": 55.87301587301585
+          },
+          {
+            "onset": 1.6248526077097505,
+            "frequency": 246.94165062806206,
+            "response": 1.6950566893424037,
+            "errorMs": 70.20408163265324
+          },
+          {
+            "onset": 1.7498412698412698,
+            "frequency": 195.99771799087463,
+            "response": 1.8343764172335602,
+            "errorMs": 84.5351473922904
+          },
+          {
+            "onset": 1.874829931972789,
+            "frequency": 146.8323839587038,
+            "response": null,
+            "errorMs": null
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 19,
+        "truth": 15,
+        "matched": 15,
+        "precision": 0.7894736842105263,
+        "recall": 1,
+        "signedMedianMs": 1.995464852607709,
+        "absoluteMedianMs": 3.990929705215418,
+        "absoluteP95Ms": 44.37188208616765
+      },
+      "boundaryProposals": 19,
+      "memory": {
+        "heapDeltaBytes": -13690576,
+        "arrayBufferDeltaBytes": -7580480,
+        "processPeakRssKiB": 131496,
+        "comparisonJsonBytes": 253912
+      },
+      "decisionCounts": {
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 45,
+        "2048 candidate failed independent gates.": 33,
+        "Eligible estimates disagree near changing content. Adaptive pitch withheld; inspect the unchanged Standard overlay.": 1
+      }
+    },
+    {
+      "id": "arpeggio-0.125-attack-noise",
+      "group": "development-baseline",
+      "texture": "attack-noise",
+      "duration": 1.9998185941043083,
+      "frames": 79,
+      "standardMs": 500.21779100000276,
+      "adaptiveMs": 608.7521160000033,
+      "standardCoverage": 0.6962025316455697,
+      "adaptiveCoverage": 0.7468354430379747,
+      "stats": {
+        "recovered": 4,
+        "disagreements": 0,
+        "withheld": 20,
+        "evaluated2048": 79,
+        "evaluated1024": 46
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 79,
+        "usable": 55,
+        "correct": 55,
+        "wrong": 0,
+        "withheld": 24,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 0.6962025316455697,
+        "correctFraction": 0.6962025316455697,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.24025732010852982,
+        "acceptedAbsoluteCentsP95": 1.706728036747917,
+        "byContext": {
+          "mixedWindow": {
+            "total": 79,
+            "correct": 55,
+            "wrong": 0,
+            "withheld": 24
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 79,
+        "usable": 59,
+        "correct": 59,
+        "wrong": 0,
+        "withheld": 20,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 0.7468354430379747,
+        "correctFraction": 0.7468354430379747,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.22546740715554117,
+        "acceptedAbsoluteCentsP95": 1.6354034665184742,
+        "byContext": {
+          "mixedWindow": {
+            "total": 79,
+            "correct": 59,
+            "wrong": 0,
+            "withheld": 20
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 15,
+        "found": 15,
+        "missed": 0,
+        "signedMedianMs": 25.215419501133816,
+        "absoluteMedianMs": 25.215419501133816,
+        "absoluteP95Ms": 50.86621315192749,
+        "responses": [
+          {
+            "onset": 0.12498866213151927,
+            "frequency": 146.8323839587038,
+            "response": 0.16253968253968254,
+            "errorMs": 37.55102040816327
+          },
+          {
+            "onset": 0.24997732426303854,
+            "frequency": 195.99771799087463,
+            "response": 0.301859410430839,
+            "errorMs": 51.88208616780049
+          },
+          {
+            "onset": 0.3749659863945578,
+            "frequency": 246.94165062806206,
+            "response": 0.3947392290249433,
+            "errorMs": 19.77324263038549
+          },
+          {
+            "onset": 0.4999546485260771,
+            "frequency": 293.6647679174076,
+            "response": 0.5108390022675737,
+            "errorMs": 10.884353741496655
+          },
+          {
+            "onset": 0.6249433106575963,
+            "frequency": 246.94165062806206,
+            "response": 0.6501587301587302,
+            "errorMs": 25.215419501133816
+          },
+          {
+            "onset": 0.7499319727891156,
+            "frequency": 195.99771799087463,
+            "response": 0.7894784580498866,
+            "errorMs": 39.54648526077098
+          },
+          {
+            "onset": 0.8749206349206349,
+            "frequency": 146.8323839587038,
+            "response": 0.905578231292517,
+            "errorMs": 30.657596371882146
+          },
+          {
+            "onset": 0.9999092970521541,
+            "frequency": 97.99885899543733,
+            "response": 1.0216780045351475,
+            "errorMs": 21.76870748299331
+          },
+          {
+            "onset": 1.1248979591836734,
+            "frequency": 146.8323839587038,
+            "response": 1.1377777777777778,
+            "errorMs": 12.879818594104364
+          },
+          {
+            "onset": 1.2498866213151927,
+            "frequency": 195.99771799087463,
+            "response": 1.3003174603174603,
+            "errorMs": 50.43083900226763
+          },
+          {
+            "onset": 1.374875283446712,
+            "frequency": 246.94165062806206,
+            "response": 1.3931972789115645,
+            "errorMs": 18.32199546485258
+          },
+          {
+            "onset": 1.4998639455782312,
+            "frequency": 293.6647679174076,
+            "response": 1.5325170068027212,
+            "errorMs": 32.65306122448997
+          },
+          {
+            "onset": 1.6248526077097505,
+            "frequency": 246.94165062806206,
+            "response": 1.6486167800453515,
+            "errorMs": 23.764172335601017
+          },
+          {
+            "onset": 1.7498412698412698,
+            "frequency": 195.99771799087463,
+            "response": 1.7647165532879818,
+            "errorMs": 14.875283446712073
+          },
+          {
+            "onset": 1.874829931972789,
+            "frequency": 146.8323839587038,
+            "response": 1.9040362811791383,
+            "errorMs": 29.206349206349238
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 15,
+        "found": 15,
+        "missed": 0,
+        "signedMedianMs": 25.215419501133816,
+        "absoluteMedianMs": 25.215419501133816,
+        "absoluteP95Ms": 38.14965986394558,
+        "responses": [
+          {
+            "onset": 0.12498866213151927,
+            "frequency": 146.8323839587038,
+            "response": 0.16253968253968254,
+            "errorMs": 37.55102040816327
+          },
+          {
+            "onset": 0.24997732426303854,
+            "frequency": 195.99771799087463,
+            "response": 0.2786394557823129,
+            "errorMs": 28.662131519274382
+          },
+          {
+            "onset": 0.3749659863945578,
+            "frequency": 246.94165062806206,
+            "response": 0.3947392290249433,
+            "errorMs": 19.77324263038549
+          },
+          {
+            "onset": 0.4999546485260771,
+            "frequency": 293.6647679174076,
+            "response": 0.5108390022675737,
+            "errorMs": 10.884353741496655
+          },
+          {
+            "onset": 0.6249433106575963,
+            "frequency": 246.94165062806206,
+            "response": 0.6501587301587302,
+            "errorMs": 25.215419501133816
+          },
+          {
+            "onset": 0.7499319727891156,
+            "frequency": 195.99771799087463,
+            "response": 0.7894784580498866,
+            "errorMs": 39.54648526077098
+          },
+          {
+            "onset": 0.8749206349206349,
+            "frequency": 146.8323839587038,
+            "response": 0.905578231292517,
+            "errorMs": 30.657596371882146
+          },
+          {
+            "onset": 0.9999092970521541,
+            "frequency": 97.99885899543733,
+            "response": 1.0216780045351475,
+            "errorMs": 21.76870748299331
+          },
+          {
+            "onset": 1.1248979591836734,
+            "frequency": 146.8323839587038,
+            "response": 1.1377777777777778,
+            "errorMs": 12.879818594104364
+          },
+          {
+            "onset": 1.2498866213151927,
+            "frequency": 195.99771799087463,
+            "response": 1.2770975056689342,
+            "errorMs": 27.210884353741527
+          },
+          {
+            "onset": 1.374875283446712,
+            "frequency": 246.94165062806206,
+            "response": 1.3931972789115645,
+            "errorMs": 18.32199546485258
+          },
+          {
+            "onset": 1.4998639455782312,
+            "frequency": 293.6647679174076,
+            "response": 1.5325170068027212,
+            "errorMs": 32.65306122448997
+          },
+          {
+            "onset": 1.6248526077097505,
+            "frequency": 246.94165062806206,
+            "response": 1.6486167800453515,
+            "errorMs": 23.764172335601017
+          },
+          {
+            "onset": 1.7498412698412698,
+            "frequency": 195.99771799087463,
+            "response": 1.7647165532879818,
+            "errorMs": 14.875283446712073
+          },
+          {
+            "onset": 1.874829931972789,
+            "frequency": 146.8323839587038,
+            "response": 1.9040362811791383,
+            "errorMs": 29.206349206349238
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 15,
+        "truth": 15,
+        "matched": 15,
+        "precision": 1,
+        "recall": 1,
+        "signedMedianMs": 1.995464852607709,
+        "absoluteMedianMs": 6.167800453514727,
+        "absoluteP95Ms": 13.768707482993202
+      },
+      "boundaryProposals": 15,
+      "memory": {
+        "heapDeltaBytes": 8028984,
+        "arrayBufferDeltaBytes": -202384,
+        "processPeakRssKiB": 141460,
+        "comparisonJsonBytes": 291285
+      },
+      "decisionCounts": {
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 55,
+        "2048 candidate failed independent gates.": 20,
+        "2048 evidence agrees with cycle-eligible 1024 and a within-segment neighbour; recovery is not ground-truth correctness.": 4
+      }
+    },
+    {
+      "id": "arpeggio-0.125-weak-fundamental",
+      "group": "development-baseline",
+      "texture": "weak-fundamental",
+      "duration": 1.9998185941043083,
+      "frames": 79,
+      "standardMs": 1323.1623029999973,
+      "adaptiveMs": 497.93389000000025,
+      "standardCoverage": 0.759493670886076,
+      "adaptiveCoverage": 0.7974683544303798,
+      "stats": {
+        "recovered": 6,
+        "disagreements": 3,
+        "withheld": 16,
+        "evaluated2048": 79,
+        "evaluated1024": 43
+      },
+      "acceptedStandardPreserved": false,
+      "baselineWithheld": 3,
+      "standard": {
+        "total": 79,
+        "usable": 60,
+        "correct": 49,
+        "wrong": 11,
+        "withheld": 19,
+        "octaveWrong": 9,
+        "previousNoteMatches": 0,
+        "coverage": 0.759493670886076,
+        "correctFraction": 0.620253164556962,
+        "acceptedAccuracy": 0.8166666666666667,
+        "acceptedAbsoluteCentsMedian": 0.3527914295663022,
+        "acceptedAbsoluteCentsP95": 1199.3708705582287,
+        "byContext": {
+          "mixedWindow": {
+            "total": 79,
+            "correct": 49,
+            "wrong": 11,
+            "withheld": 19
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 79,
+        "usable": 63,
+        "correct": 55,
+        "wrong": 8,
+        "withheld": 16,
+        "octaveWrong": 6,
+        "previousNoteMatches": 0,
+        "coverage": 0.7974683544303798,
+        "correctFraction": 0.6962025316455697,
+        "acceptedAccuracy": 0.873015873015873,
+        "acceptedAbsoluteCentsMedian": 0.2624257439091256,
+        "acceptedAbsoluteCentsP95": 1197.7793859545734,
+        "byContext": {
+          "mixedWindow": {
+            "total": 79,
+            "correct": 55,
+            "wrong": 8,
+            "withheld": 16
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 15,
+        "found": 15,
+        "missed": 0,
+        "signedMedianMs": 30.657596371882146,
+        "absoluteMedianMs": 30.657596371882146,
+        "absoluteP95Ms": 66.03174603174608,
+        "responses": [
+          {
+            "onset": 0.12498866213151927,
+            "frequency": 146.8323839587038,
+            "response": 0.16253968253968254,
+            "errorMs": 37.55102040816327
+          },
+          {
+            "onset": 0.24997732426303854,
+            "frequency": 195.99771799087463,
+            "response": 0.301859410430839,
+            "errorMs": 51.88208616780049
+          },
+          {
+            "onset": 0.3749659863945578,
+            "frequency": 246.94165062806206,
+            "response": 0.3947392290249433,
+            "errorMs": 19.77324263038549
+          },
+          {
+            "onset": 0.4999546485260771,
+            "frequency": 293.6647679174076,
+            "response": 0.5108390022675737,
+            "errorMs": 10.884353741496655
+          },
+          {
+            "onset": 0.6249433106575963,
+            "frequency": 246.94165062806206,
+            "response": 0.6501587301587302,
+            "errorMs": 25.215419501133816
+          },
+          {
+            "onset": 0.7499319727891156,
+            "frequency": 195.99771799087463,
+            "response": 0.8126984126984127,
+            "errorMs": 62.76643990929709
+          },
+          {
+            "onset": 0.8749206349206349,
+            "frequency": 146.8323839587038,
+            "response": 0.905578231292517,
+            "errorMs": 30.657596371882146
+          },
+          {
+            "onset": 0.9999092970521541,
+            "frequency": 97.99885899543733,
+            "response": 0.9984580498866213,
+            "errorMs": -1.4512471655327985
+          },
+          {
+            "onset": 1.1248979591836734,
+            "frequency": 146.8323839587038,
+            "response": 1.1609977324263039,
+            "errorMs": 36.09977324263048
+          },
+          {
+            "onset": 1.2498866213151927,
+            "frequency": 195.99771799087463,
+            "response": 1.3235374149659864,
+            "errorMs": 73.65079365079374
+          },
+          {
+            "onset": 1.374875283446712,
+            "frequency": 246.94165062806206,
+            "response": 1.3931972789115645,
+            "errorMs": 18.32199546485258
+          },
+          {
+            "onset": 1.4998639455782312,
+            "frequency": 293.6647679174076,
+            "response": 1.5325170068027212,
+            "errorMs": 32.65306122448997
+          },
+          {
+            "onset": 1.6248526077097505,
+            "frequency": 246.94165062806206,
+            "response": 1.6486167800453515,
+            "errorMs": 23.764172335601017
+          },
+          {
+            "onset": 1.7498412698412698,
+            "frequency": 195.99771799087463,
+            "response": 1.811156462585034,
+            "errorMs": 61.31519274376429
+          },
+          {
+            "onset": 1.874829931972789,
+            "frequency": 146.8323839587038,
+            "response": 1.9040362811791383,
+            "errorMs": 29.206349206349238
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 15,
+        "found": 15,
+        "missed": 0,
+        "signedMedianMs": 30.657596371882146,
+        "absoluteMedianMs": 30.657596371882146,
+        "absoluteP95Ms": 50.86621315192749,
+        "responses": [
+          {
+            "onset": 0.12498866213151927,
+            "frequency": 146.8323839587038,
+            "response": 0.16253968253968254,
+            "errorMs": 37.55102040816327
+          },
+          {
+            "onset": 0.24997732426303854,
+            "frequency": 195.99771799087463,
+            "response": 0.301859410430839,
+            "errorMs": 51.88208616780049
+          },
+          {
+            "onset": 0.3749659863945578,
+            "frequency": 246.94165062806206,
+            "response": 0.3947392290249433,
+            "errorMs": 19.77324263038549
+          },
+          {
+            "onset": 0.4999546485260771,
+            "frequency": 293.6647679174076,
+            "response": 0.5108390022675737,
+            "errorMs": 10.884353741496655
+          },
+          {
+            "onset": 0.6249433106575963,
+            "frequency": 246.94165062806206,
+            "response": 0.6501587301587302,
+            "errorMs": 25.215419501133816
+          },
+          {
+            "onset": 0.7499319727891156,
+            "frequency": 195.99771799087463,
+            "response": 0.7894784580498866,
+            "errorMs": 39.54648526077098
+          },
+          {
+            "onset": 0.8749206349206349,
+            "frequency": 146.8323839587038,
+            "response": 0.905578231292517,
+            "errorMs": 30.657596371882146
+          },
+          {
+            "onset": 0.9999092970521541,
+            "frequency": 97.99885899543733,
+            "response": 0.9984580498866213,
+            "errorMs": -1.4512471655327985
+          },
+          {
+            "onset": 1.1248979591836734,
+            "frequency": 146.8323839587038,
+            "response": 1.1609977324263039,
+            "errorMs": 36.09977324263048
+          },
+          {
+            "onset": 1.2498866213151927,
+            "frequency": 195.99771799087463,
+            "response": 1.3003174603174603,
+            "errorMs": 50.43083900226763
+          },
+          {
+            "onset": 1.374875283446712,
+            "frequency": 246.94165062806206,
+            "response": 1.3931972789115645,
+            "errorMs": 18.32199546485258
+          },
+          {
+            "onset": 1.4998639455782312,
+            "frequency": 293.6647679174076,
+            "response": 1.5325170068027212,
+            "errorMs": 32.65306122448997
+          },
+          {
+            "onset": 1.6248526077097505,
+            "frequency": 246.94165062806206,
+            "response": 1.6486167800453515,
+            "errorMs": 23.764172335601017
+          },
+          {
+            "onset": 1.7498412698412698,
+            "frequency": 195.99771799087463,
+            "response": 1.787936507936508,
+            "errorMs": 38.09523809523818
+          },
+          {
+            "onset": 1.874829931972789,
+            "frequency": 146.8323839587038,
+            "response": 1.9040362811791383,
+            "errorMs": 29.206349206349238
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 15,
+        "truth": 15,
+        "matched": 15,
+        "precision": 1,
+        "recall": 1,
+        "signedMedianMs": 6.712018140589748,
+        "absoluteMedianMs": 6.712018140589748,
+        "absoluteP95Ms": 13.696145124716594
+      },
+      "boundaryProposals": 15,
+      "memory": {
+        "heapDeltaBytes": -6178536,
+        "arrayBufferDeltaBytes": -427288,
+        "processPeakRssKiB": 159704,
+        "comparisonJsonBytes": 292317
+      },
+      "decisionCounts": {
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 57,
+        "2048 candidate failed independent gates.": 13,
+        "Eligible estimates disagree near changing content. Adaptive pitch withheld; inspect the unchanged Standard overlay.": 3,
+        "2048 evidence agrees with cycle-eligible 1024 and a within-segment neighbour; recovery is not ground-truth correctness.": 6
+      }
+    },
+    {
+      "id": "chromatic-0.125-clean",
+      "group": "development-baseline",
+      "texture": "clean",
+      "duration": 1.9998185941043083,
+      "frames": 79,
+      "standardMs": 428.7007320000048,
+      "adaptiveMs": 355.86515599999984,
+      "standardCoverage": 0.6075949367088608,
+      "adaptiveCoverage": 0.6329113924050633,
+      "stats": {
+        "recovered": 2,
+        "disagreements": 0,
+        "withheld": 29,
+        "evaluated2048": 79,
+        "evaluated1024": 57
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 79,
+        "usable": 48,
+        "correct": 48,
+        "wrong": 0,
+        "withheld": 31,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 0.6075949367088608,
+        "correctFraction": 0.6075949367088608,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.4634458003075661,
+        "acceptedAbsoluteCentsP95": 0.9050205620919153,
+        "byContext": {
+          "mixedWindow": {
+            "total": 79,
+            "correct": 48,
+            "wrong": 0,
+            "withheld": 31
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 79,
+        "usable": 50,
+        "correct": 50,
+        "wrong": 0,
+        "withheld": 29,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 0.6329113924050633,
+        "correctFraction": 0.6329113924050633,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.41975424587746746,
+        "acceptedAbsoluteCentsP95": 0.9042121284143809,
+        "byContext": {
+          "mixedWindow": {
+            "total": 79,
+            "correct": 50,
+            "wrong": 0,
+            "withheld": 29
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 15,
+        "found": 15,
+        "missed": 0,
+        "signedMedianMs": 37.55102040816327,
+        "absoluteMedianMs": 37.55102040816327,
+        "absoluteP95Ms": 54.71201814058962,
+        "responses": [
+          {
+            "onset": 0.12498866213151927,
+            "frequency": 138.59131548843604,
+            "response": 0.16253968253968254,
+            "errorMs": 37.55102040816327
+          },
+          {
+            "onset": 0.24997732426303854,
+            "frequency": 146.8323839587038,
+            "response": 0.301859410430839,
+            "errorMs": 51.88208616780049
+          },
+          {
+            "onset": 0.3749659863945578,
+            "frequency": 155.56349186104046,
+            "response": 0.4179591836734694,
+            "errorMs": 42.9931972789116
+          },
+          {
+            "onset": 0.4999546485260771,
+            "frequency": 164.81377845643496,
+            "response": 0.5340589569160997,
+            "errorMs": 34.10430839002265
+          },
+          {
+            "onset": 0.6249433106575963,
+            "frequency": 155.56349186104046,
+            "response": 0.6501587301587302,
+            "errorMs": 25.215419501133816
+          },
+          {
+            "onset": 0.7499319727891156,
+            "frequency": 146.8323839587038,
+            "response": 0.7894784580498866,
+            "errorMs": 39.54648526077098
+          },
+          {
+            "onset": 0.8749206349206349,
+            "frequency": 138.59131548843604,
+            "response": 0.905578231292517,
+            "errorMs": 30.657596371882146
+          },
+          {
+            "onset": 0.9999092970521541,
+            "frequency": 130.8127826502993,
+            "response": 1.0448979591836736,
+            "errorMs": 44.98866213151942
+          },
+          {
+            "onset": 1.1248979591836734,
+            "frequency": 138.59131548843604,
+            "response": 1.1609977324263039,
+            "errorMs": 36.09977324263048
+          },
+          {
+            "onset": 1.2498866213151927,
+            "frequency": 146.8323839587038,
+            "response": 1.3003174603174603,
+            "errorMs": 50.43083900226763
+          },
+          {
+            "onset": 1.374875283446712,
+            "frequency": 155.56349186104046,
+            "response": 1.4164172335600906,
+            "errorMs": 41.54195011337869
+          },
+          {
+            "onset": 1.4998639455782312,
+            "frequency": 164.81377845643496,
+            "response": 1.5325170068027212,
+            "errorMs": 32.65306122448997
+          },
+          {
+            "onset": 1.6248526077097505,
+            "frequency": 155.56349186104046,
+            "response": 1.6486167800453515,
+            "errorMs": 23.764172335601017
+          },
+          {
+            "onset": 1.7498412698412698,
+            "frequency": 146.8323839587038,
+            "response": 1.811156462585034,
+            "errorMs": 61.31519274376429
+          },
+          {
+            "onset": 1.874829931972789,
+            "frequency": 138.59131548843604,
+            "response": 1.9040362811791383,
+            "errorMs": 29.206349206349238
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 15,
+        "found": 15,
+        "missed": 0,
+        "signedMedianMs": 37.55102040816327,
+        "absoluteMedianMs": 37.55102040816327,
+        "absoluteP95Ms": 50.86621315192749,
+        "responses": [
+          {
+            "onset": 0.12498866213151927,
+            "frequency": 138.59131548843604,
+            "response": 0.16253968253968254,
+            "errorMs": 37.55102040816327
+          },
+          {
+            "onset": 0.24997732426303854,
+            "frequency": 146.8323839587038,
+            "response": 0.301859410430839,
+            "errorMs": 51.88208616780049
+          },
+          {
+            "onset": 0.3749659863945578,
+            "frequency": 155.56349186104046,
+            "response": 0.4179591836734694,
+            "errorMs": 42.9931972789116
+          },
+          {
+            "onset": 0.4999546485260771,
+            "frequency": 164.81377845643496,
+            "response": 0.5340589569160997,
+            "errorMs": 34.10430839002265
+          },
+          {
+            "onset": 0.6249433106575963,
+            "frequency": 155.56349186104046,
+            "response": 0.6501587301587302,
+            "errorMs": 25.215419501133816
+          },
+          {
+            "onset": 0.7499319727891156,
+            "frequency": 146.8323839587038,
+            "response": 0.7894784580498866,
+            "errorMs": 39.54648526077098
+          },
+          {
+            "onset": 0.8749206349206349,
+            "frequency": 138.59131548843604,
+            "response": 0.905578231292517,
+            "errorMs": 30.657596371882146
+          },
+          {
+            "onset": 0.9999092970521541,
+            "frequency": 130.8127826502993,
+            "response": 1.0448979591836736,
+            "errorMs": 44.98866213151942
+          },
+          {
+            "onset": 1.1248979591836734,
+            "frequency": 138.59131548843604,
+            "response": 1.1609977324263039,
+            "errorMs": 36.09977324263048
+          },
+          {
+            "onset": 1.2498866213151927,
+            "frequency": 146.8323839587038,
+            "response": 1.3003174603174603,
+            "errorMs": 50.43083900226763
+          },
+          {
+            "onset": 1.374875283446712,
+            "frequency": 155.56349186104046,
+            "response": 1.4164172335600906,
+            "errorMs": 41.54195011337869
+          },
+          {
+            "onset": 1.4998639455782312,
+            "frequency": 164.81377845643496,
+            "response": 1.5325170068027212,
+            "errorMs": 32.65306122448997
+          },
+          {
+            "onset": 1.6248526077097505,
+            "frequency": 155.56349186104046,
+            "response": 1.6486167800453515,
+            "errorMs": 23.764172335601017
+          },
+          {
+            "onset": 1.7498412698412698,
+            "frequency": 146.8323839587038,
+            "response": 1.787936507936508,
+            "errorMs": 38.09523809523818
+          },
+          {
+            "onset": 1.874829931972789,
+            "frequency": 138.59131548843604,
+            "response": 1.9040362811791383,
+            "errorMs": 29.206349206349238
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 15,
+        "truth": 15,
+        "matched": 15,
+        "precision": 1,
+        "recall": 1,
+        "signedMedianMs": 4.716553287981928,
+        "absoluteMedianMs": 4.716553287981928,
+        "absoluteP95Ms": 10.757369614512566
+      },
+      "boundaryProposals": 15,
+      "memory": {
+        "heapDeltaBytes": -4642704,
+        "arrayBufferDeltaBytes": -110336,
+        "processPeakRssKiB": 160752,
+        "comparisonJsonBytes": 303118
+      },
+      "decisionCounts": {
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 48,
+        "2048 candidate failed independent gates.": 21,
+        "Frame centre lies inside an uncertain boundary interval.": 8,
+        "2048 evidence agrees with cycle-eligible 1024 and a within-segment neighbour; recovery is not ground-truth correctness.": 2
+      }
+    },
+    {
+      "id": "sustained-C2-minus12c",
+      "group": "development-baseline",
+      "texture": "clean",
+      "duration": 2,
+      "frames": 79,
+      "standardMs": 351.42470400000457,
+      "adaptiveMs": 8.53345399999671,
+      "standardCoverage": 1,
+      "adaptiveCoverage": 1,
+      "stats": {
+        "recovered": 0,
+        "disagreements": 0,
+        "withheld": 0,
+        "evaluated2048": 0,
+        "evaluated1024": 0
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 79,
+        "usable": 79,
+        "correct": 79,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.0004623275116133369,
+        "acceptedAbsoluteCentsP95": 0.001319634416069719,
+        "byContext": {
+          "mixedWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 79,
+            "correct": 79,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 79,
+        "usable": 79,
+        "correct": 79,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.0004623275116133369,
+        "acceptedAbsoluteCentsP95": 0.001319634416069719,
+        "byContext": {
+          "mixedWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 79,
+            "correct": 79,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 0,
+        "found": 0,
+        "missed": 0,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null,
+        "responses": []
+      },
+      "experimentalResponse": {
+        "total": 0,
+        "found": 0,
+        "missed": 0,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null,
+        "responses": []
+      },
+      "boundaryMetrics": {
+        "predicted": 0,
+        "truth": 0,
+        "matched": 0,
+        "precision": null,
+        "recall": null,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null
+      },
+      "boundaryProposals": 0,
+      "memory": {
+        "heapDeltaBytes": 3135416,
+        "arrayBufferDeltaBytes": 16384,
+        "processPeakRssKiB": 164208,
+        "comparisonJsonBytes": 105438
+      },
+      "decisionCounts": {
+        "Standard estimate retained away from acoustic boundary proposals.": 79
+      }
+    },
+    {
+      "id": "sustained-A3-plus12c",
+      "group": "development-baseline",
+      "texture": "clean",
+      "duration": 2,
+      "frames": 79,
+      "standardMs": 405.69973699999537,
+      "adaptiveMs": 10.007390999999188,
+      "standardCoverage": 1,
+      "adaptiveCoverage": 1,
+      "stats": {
+        "recovered": 0,
+        "disagreements": 0,
+        "withheld": 0,
+        "evaluated2048": 0,
+        "evaluated1024": 0
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 79,
+        "usable": 79,
+        "correct": 79,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.00706654959494599,
+        "acceptedAbsoluteCentsP95": 0.012135624030876483,
+        "byContext": {
+          "mixedWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 79,
+            "correct": 79,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 79,
+        "usable": 79,
+        "correct": 79,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.00706654959494599,
+        "acceptedAbsoluteCentsP95": 0.012135624030876483,
+        "byContext": {
+          "mixedWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 79,
+            "correct": 79,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 0,
+        "found": 0,
+        "missed": 0,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null,
+        "responses": []
+      },
+      "experimentalResponse": {
+        "total": 0,
+        "found": 0,
+        "missed": 0,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null,
+        "responses": []
+      },
+      "boundaryMetrics": {
+        "predicted": 0,
+        "truth": 0,
+        "matched": 0,
+        "precision": null,
+        "recall": null,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null
+      },
+      "boundaryProposals": 0,
+      "memory": {
+        "heapDeltaBytes": 3138624,
+        "arrayBufferDeltaBytes": 16384,
+        "processPeakRssKiB": 165856,
+        "comparisonJsonBytes": 109600
+      },
+      "decisionCounts": {
+        "Standard estimate retained away from acoustic boundary proposals.": 79
+      }
+    },
+    {
+      "id": "sustain-36",
+      "group": "regression",
+      "texture": "clean",
+      "duration": 1,
+      "frames": 36,
+      "standardMs": 151.28119099999458,
+      "adaptiveMs": 4.168855000003532,
+      "standardCoverage": 1,
+      "adaptiveCoverage": 1,
+      "stats": {
+        "recovered": 0,
+        "disagreements": 0,
+        "withheld": 0,
+        "evaluated2048": 0,
+        "evaluated1024": 0
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 36,
+        "usable": 36,
+        "correct": 36,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.0007959132224862323,
+        "acceptedAbsoluteCentsP95": 0.10473087471579812,
+        "byContext": {
+          "mixedWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 36,
+            "correct": 36,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 36,
+        "usable": 36,
+        "correct": 36,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.0007959132224862323,
+        "acceptedAbsoluteCentsP95": 0.10473087471579812,
+        "byContext": {
+          "mixedWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 36,
+            "correct": 36,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 0,
+        "found": 0,
+        "missed": 0,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null,
+        "responses": []
+      },
+      "experimentalResponse": {
+        "total": 0,
+        "found": 0,
+        "missed": 0,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null,
+        "responses": []
+      },
+      "boundaryMetrics": {
+        "predicted": 0,
+        "truth": 0,
+        "matched": 0,
+        "precision": null,
+        "recall": null,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null
+      },
+      "boundaryProposals": 0,
+      "memory": {
+        "heapDeltaBytes": 1489336,
+        "arrayBufferDeltaBytes": 16384,
+        "processPeakRssKiB": 171508,
+        "comparisonJsonBytes": 48438
+      },
+      "decisionCounts": {
+        "Standard estimate retained away from acoustic boundary proposals.": 36
+      }
+    },
+    {
+      "id": "sustain-43",
+      "group": "regression",
+      "texture": "clean",
+      "duration": 1,
+      "frames": 36,
+      "standardMs": 175.30300400000124,
+      "adaptiveMs": 4.3393230000001495,
+      "standardCoverage": 1,
+      "adaptiveCoverage": 1,
+      "stats": {
+        "recovered": 0,
+        "disagreements": 0,
+        "withheld": 0,
+        "evaluated2048": 0,
+        "evaluated1024": 0
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 36,
+        "usable": 36,
+        "correct": 36,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.0008382234501648361,
+        "acceptedAbsoluteCentsP95": 0.07455053737638734,
+        "byContext": {
+          "mixedWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 36,
+            "correct": 36,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 36,
+        "usable": 36,
+        "correct": 36,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.0008382234501648361,
+        "acceptedAbsoluteCentsP95": 0.07455053737638734,
+        "byContext": {
+          "mixedWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 36,
+            "correct": 36,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 0,
+        "found": 0,
+        "missed": 0,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null,
+        "responses": []
+      },
+      "experimentalResponse": {
+        "total": 0,
+        "found": 0,
+        "missed": 0,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null,
+        "responses": []
+      },
+      "boundaryMetrics": {
+        "predicted": 0,
+        "truth": 0,
+        "matched": 0,
+        "precision": null,
+        "recall": null,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null
+      },
+      "boundaryProposals": 0,
+      "memory": {
+        "heapDeltaBytes": 1488928,
+        "arrayBufferDeltaBytes": 16384,
+        "processPeakRssKiB": 175348,
+        "comparisonJsonBytes": 47841
+      },
+      "decisionCounts": {
+        "Standard estimate retained away from acoustic boundary proposals.": 36
+      }
+    },
+    {
+      "id": "sustain-50",
+      "group": "regression",
+      "texture": "clean",
+      "duration": 1,
+      "frames": 36,
+      "standardMs": 162.1004150000008,
+      "adaptiveMs": 5.426665999999386,
+      "standardCoverage": 1,
+      "adaptiveCoverage": 1,
+      "stats": {
+        "recovered": 0,
+        "disagreements": 0,
+        "withheld": 0,
+        "evaluated2048": 0,
+        "evaluated1024": 0
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 36,
+        "usable": 36,
+        "correct": 36,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.006138818320449324,
+        "acceptedAbsoluteCentsP95": 0.04631270668019789,
+        "byContext": {
+          "mixedWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 36,
+            "correct": 36,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 36,
+        "usable": 36,
+        "correct": 36,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.006138818320449324,
+        "acceptedAbsoluteCentsP95": 0.04631270668019789,
+        "byContext": {
+          "mixedWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 36,
+            "correct": 36,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 0,
+        "found": 0,
+        "missed": 0,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null,
+        "responses": []
+      },
+      "experimentalResponse": {
+        "total": 0,
+        "found": 0,
+        "missed": 0,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null,
+        "responses": []
+      },
+      "boundaryMetrics": {
+        "predicted": 0,
+        "truth": 0,
+        "matched": 0,
+        "precision": null,
+        "recall": null,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null
+      },
+      "boundaryProposals": 0,
+      "memory": {
+        "heapDeltaBytes": 1489288,
+        "arrayBufferDeltaBytes": 16384,
+        "processPeakRssKiB": 175348,
+        "comparisonJsonBytes": 48578
+      },
+      "decisionCounts": {
+        "Standard estimate retained away from acoustic boundary proposals.": 36
+      }
+    },
+    {
+      "id": "sustain-57",
+      "group": "regression",
+      "texture": "clean",
+      "duration": 1,
+      "frames": 36,
+      "standardMs": 164.51838500000304,
+      "adaptiveMs": 5.932216000001063,
+      "standardCoverage": 1,
+      "adaptiveCoverage": 1,
+      "stats": {
+        "recovered": 0,
+        "disagreements": 0,
+        "withheld": 0,
+        "evaluated2048": 0,
+        "evaluated1024": 0
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 36,
+        "usable": 36,
+        "correct": 36,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.021819000376010395,
+        "acceptedAbsoluteCentsP95": 0.0416632536789071,
+        "byContext": {
+          "mixedWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 36,
+            "correct": 36,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 36,
+        "usable": 36,
+        "correct": 36,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.021819000376010395,
+        "acceptedAbsoluteCentsP95": 0.0416632536789071,
+        "byContext": {
+          "mixedWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 36,
+            "correct": 36,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 0,
+        "found": 0,
+        "missed": 0,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null,
+        "responses": []
+      },
+      "experimentalResponse": {
+        "total": 0,
+        "found": 0,
+        "missed": 0,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null,
+        "responses": []
+      },
+      "boundaryMetrics": {
+        "predicted": 0,
+        "truth": 0,
+        "matched": 0,
+        "precision": null,
+        "recall": null,
+        "signedMedianMs": null,
+        "absoluteMedianMs": null,
+        "absoluteP95Ms": null
+      },
+      "boundaryProposals": 0,
+      "memory": {
+        "heapDeltaBytes": 1501512,
+        "arrayBufferDeltaBytes": 16384,
+        "processPeakRssKiB": 175348,
+        "comparisonJsonBytes": 50543
+      },
+      "decisionCounts": {
+        "Standard estimate retained away from acoustic boundary proposals.": 36
+      }
+    },
+    {
+      "id": "true-octaves",
+      "group": "regression",
+      "texture": "clean",
+      "duration": 1.6,
+      "frames": 61,
+      "standardMs": 240.4424429999999,
+      "adaptiveMs": 170.8063209999964,
+      "standardCoverage": 0.7868852459016393,
+      "adaptiveCoverage": 0.8360655737704918,
+      "stats": {
+        "recovered": 5,
+        "disagreements": 2,
+        "withheld": 10,
+        "evaluated2048": 61,
+        "evaluated1024": 22
+      },
+      "acceptedStandardPreserved": false,
+      "baselineWithheld": 2,
+      "standard": {
+        "total": 61,
+        "usable": 48,
+        "correct": 42,
+        "wrong": 6,
+        "withheld": 13,
+        "octaveWrong": 6,
+        "previousNoteMatches": 6,
+        "coverage": 0.7868852459016393,
+        "correctFraction": 0.6885245901639344,
+        "acceptedAccuracy": 0.875,
+        "acceptedAbsoluteCentsMedian": 0.37560401195190063,
+        "acceptedAbsoluteCentsP95": 1199.943403700785,
+        "byContext": {
+          "mixedWindow": {
+            "total": 56,
+            "correct": 37,
+            "wrong": 6,
+            "withheld": 13
+          },
+          "singleNoteWindow": {
+            "total": 5,
+            "correct": 5,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 61,
+        "usable": 51,
+        "correct": 47,
+        "wrong": 4,
+        "withheld": 10,
+        "octaveWrong": 4,
+        "previousNoteMatches": 4,
+        "coverage": 0.8360655737704918,
+        "correctFraction": 0.7704918032786885,
+        "acceptedAccuracy": 0.9215686274509803,
+        "acceptedAbsoluteCentsMedian": 0.29347570389898614,
+        "acceptedAbsoluteCentsP95": 1199.513556227771,
+        "byContext": {
+          "mixedWindow": {
+            "total": 56,
+            "correct": 42,
+            "wrong": 4,
+            "withheld": 10
+          },
+          "singleNoteWindow": {
+            "total": 5,
+            "correct": 5,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 7,
+        "found": 7,
+        "missed": 0,
+        "signedMedianMs": 55.41950113378685,
+        "absoluteMedianMs": 55.41950113378685,
+        "absoluteP95Ms": 71.80045351473923,
+        "responses": [
+          {
+            "onset": 0.2,
+            "frequency": 195.99771799087463,
+            "response": 0.25541950113378686,
+            "errorMs": 55.41950113378685
+          },
+          {
+            "onset": 0.4,
+            "frequency": 97.99885899543733,
+            "response": 0.37151927437641724,
+            "errorMs": -28.48072562358278
+          },
+          {
+            "onset": 0.6,
+            "frequency": 195.99771799087463,
+            "response": 0.6733786848072563,
+            "errorMs": 73.37868480725629
+          },
+          {
+            "onset": 0.8,
+            "frequency": 97.99885899543733,
+            "response": 0.7894784580498866,
+            "errorMs": -10.521541950113455
+          },
+          {
+            "onset": 1,
+            "frequency": 195.99771799087463,
+            "response": 1.0681179138321995,
+            "errorMs": 68.11791383219945
+          },
+          {
+            "onset": 1.2,
+            "frequency": 97.99885899543733,
+            "response": 1.207437641723356,
+            "errorMs": 7.437641723356148
+          },
+          {
+            "onset": 1.4,
+            "frequency": 195.99771799087463,
+            "response": 1.4628571428571429,
+            "errorMs": 62.85714285714295
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 7,
+        "found": 7,
+        "missed": 0,
+        "signedMedianMs": 39.637188208616834,
+        "absoluteMedianMs": 39.637188208616834,
+        "absoluteP95Ms": 53.84126984126985,
+        "responses": [
+          {
+            "onset": 0.2,
+            "frequency": 195.99771799087463,
+            "response": 0.25541950113378686,
+            "errorMs": 55.41950113378685
+          },
+          {
+            "onset": 0.4,
+            "frequency": 97.99885899543733,
+            "response": 0.3947392290249433,
+            "errorMs": -5.260770975056728
+          },
+          {
+            "onset": 0.6,
+            "frequency": 195.99771799087463,
+            "response": 0.6501587301587302,
+            "errorMs": 50.15873015873018
+          },
+          {
+            "onset": 0.8,
+            "frequency": 97.99885899543733,
+            "response": 0.7894784580498866,
+            "errorMs": -10.521541950113455
+          },
+          {
+            "onset": 1,
+            "frequency": 195.99771799087463,
+            "response": 1.0448979591836736,
+            "errorMs": 44.897959183673564
+          },
+          {
+            "onset": 1.2,
+            "frequency": 97.99885899543733,
+            "response": 1.207437641723356,
+            "errorMs": 7.437641723356148
+          },
+          {
+            "onset": 1.4,
+            "frequency": 195.99771799087463,
+            "response": 1.4396371882086167,
+            "errorMs": 39.637188208616834
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 7,
+        "truth": 7,
+        "matched": 7,
+        "precision": 1,
+        "recall": 1,
+        "signedMedianMs": 3.718820861678074,
+        "absoluteMedianMs": 6.349206349206327,
+        "absoluteP95Ms": 16.353741496598754
+      },
+      "boundaryProposals": 7,
+      "memory": {
+        "heapDeltaBytes": 6495968,
+        "arrayBufferDeltaBytes": -429992,
+        "processPeakRssKiB": 175348,
+        "comparisonJsonBytes": 197767
+      },
+      "decisionCounts": {
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 46,
+        "Eligible estimates disagree near changing content. Adaptive pitch withheld; inspect the unchanged Standard overlay.": 2,
+        "2048 candidate failed independent gates.": 6,
+        "2048 evidence agrees with cycle-eligible 1024 and a within-segment neighbour; recovery is not ground-truth correctness.": 5,
+        "No cross-resolution agreement or very strong 2048 evidence.": 1,
+        "Frame centre lies inside an uncertain boundary interval.": 1
+      }
+    },
+    {
+      "id": "repeated-notes",
+      "group": "regression",
+      "texture": "clean",
+      "duration": 0.9999092970521541,
+      "frames": 36,
+      "standardMs": 170.97470199999952,
+      "adaptiveMs": 103.32319399999687,
+      "standardCoverage": 0.3888888888888889,
+      "adaptiveCoverage": 0.5,
+      "stats": {
+        "recovered": 4,
+        "disagreements": 0,
+        "withheld": 18,
+        "evaluated2048": 36,
+        "evaluated1024": 26
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 36,
+        "usable": 14,
+        "correct": 14,
+        "wrong": 0,
+        "withheld": 22,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 0.3888888888888889,
+        "correctFraction": 0.3888888888888889,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.3421490167550031,
+        "acceptedAbsoluteCentsP95": 2.3636246211864087,
+        "byContext": {
+          "mixedWindow": {
+            "total": 36,
+            "correct": 14,
+            "wrong": 0,
+            "withheld": 22
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 36,
+        "usable": 18,
+        "correct": 18,
+        "wrong": 0,
+        "withheld": 18,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 0.5,
+        "correctFraction": 0.5,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.3421490167550031,
+        "acceptedAbsoluteCentsP95": 2.311660945650457,
+        "byContext": {
+          "mixedWindow": {
+            "total": 36,
+            "correct": 18,
+            "wrong": 0,
+            "withheld": 18
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 7,
+        "found": 7,
+        "missed": 0,
+        "signedMedianMs": -49.88662131519273,
+        "absoluteMedianMs": 49.88662131519273,
+        "absoluteP95Ms": 61.18820861678001,
+        "responses": [
+          {
+            "onset": 0.12498866213151927,
+            "frequency": 146.8323839587038,
+            "response": 0.16253968253968254,
+            "errorMs": 37.55102040816327
+          },
+          {
+            "onset": 0.24997732426303854,
+            "frequency": 146.8323839587038,
+            "response": 0.2089795918367347,
+            "errorMs": -40.997732426303834
+          },
+          {
+            "onset": 0.3749659863945578,
+            "frequency": 146.8323839587038,
+            "response": 0.3250793650793651,
+            "errorMs": -49.88662131519273
+          },
+          {
+            "onset": 0.4999546485260771,
+            "frequency": 146.8323839587038,
+            "response": 0.44117913832199546,
+            "errorMs": -58.77551020408161
+          },
+          {
+            "onset": 0.6249433106575963,
+            "frequency": 146.8323839587038,
+            "response": 0.6733786848072563,
+            "errorMs": 48.43537414965993
+          },
+          {
+            "onset": 0.7499319727891156,
+            "frequency": 146.8323839587038,
+            "response": 0.6965986394557823,
+            "errorMs": -53.33333333333334
+          },
+          {
+            "onset": 0.8749206349206349,
+            "frequency": 146.8323839587038,
+            "response": 0.8126984126984127,
+            "errorMs": -62.22222222222218
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 7,
+        "found": 7,
+        "missed": 0,
+        "signedMedianMs": -49.88662131519273,
+        "absoluteMedianMs": 49.88662131519273,
+        "absoluteP95Ms": 61.18820861678001,
+        "responses": [
+          {
+            "onset": 0.12498866213151927,
+            "frequency": 146.8323839587038,
+            "response": 0.16253968253968254,
+            "errorMs": 37.55102040816327
+          },
+          {
+            "onset": 0.24997732426303854,
+            "frequency": 146.8323839587038,
+            "response": 0.2089795918367347,
+            "errorMs": -40.997732426303834
+          },
+          {
+            "onset": 0.3749659863945578,
+            "frequency": 146.8323839587038,
+            "response": 0.3250793650793651,
+            "errorMs": -49.88662131519273
+          },
+          {
+            "onset": 0.4999546485260771,
+            "frequency": 146.8323839587038,
+            "response": 0.44117913832199546,
+            "errorMs": -58.77551020408161
+          },
+          {
+            "onset": 0.6249433106575963,
+            "frequency": 146.8323839587038,
+            "response": 0.5804988662131519,
+            "errorMs": -44.4444444444444
+          },
+          {
+            "onset": 0.7499319727891156,
+            "frequency": 146.8323839587038,
+            "response": 0.6965986394557823,
+            "errorMs": -53.33333333333334
+          },
+          {
+            "onset": 0.8749206349206349,
+            "frequency": 146.8323839587038,
+            "response": 0.8126984126984127,
+            "errorMs": -62.22222222222218
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 7,
+        "truth": 7,
+        "matched": 7,
+        "precision": 1,
+        "recall": 1,
+        "signedMedianMs": 13.605442176870763,
+        "absoluteMedianMs": 13.605442176870763,
+        "absoluteP95Ms": 16.834467120181422
+      },
+      "boundaryProposals": 7,
+      "memory": {
+        "heapDeltaBytes": -4252128,
+        "arrayBufferDeltaBytes": -491888,
+        "processPeakRssKiB": 175348,
+        "comparisonJsonBytes": 137355
+      },
+      "decisionCounts": {
+        "No independently eligible neighbouring frame within the proposed segment.": 2,
+        "2048 candidate failed independent gates.": 10,
+        "Frame centre lies inside an uncertain boundary interval.": 6,
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 14,
+        "2048 evidence agrees with cycle-eligible 1024 and a within-segment neighbour; recovery is not ground-truth correctness.": 4
+      }
+    },
+    {
+      "id": "vibrato",
+      "group": "regression",
+      "texture": "continuous-motion",
+      "duration": 2,
+      "frames": 79,
+      "standardMs": 325.12099399999715,
+      "adaptiveMs": 236.53481000000465,
+      "standardCoverage": 1,
+      "adaptiveCoverage": 1,
+      "stats": {
+        "recovered": 0,
+        "disagreements": 0,
+        "withheld": 0,
+        "evaluated2048": 78,
+        "evaluated1024": 78
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 79,
+        "usable": 79,
+        "correct": 79,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 11.4516574396291,
+        "acceptedAbsoluteCentsP95": 21.697458071066347,
+        "byContext": {
+          "mixedWindow": {
+            "total": 79,
+            "correct": 79,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 79,
+        "usable": 79,
+        "correct": 79,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 11.4516574396291,
+        "acceptedAbsoluteCentsP95": 21.697458071066347,
+        "byContext": {
+          "mixedWindow": {
+            "total": 79,
+            "correct": 79,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": null,
+      "experimentalResponse": null,
+      "boundaryMetrics": null,
+      "boundaryProposals": 10,
+      "memory": {
+        "heapDeltaBytes": 14525344,
+        "arrayBufferDeltaBytes": 538816,
+        "processPeakRssKiB": 176776,
+        "comparisonJsonBytes": 311329
+      },
+      "decisionCounts": {
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 78,
+        "Standard estimate retained away from acoustic boundary proposals.": 1
+      }
+    },
+    {
+      "id": "glissando",
+      "group": "regression",
+      "texture": "continuous-motion",
+      "duration": 2,
+      "frames": 79,
+      "standardMs": 599.7658020000017,
+      "adaptiveMs": 489.0477350000001,
+      "standardCoverage": 1,
+      "adaptiveCoverage": 1,
+      "stats": {
+        "recovered": 0,
+        "disagreements": 0,
+        "withheld": 0,
+        "evaluated2048": 74,
+        "evaluated1024": 32
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 79,
+        "usable": 79,
+        "correct": 79,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.45925190543324795,
+        "acceptedAbsoluteCentsP95": 1.196665174978609,
+        "byContext": {
+          "mixedWindow": {
+            "total": 79,
+            "correct": 79,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 79,
+        "usable": 79,
+        "correct": 79,
+        "wrong": 0,
+        "withheld": 0,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 1,
+        "correctFraction": 1,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 0.45925190543324795,
+        "acceptedAbsoluteCentsP95": 1.196665174978609,
+        "byContext": {
+          "mixedWindow": {
+            "total": 79,
+            "correct": 79,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": null,
+      "experimentalResponse": null,
+      "boundaryMetrics": null,
+      "boundaryProposals": 19,
+      "memory": {
+        "heapDeltaBytes": -29646312,
+        "arrayBufferDeltaBytes": -1827400,
+        "processPeakRssKiB": 225444,
+        "comparisonJsonBytes": 244585
+      },
+      "decisionCounts": {
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 74,
+        "Standard estimate retained away from acoustic boundary proposals.": 5
+      }
+    },
+    {
+      "id": "silence",
+      "group": "regression",
+      "texture": "unpitched",
+      "duration": 1,
+      "frames": 36,
+      "standardMs": 74.06087999999727,
+      "adaptiveMs": 26.75906400000531,
+      "standardCoverage": 0,
+      "adaptiveCoverage": 0,
+      "stats": {
+        "recovered": 0,
+        "disagreements": 0,
+        "withheld": 36,
+        "evaluated2048": 0,
+        "evaluated1024": 0
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": null,
+      "experimental": null,
+      "standardResponse": null,
+      "experimentalResponse": null,
+      "boundaryMetrics": null,
+      "boundaryProposals": 0,
+      "memory": {
+        "heapDeltaBytes": 499416,
+        "arrayBufferDeltaBytes": 16384,
+        "processPeakRssKiB": 232356,
+        "comparisonJsonBytes": 18102
+      },
+      "decisionCounts": {
+        "Standard quiet-frame gate retained.": 36
+      }
+    },
+    {
+      "id": "noise",
+      "group": "regression",
+      "texture": "unpitched",
+      "duration": 1,
+      "frames": 36,
+      "standardMs": 700.6888370000015,
+      "adaptiveMs": 169.24703600000066,
+      "standardCoverage": 0,
+      "adaptiveCoverage": 0,
+      "stats": {
+        "recovered": 0,
+        "disagreements": 0,
+        "withheld": 36,
+        "evaluated2048": 36,
+        "evaluated1024": 0
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": null,
+      "experimental": null,
+      "standardResponse": null,
+      "experimentalResponse": null,
+      "boundaryMetrics": null,
+      "boundaryProposals": 13,
+      "memory": {
+        "heapDeltaBytes": 23584128,
+        "arrayBufferDeltaBytes": 943152,
+        "processPeakRssKiB": 249524,
+        "comparisonJsonBytes": 43402
+      },
+      "decisionCounts": {
+        "2048 candidate failed independent gates.": 36
+      }
+    },
+    {
+      "id": "held-out-701",
+      "group": "held-out",
+      "texture": "legato",
+      "duration": 2.4300226757369616,
+      "frames": 97,
+      "standardMs": 743.7315919999965,
+      "adaptiveMs": 805.8834819999975,
+      "standardCoverage": 0.7938144329896907,
+      "adaptiveCoverage": 0.7938144329896907,
+      "stats": {
+        "recovered": 1,
+        "disagreements": 1,
+        "withheld": 20,
+        "evaluated2048": 97,
+        "evaluated1024": 30
+      },
+      "acceptedStandardPreserved": false,
+      "baselineWithheld": 1,
+      "standard": {
+        "total": 97,
+        "usable": 77,
+        "correct": 68,
+        "wrong": 9,
+        "withheld": 20,
+        "octaveWrong": 3,
+        "previousNoteMatches": 1,
+        "coverage": 0.7938144329896907,
+        "correctFraction": 0.7010309278350515,
+        "acceptedAccuracy": 0.8831168831168831,
+        "acceptedAbsoluteCentsMedian": 0.40846630137966256,
+        "acceptedAbsoluteCentsP95": 1899.6793222253905,
+        "byContext": {
+          "mixedWindow": {
+            "total": 97,
+            "correct": 68,
+            "wrong": 9,
+            "withheld": 20
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 97,
+        "usable": 77,
+        "correct": 69,
+        "wrong": 8,
+        "withheld": 20,
+        "octaveWrong": 2,
+        "previousNoteMatches": 1,
+        "coverage": 0.7938144329896907,
+        "correctFraction": 0.711340206185567,
+        "acceptedAccuracy": 0.8961038961038961,
+        "acceptedAbsoluteCentsMedian": 0.39827277935804567,
+        "acceptedAbsoluteCentsP95": 1899.6793222253905,
+        "byContext": {
+          "mixedWindow": {
+            "total": 97,
+            "correct": 69,
+            "wrong": 8,
+            "withheld": 20
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 17,
+        "found": 17,
+        "missed": 0,
+        "signedMedianMs": 26.995464852607842,
+        "absoluteMedianMs": 28.616780045351398,
+        "absoluteP95Ms": 59.61678004535145,
+        "responses": [
+          {
+            "onset": 0.135,
+            "frequency": 233.39535468734343,
+            "response": 0.18575963718820862,
+            "errorMs": 50.759637188208615
+          },
+          {
+            "onset": 0.27,
+            "frequency": 175.15379889915616,
+            "response": 0.3250793650793651,
+            "errorMs": 55.07936507936506
+          },
+          {
+            "onset": 0.405,
+            "frequency": 156.21769592765673,
+            "response": 0.44117913832199546,
+            "errorMs": 36.17913832199543
+          },
+          {
+            "onset": 0.54,
+            "frequency": 87.66401834806993,
+            "response": 0.5572789115646258,
+            "errorMs": 17.278911564625798
+          },
+          {
+            "onset": 0.675,
+            "frequency": 262.5062551144953,
+            "response": 0.7198185941043084,
+            "errorMs": 44.81859410430833
+          },
+          {
+            "onset": 0.81,
+            "frequency": 130.22363806877564,
+            "response": 0.7894784580498866,
+            "errorMs": -20.521541950113466
+          },
+          {
+            "onset": 0.9450000000000001,
+            "frequency": 77.55519024466018,
+            "response": 0.9752380952380952,
+            "errorMs": 30.238095238095177
+          },
+          {
+            "onset": 1.08,
+            "frequency": 78.20259665017164,
+            "response": 1.0216780045351475,
+            "errorMs": -58.32199546485262
+          },
+          {
+            "onset": 1.215,
+            "frequency": 195.49562669692077,
+            "response": 1.230657596371882,
+            "errorMs": 15.65759637188191
+          },
+          {
+            "onset": 1.35,
+            "frequency": 309.63792686169126,
+            "response": 1.3699773242630386,
+            "errorMs": 19.977324263038554
+          },
+          {
+            "onset": 1.485,
+            "frequency": 103.8447346481187,
+            "response": 1.4628571428571429,
+            "errorMs": -22.142857142857242
+          },
+          {
+            "onset": 1.62,
+            "frequency": 117.18221650310507,
+            "response": 1.6486167800453515,
+            "errorMs": 28.616780045351398
+          },
+          {
+            "onset": 1.7550000000000001,
+            "frequency": 82.24704789136008,
+            "response": 1.787936507936508,
+            "errorMs": 32.93650793650782
+          },
+          {
+            "onset": 1.8900000000000001,
+            "frequency": 92.89423178580545,
+            "response": 1.9040362811791383,
+            "errorMs": 14.036281179138133
+          },
+          {
+            "onset": 2.0250000000000004,
+            "frequency": 104.14197772524224,
+            "response": 2.089795918367347,
+            "errorMs": 64.79591836734677
+          },
+          {
+            "onset": 2.16,
+            "frequency": 184.90738319778234,
+            "response": 2.182675736961451,
+            "errorMs": 22.675736961450976
+          },
+          {
+            "onset": 2.295,
+            "frequency": 164.76119771309683,
+            "response": 2.3219954648526078,
+            "errorMs": 26.995464852607842
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 17,
+        "found": 17,
+        "missed": 0,
+        "signedMedianMs": 26.995464852607842,
+        "absoluteMedianMs": 28.616780045351398,
+        "absoluteP95Ms": 59.61678004535145,
+        "responses": [
+          {
+            "onset": 0.135,
+            "frequency": 233.39535468734343,
+            "response": 0.18575963718820862,
+            "errorMs": 50.759637188208615
+          },
+          {
+            "onset": 0.27,
+            "frequency": 175.15379889915616,
+            "response": 0.3250793650793651,
+            "errorMs": 55.07936507936506
+          },
+          {
+            "onset": 0.405,
+            "frequency": 156.21769592765673,
+            "response": 0.44117913832199546,
+            "errorMs": 36.17913832199543
+          },
+          {
+            "onset": 0.54,
+            "frequency": 87.66401834806993,
+            "response": 0.5572789115646258,
+            "errorMs": 17.278911564625798
+          },
+          {
+            "onset": 0.675,
+            "frequency": 262.5062551144953,
+            "response": 0.7198185941043084,
+            "errorMs": 44.81859410430833
+          },
+          {
+            "onset": 0.81,
+            "frequency": 130.22363806877564,
+            "response": 0.7894784580498866,
+            "errorMs": -20.521541950113466
+          },
+          {
+            "onset": 0.9450000000000001,
+            "frequency": 77.55519024466018,
+            "response": 0.9752380952380952,
+            "errorMs": 30.238095238095177
+          },
+          {
+            "onset": 1.08,
+            "frequency": 78.20259665017164,
+            "response": 1.0216780045351475,
+            "errorMs": -58.32199546485262
+          },
+          {
+            "onset": 1.215,
+            "frequency": 195.49562669692077,
+            "response": 1.230657596371882,
+            "errorMs": 15.65759637188191
+          },
+          {
+            "onset": 1.35,
+            "frequency": 309.63792686169126,
+            "response": 1.3699773242630386,
+            "errorMs": 19.977324263038554
+          },
+          {
+            "onset": 1.485,
+            "frequency": 103.8447346481187,
+            "response": 1.4628571428571429,
+            "errorMs": -22.142857142857242
+          },
+          {
+            "onset": 1.62,
+            "frequency": 117.18221650310507,
+            "response": 1.6486167800453515,
+            "errorMs": 28.616780045351398
+          },
+          {
+            "onset": 1.7550000000000001,
+            "frequency": 82.24704789136008,
+            "response": 1.787936507936508,
+            "errorMs": 32.93650793650782
+          },
+          {
+            "onset": 1.8900000000000001,
+            "frequency": 92.89423178580545,
+            "response": 1.9040362811791383,
+            "errorMs": 14.036281179138133
+          },
+          {
+            "onset": 2.0250000000000004,
+            "frequency": 104.14197772524224,
+            "response": 2.089795918367347,
+            "errorMs": 64.79591836734677
+          },
+          {
+            "onset": 2.16,
+            "frequency": 184.90738319778234,
+            "response": 2.182675736961451,
+            "errorMs": 22.675736961450976
+          },
+          {
+            "onset": 2.295,
+            "frequency": 164.76119771309683,
+            "response": 2.3219954648526078,
+            "errorMs": 26.995464852607842
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 17,
+        "truth": 17,
+        "matched": 17,
+        "precision": 1,
+        "recall": 1,
+        "signedMedianMs": 15.385487528344566,
+        "absoluteMedianMs": 15.385487528344566,
+        "absoluteP95Ms": 23.21768707482983
+      },
+      "boundaryProposals": 17,
+      "memory": {
+        "heapDeltaBytes": 25145176,
+        "arrayBufferDeltaBytes": -71256,
+        "processPeakRssKiB": 254408,
+        "comparisonJsonBytes": 317674
+      },
+      "decisionCounts": {
+        "Eligible estimates disagree near changing content. Adaptive pitch withheld; inspect the unchanged Standard overlay.": 1,
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 76,
+        "Frame centre lies inside an uncertain boundary interval.": 2,
+        "2048 candidate failed independent gates.": 16,
+        "2048 evidence agrees with cycle-eligible 1024 and a within-segment neighbour; recovery is not ground-truth correctness.": 1,
+        "No cross-resolution agreement or very strong 2048 evidence.": 1
+      }
+    },
+    {
+      "id": "held-out-809",
+      "group": "held-out",
+      "texture": "weak-fundamental",
+      "duration": 1.5300226757369615,
+      "frames": 58,
+      "standardMs": 450.10418899999786,
+      "adaptiveMs": 829.4453470000008,
+      "standardCoverage": 0.2413793103448276,
+      "adaptiveCoverage": 0.3793103448275862,
+      "stats": {
+        "recovered": 9,
+        "disagreements": 1,
+        "withheld": 36,
+        "evaluated2048": 58,
+        "evaluated1024": 26
+      },
+      "acceptedStandardPreserved": false,
+      "baselineWithheld": 1,
+      "standard": {
+        "total": 58,
+        "usable": 14,
+        "correct": 8,
+        "wrong": 6,
+        "withheld": 44,
+        "octaveWrong": 1,
+        "previousNoteMatches": 0,
+        "coverage": 0.2413793103448276,
+        "correctFraction": 0.13793103448275862,
+        "acceptedAccuracy": 0.5714285714285714,
+        "acceptedAbsoluteCentsMedian": 1.0066184606995332,
+        "acceptedAbsoluteCentsP95": 2534.51739529299,
+        "byContext": {
+          "mixedWindow": {
+            "total": 58,
+            "correct": 8,
+            "wrong": 6,
+            "withheld": 44
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 58,
+        "usable": 22,
+        "correct": 17,
+        "wrong": 5,
+        "withheld": 36,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 0.3793103448275862,
+        "correctFraction": 0.29310344827586204,
+        "acceptedAccuracy": 0.7727272727272727,
+        "acceptedAbsoluteCentsMedian": 0.18721472383154808,
+        "acceptedAbsoluteCentsP95": 2372.1177464198818,
+        "byContext": {
+          "mixedWindow": {
+            "total": 58,
+            "correct": 17,
+            "wrong": 5,
+            "withheld": 36
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 17,
+        "found": 6,
+        "missed": 11,
+        "signedMedianMs": 35.668934240362745,
+        "absoluteMedianMs": 35.668934240362745,
+        "absoluteP95Ms": 40.55272108843516,
+        "responses": [
+          {
+            "onset": 0.085,
+            "frequency": 220.2901984900968,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.17,
+            "frequency": 164.8516704999804,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.255,
+            "frequency": 78.05880157771017,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.34,
+            "frequency": 77.38525846393138,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.42500000000000004,
+            "frequency": 262.38411358222794,
+            "response": 0.46439909297052157,
+            "errorMs": 39.39909297052152
+          },
+          {
+            "onset": 0.51,
+            "frequency": 278.48437863356827,
+            "response": 0.5340589569160997,
+            "errorMs": 24.058956916099717
+          },
+          {
+            "onset": 0.5950000000000001,
+            "frequency": 207.85824510498787,
+            "response": 0.626938775510204,
+            "errorMs": 31.938775510203964
+          },
+          {
+            "onset": 0.68,
+            "frequency": 174.83358042243708,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.765,
+            "frequency": 292.14305191627847,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.8500000000000001,
+            "frequency": 175.36256047836295,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.935,
+            "frequency": 184.48519167790505,
+            "response": 0.9752380952380952,
+            "errorMs": 40.238095238095184
+          },
+          {
+            "onset": 1.02,
+            "frequency": 311.81282477333514,
+            "response": 1.0448979591836736,
+            "errorMs": 24.897959183673546
+          },
+          {
+            "onset": 1.105,
+            "frequency": 246.019235765625,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.1900000000000002,
+            "frequency": 185.0809247285862,
+            "response": 1.230657596371882,
+            "errorMs": 40.65759637188182
+          },
+          {
+            "onset": 1.2750000000000001,
+            "frequency": 207.69097616389172,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.36,
+            "frequency": 197.01551497462222,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.445,
+            "frequency": 146.20488031116582,
+            "response": null,
+            "errorMs": null
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 17,
+        "found": 12,
+        "missed": 5,
+        "signedMedianMs": 36.08843537414956,
+        "absoluteMedianMs": 36.08843537414956,
+        "absoluteP95Ms": 51.139455782312865,
+        "responses": [
+          {
+            "onset": 0.085,
+            "frequency": 220.2901984900968,
+            "response": 0.13931972789115646,
+            "errorMs": 54.319727891156454
+          },
+          {
+            "onset": 0.17,
+            "frequency": 164.8516704999804,
+            "response": 0.2089795918367347,
+            "errorMs": 38.97959183673469
+          },
+          {
+            "onset": 0.255,
+            "frequency": 78.05880157771017,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.34,
+            "frequency": 77.38525846393138,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.42500000000000004,
+            "frequency": 262.38411358222794,
+            "response": 0.46439909297052157,
+            "errorMs": 39.39909297052152
+          },
+          {
+            "onset": 0.51,
+            "frequency": 278.48437863356827,
+            "response": 0.5340589569160997,
+            "errorMs": 24.058956916099717
+          },
+          {
+            "onset": 0.5950000000000001,
+            "frequency": 207.85824510498787,
+            "response": 0.626938775510204,
+            "errorMs": 31.938775510203964
+          },
+          {
+            "onset": 0.68,
+            "frequency": 174.83358042243708,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.765,
+            "frequency": 292.14305191627847,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.8500000000000001,
+            "frequency": 175.36256047836295,
+            "response": 0.8823582766439909,
+            "errorMs": 32.35827664399083
+          },
+          {
+            "onset": 0.935,
+            "frequency": 184.48519167790505,
+            "response": 0.9752380952380952,
+            "errorMs": 40.238095238095184
+          },
+          {
+            "onset": 1.02,
+            "frequency": 311.81282477333514,
+            "response": 1.0448979591836736,
+            "errorMs": 24.897959183673546
+          },
+          {
+            "onset": 1.105,
+            "frequency": 246.019235765625,
+            "response": 1.1377777777777778,
+            "errorMs": 32.77777777777779
+          },
+          {
+            "onset": 1.1900000000000002,
+            "frequency": 185.0809247285862,
+            "response": 1.230657596371882,
+            "errorMs": 40.65759637188182
+          },
+          {
+            "onset": 1.2750000000000001,
+            "frequency": 207.69097616389172,
+            "response": 1.3235374149659864,
+            "errorMs": 48.537414965986294
+          },
+          {
+            "onset": 1.36,
+            "frequency": 197.01551497462222,
+            "response": 1.3931972789115645,
+            "errorMs": 33.19727891156443
+          },
+          {
+            "onset": 1.445,
+            "frequency": 146.20488031116582,
+            "response": null,
+            "errorMs": null
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 17,
+        "truth": 17,
+        "matched": 17,
+        "precision": 1,
+        "recall": 1,
+        "signedMedianMs": 5.82766439909288,
+        "absoluteMedianMs": 5.82766439909288,
+        "absoluteP95Ms": 24.56235827664397
+      },
+      "boundaryProposals": 17,
+      "memory": {
+        "heapDeltaBytes": -23972168,
+        "arrayBufferDeltaBytes": -742464,
+        "processPeakRssKiB": 255572,
+        "comparisonJsonBytes": 207542
+      },
+      "decisionCounts": {
+        "2048 candidate failed independent gates.": 24,
+        "Frame centre lies inside an uncertain boundary interval.": 7,
+        "2048 evidence agrees with cycle-eligible 1024 and a within-segment neighbour; recovery is not ground-truth correctness.": 9,
+        "No independently eligible neighbouring frame within the proposed segment.": 2,
+        "No cross-resolution agreement or very strong 2048 evidence.": 2,
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 13,
+        "Eligible estimates disagree near changing content. Adaptive pitch withheld; inspect the unchanged Standard overlay.": 1
+      }
+    },
+    {
+      "id": "held-out-997",
+      "group": "held-out",
+      "texture": "overlap",
+      "duration": 2.4300226757369616,
+      "frames": 97,
+      "standardMs": 1746.2869260000007,
+      "adaptiveMs": 1736.9139209999994,
+      "standardCoverage": 0.4948453608247423,
+      "adaptiveCoverage": 0.4845360824742268,
+      "stats": {
+        "recovered": 0,
+        "disagreements": 1,
+        "withheld": 50,
+        "evaluated2048": 97,
+        "evaluated1024": 17
+      },
+      "acceptedStandardPreserved": false,
+      "baselineWithheld": 1,
+      "standard": {
+        "total": 97,
+        "usable": 48,
+        "correct": 42,
+        "wrong": 6,
+        "withheld": 49,
+        "octaveWrong": 6,
+        "previousNoteMatches": 6,
+        "coverage": 0.4948453608247423,
+        "correctFraction": 0.4329896907216495,
+        "acceptedAccuracy": 0.875,
+        "acceptedAbsoluteCentsMedian": 0.3162682767214354,
+        "acceptedAbsoluteCentsP95": 1200.1012374589618,
+        "byContext": {
+          "mixedWindow": {
+            "total": 97,
+            "correct": 42,
+            "wrong": 6,
+            "withheld": 49
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 97,
+        "usable": 47,
+        "correct": 41,
+        "wrong": 6,
+        "withheld": 50,
+        "octaveWrong": 6,
+        "previousNoteMatches": 6,
+        "coverage": 0.4845360824742268,
+        "correctFraction": 0.422680412371134,
+        "acceptedAccuracy": 0.8723404255319149,
+        "acceptedAbsoluteCentsMedian": 0.33782979247207706,
+        "acceptedAbsoluteCentsP95": 1200.1089649431851,
+        "byContext": {
+          "mixedWindow": {
+            "total": 97,
+            "correct": 41,
+            "wrong": 6,
+            "withheld": 50
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 17,
+        "found": 14,
+        "missed": 3,
+        "signedMedianMs": 65.60657596371865,
+        "absoluteMedianMs": 65.60657596371865,
+        "absoluteP95Ms": 75.62414965986393,
+        "responses": [
+          {
+            "onset": 0.135,
+            "frequency": 146.9565760907898,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.27,
+            "frequency": 260.38792659474115,
+            "response": 0.3250793650793651,
+            "errorMs": 55.07936507936506
+          },
+          {
+            "onset": 0.405,
+            "frequency": 81.97442784511824,
+            "response": 0.46439909297052157,
+            "errorMs": 59.39909297052154
+          },
+          {
+            "onset": 0.54,
+            "frequency": 208.51280020086227,
+            "response": 0.603718820861678,
+            "errorMs": 63.71882086167802
+          },
+          {
+            "onset": 0.675,
+            "frequency": 92.49358222586527,
+            "response": 0.7430385487528345,
+            "errorMs": 68.03854875283444
+          },
+          {
+            "onset": 0.81,
+            "frequency": 165.4763400404033,
+            "response": 0.8823582766439909,
+            "errorMs": 72.35827664399086
+          },
+          {
+            "onset": 0.9450000000000001,
+            "frequency": 184.38206696049838,
+            "response": 1.0216780045351475,
+            "errorMs": 76.6780045351474
+          },
+          {
+            "onset": 1.08,
+            "frequency": 130.76199445804681,
+            "response": 1.1377777777777778,
+            "errorMs": 57.77777777777771
+          },
+          {
+            "onset": 1.215,
+            "frequency": 78.02028960024134,
+            "response": 1.2770975056689342,
+            "errorMs": 62.097505668934126
+          },
+          {
+            "onset": 1.35,
+            "frequency": 165.16077862202744,
+            "response": 1.4164172335600906,
+            "errorMs": 66.41723356009055
+          },
+          {
+            "onset": 1.485,
+            "frequency": 185.5139733637191,
+            "response": 1.555736961451247,
+            "errorMs": 70.73696145124697
+          },
+          {
+            "onset": 1.62,
+            "frequency": 78.0076944333691,
+            "response": 1.6950566893424037,
+            "errorMs": 75.05668934240362
+          },
+          {
+            "onset": 1.7550000000000001,
+            "frequency": 155.35909239625627,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.8900000000000001,
+            "frequency": 261.90938710085305,
+            "response": 1.9504761904761905,
+            "errorMs": 60.476190476190354
+          },
+          {
+            "onset": 2.0250000000000004,
+            "frequency": 92.69018213657436,
+            "response": 2.089795918367347,
+            "errorMs": 64.79591836734677
+          },
+          {
+            "onset": 2.16,
+            "frequency": 234.2970730719471,
+            "response": 2.2291156462585033,
+            "errorMs": 69.11564625850319
+          },
+          {
+            "onset": 2.295,
+            "frequency": 92.61204942762613,
+            "response": null,
+            "errorMs": null
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 17,
+        "found": 14,
+        "missed": 3,
+        "signedMedianMs": 66.41723356009061,
+        "absoluteMedianMs": 66.41723356009061,
+        "absoluteP95Ms": 81.21371882086163,
+        "responses": [
+          {
+            "onset": 0.135,
+            "frequency": 146.9565760907898,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.27,
+            "frequency": 260.38792659474115,
+            "response": 0.3250793650793651,
+            "errorMs": 55.07936507936506
+          },
+          {
+            "onset": 0.405,
+            "frequency": 81.97442784511824,
+            "response": 0.46439909297052157,
+            "errorMs": 59.39909297052154
+          },
+          {
+            "onset": 0.54,
+            "frequency": 208.51280020086227,
+            "response": 0.603718820861678,
+            "errorMs": 63.71882086167802
+          },
+          {
+            "onset": 0.675,
+            "frequency": 92.49358222586527,
+            "response": 0.7430385487528345,
+            "errorMs": 68.03854875283444
+          },
+          {
+            "onset": 0.81,
+            "frequency": 165.4763400404033,
+            "response": 0.8823582766439909,
+            "errorMs": 72.35827664399086
+          },
+          {
+            "onset": 0.9450000000000001,
+            "frequency": 184.38206696049838,
+            "response": 1.0216780045351475,
+            "errorMs": 76.6780045351474
+          },
+          {
+            "onset": 1.08,
+            "frequency": 130.76199445804681,
+            "response": 1.1377777777777778,
+            "errorMs": 57.77777777777771
+          },
+          {
+            "onset": 1.215,
+            "frequency": 78.02028960024134,
+            "response": 1.2770975056689342,
+            "errorMs": 62.097505668934126
+          },
+          {
+            "onset": 1.35,
+            "frequency": 165.16077862202744,
+            "response": 1.4396371882086167,
+            "errorMs": 89.63718820861666
+          },
+          {
+            "onset": 1.485,
+            "frequency": 185.5139733637191,
+            "response": 1.555736961451247,
+            "errorMs": 70.73696145124697
+          },
+          {
+            "onset": 1.62,
+            "frequency": 78.0076944333691,
+            "response": 1.6950566893424037,
+            "errorMs": 75.05668934240362
+          },
+          {
+            "onset": 1.7550000000000001,
+            "frequency": 155.35909239625627,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.8900000000000001,
+            "frequency": 261.90938710085305,
+            "response": 1.9504761904761905,
+            "errorMs": 60.476190476190354
+          },
+          {
+            "onset": 2.0250000000000004,
+            "frequency": 92.69018213657436,
+            "response": 2.089795918367347,
+            "errorMs": 64.79591836734677
+          },
+          {
+            "onset": 2.16,
+            "frequency": 234.2970730719471,
+            "response": 2.2291156462585033,
+            "errorMs": 69.11564625850319
+          },
+          {
+            "onset": 2.295,
+            "frequency": 92.61204942762613,
+            "response": null,
+            "errorMs": null
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 23,
+        "truth": 17,
+        "matched": 17,
+        "precision": 0.7391304347826086,
+        "recall": 1,
+        "signedMedianMs": -0.27210884353756626,
+        "absoluteMedianMs": 3.242630385487555,
+        "absoluteP95Ms": 14.634920634920675
+      },
+      "boundaryProposals": 23,
+      "memory": {
+        "heapDeltaBytes": -67226040,
+        "arrayBufferDeltaBytes": -12322544,
+        "processPeakRssKiB": 255572,
+        "comparisonJsonBytes": 307220
+      },
+      "decisionCounts": {
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 47,
+        "2048 candidate failed independent gates.": 45,
+        "No cross-resolution agreement or very strong 2048 evidence.": 3,
+        "Frame centre lies inside an uncertain boundary interval.": 1,
+        "Eligible estimates disagree near changing content. Adaptive pitch withheld; inspect the unchanged Standard overlay.": 1
+      }
+    },
+    {
+      "id": "held-out-1237",
+      "group": "held-out",
+      "texture": "overlap",
+      "duration": 1.5300226757369615,
+      "frames": 58,
+      "standardMs": 2003.5711190000002,
+      "adaptiveMs": 358.39774000000034,
+      "standardCoverage": 0.22413793103448276,
+      "adaptiveCoverage": 0.22413793103448276,
+      "stats": {
+        "recovered": 0,
+        "disagreements": 0,
+        "withheld": 45,
+        "evaluated2048": 58,
+        "evaluated1024": 1
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": {
+        "total": 58,
+        "usable": 13,
+        "correct": 3,
+        "wrong": 10,
+        "withheld": 45,
+        "octaveWrong": 3,
+        "previousNoteMatches": 3,
+        "coverage": 0.22413793103448276,
+        "correctFraction": 0.05172413793103448,
+        "acceptedAccuracy": 0.23076923076923078,
+        "acceptedAbsoluteCentsMedian": 1898.6904583899393,
+        "acceptedAbsoluteCentsP95": 2398.4794549087705,
+        "byContext": {
+          "mixedWindow": {
+            "total": 58,
+            "correct": 3,
+            "wrong": 10,
+            "withheld": 45
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "experimental": {
+        "total": 58,
+        "usable": 13,
+        "correct": 3,
+        "wrong": 10,
+        "withheld": 45,
+        "octaveWrong": 3,
+        "previousNoteMatches": 3,
+        "coverage": 0.22413793103448276,
+        "correctFraction": 0.05172413793103448,
+        "acceptedAccuracy": 0.23076923076923078,
+        "acceptedAbsoluteCentsMedian": 1898.6904583899393,
+        "acceptedAbsoluteCentsP95": 2398.4794549087705,
+        "byContext": {
+          "mixedWindow": {
+            "total": 58,
+            "correct": 3,
+            "wrong": 10,
+            "withheld": 45
+          },
+          "singleNoteWindow": {
+            "total": 0,
+            "correct": 0,
+            "wrong": 0,
+            "withheld": 0
+          }
+        }
+      },
+      "standardResponse": {
+        "total": 17,
+        "found": 1,
+        "missed": 16,
+        "signedMedianMs": -30.26077097505675,
+        "absoluteMedianMs": 30.26077097505675,
+        "absoluteP95Ms": 30.26077097505675,
+        "responses": [
+          {
+            "onset": 0.085,
+            "frequency": 232.96642497109102,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.17,
+            "frequency": 233.19001663154822,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.255,
+            "frequency": 156.3223809196829,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.34,
+            "frequency": 233.47422007743168,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.42500000000000004,
+            "frequency": 78.09708020549421,
+            "response": 0.3947392290249433,
+            "errorMs": -30.26077097505675
+          },
+          {
+            "onset": 0.51,
+            "frequency": 310.3498491068246,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.5950000000000001,
+            "frequency": 137.9118007209945,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.68,
+            "frequency": 92.08753983785319,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.765,
+            "frequency": 220.235062318988,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.8500000000000001,
+            "frequency": 131.207768445462,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.935,
+            "frequency": 147.60062800498753,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.02,
+            "frequency": 104.16948242165404,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.105,
+            "frequency": 123.44833580389717,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.1900000000000002,
+            "frequency": 104.1250048821132,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.2750000000000001,
+            "frequency": 98.46236838249348,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.36,
+            "frequency": 311.0706058169268,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.445,
+            "frequency": 163.98926013332138,
+            "response": null,
+            "errorMs": null
+          }
+        ]
+      },
+      "experimentalResponse": {
+        "total": 17,
+        "found": 1,
+        "missed": 16,
+        "signedMedianMs": -30.26077097505675,
+        "absoluteMedianMs": 30.26077097505675,
+        "absoluteP95Ms": 30.26077097505675,
+        "responses": [
+          {
+            "onset": 0.085,
+            "frequency": 232.96642497109102,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.17,
+            "frequency": 233.19001663154822,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.255,
+            "frequency": 156.3223809196829,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.34,
+            "frequency": 233.47422007743168,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.42500000000000004,
+            "frequency": 78.09708020549421,
+            "response": 0.3947392290249433,
+            "errorMs": -30.26077097505675
+          },
+          {
+            "onset": 0.51,
+            "frequency": 310.3498491068246,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.5950000000000001,
+            "frequency": 137.9118007209945,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.68,
+            "frequency": 92.08753983785319,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.765,
+            "frequency": 220.235062318988,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.8500000000000001,
+            "frequency": 131.207768445462,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 0.935,
+            "frequency": 147.60062800498753,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.02,
+            "frequency": 104.16948242165404,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.105,
+            "frequency": 123.44833580389717,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.1900000000000002,
+            "frequency": 104.1250048821132,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.2750000000000001,
+            "frequency": 98.46236838249348,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.36,
+            "frequency": 311.0706058169268,
+            "response": null,
+            "errorMs": null
+          },
+          {
+            "onset": 1.445,
+            "frequency": 163.98926013332138,
+            "response": null,
+            "errorMs": null
+          }
+        ]
+      },
+      "boundaryMetrics": {
+        "predicted": 17,
+        "truth": 17,
+        "matched": 17,
+        "precision": 1,
+        "recall": 1,
+        "signedMedianMs": 4.149659863945554,
+        "absoluteMedianMs": 4.149659863945554,
+        "absoluteP95Ms": 16.188208616779917
+      },
+      "boundaryProposals": 17,
+      "memory": {
+        "heapDeltaBytes": -20575856,
+        "arrayBufferDeltaBytes": -1202864,
+        "processPeakRssKiB": 255572,
+        "comparisonJsonBytes": 171876
+      },
+      "decisionCounts": {
+        "2048 candidate failed independent gates.": 42,
+        "Frame centre lies inside an uncertain boundary interval.": 3,
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 13
+      }
+    },
+    {
+      "id": "bach",
+      "group": "private-real",
+      "texture": "unlabelled",
+      "duration": 21.52403628117914,
+      "frames": 919,
+      "standardMs": 17659.945172999993,
+      "adaptiveMs": 13254.964466999998,
+      "standardCoverage": 0.23286180631120784,
+      "adaptiveCoverage": 0.23612622415669204,
+      "stats": {
+        "recovered": 3,
+        "disagreements": 0,
+        "withheld": 702,
+        "evaluated2048": 786,
+        "evaluated1024": 51
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": null,
+      "experimental": null,
+      "standardResponse": null,
+      "experimentalResponse": null,
+      "boundaryMetrics": null,
+      "boundaryProposals": 175,
+      "memory": {
+        "heapDeltaBytes": -1788048,
+        "arrayBufferDeltaBytes": 1509040,
+        "processPeakRssKiB": 256532,
+        "comparisonJsonBytes": 2377971
+      },
+      "decisionCounts": {
+        "Standard quiet-frame gate retained.": 129,
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 210,
+        "2048 candidate failed independent gates.": 541,
+        "No cross-resolution agreement or very strong 2048 evidence.": 9,
+        "Standard estimate retained away from acoustic boundary proposals.": 4,
+        "Frame centre lies inside an uncertain boundary interval.": 16,
+        "No independently eligible neighbouring frame within the proposed segment.": 7,
+        "2048 evidence agrees with cycle-eligible 1024 and a within-segment neighbour; recovery is not ground-truth correctness.": 3
+      }
+    },
+    {
+      "id": "open-strings",
+      "group": "private-real",
+      "texture": "continuous-motion",
+      "duration": 14.01469387755102,
+      "frames": 596,
+      "standardMs": 11754.862097999998,
+      "adaptiveMs": 10435.588944000003,
+      "standardCoverage": 0.8489932885906041,
+      "adaptiveCoverage": 0.8473154362416108,
+      "stats": {
+        "recovered": 0,
+        "disagreements": 1,
+        "withheld": 91,
+        "evaluated2048": 514,
+        "evaluated1024": 176
+      },
+      "acceptedStandardPreserved": false,
+      "baselineWithheld": 1,
+      "standard": {
+        "total": 464,
+        "usable": 452,
+        "correct": 452,
+        "wrong": 0,
+        "withheld": 12,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 0.9741379310344828,
+        "correctFraction": 0.9741379310344828,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 13.68486709702104,
+        "acceptedAbsoluteCentsP95": 25.851363352181,
+        "byContext": {
+          "mixedWindow": {
+            "total": 32,
+            "correct": 32,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 432,
+            "correct": 420,
+            "wrong": 0,
+            "withheld": 12
+          }
+        }
+      },
+      "experimental": {
+        "total": 464,
+        "usable": 451,
+        "correct": 451,
+        "wrong": 0,
+        "withheld": 13,
+        "octaveWrong": 0,
+        "previousNoteMatches": 0,
+        "coverage": 0.9719827586206896,
+        "correctFraction": 0.9719827586206896,
+        "acceptedAccuracy": 1,
+        "acceptedAbsoluteCentsMedian": 13.684122247138841,
+        "acceptedAbsoluteCentsP95": 25.852083674785405,
+        "byContext": {
+          "mixedWindow": {
+            "total": 32,
+            "correct": 32,
+            "wrong": 0,
+            "withheld": 0
+          },
+          "singleNoteWindow": {
+            "total": 432,
+            "correct": 419,
+            "wrong": 0,
+            "withheld": 13
+          }
+        }
+      },
+      "standardResponse": null,
+      "experimentalResponse": null,
+      "boundaryMetrics": null,
+      "boundaryProposals": 130,
+      "memory": {
+        "heapDeltaBytes": -27079200,
+        "arrayBufferDeltaBytes": -5969496,
+        "processPeakRssKiB": 263940,
+        "comparisonJsonBytes": 1773218
+      },
+      "decisionCounts": {
+        "Standard quiet-frame gate retained.": 48,
+        "2048 candidate failed independent gates.": 41,
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 471,
+        "Standard estimate retained away from acoustic boundary proposals.": 34,
+        "Eligible estimates disagree near changing content. Adaptive pitch withheld; inspect the unchanged Standard overlay.": 1,
+        "Frame centre lies inside an uncertain boundary interval.": 1
+      }
+    },
+    {
+      "id": "open-strings-v2",
+      "group": "private-real",
+      "texture": "unlabelled",
+      "duration": 36.71333333333333,
+      "frames": 1574,
+      "standardMs": 24467.19386,
+      "adaptiveMs": 8006.973824999994,
+      "standardCoverage": 0.8265565438373571,
+      "adaptiveCoverage": 0.8271918678526048,
+      "stats": {
+        "recovered": 1,
+        "disagreements": 0,
+        "withheld": 272,
+        "evaluated2048": 959,
+        "evaluated1024": 270
+      },
+      "acceptedStandardPreserved": true,
+      "baselineWithheld": 0,
+      "standard": null,
+      "experimental": null,
+      "standardResponse": null,
+      "experimentalResponse": null,
+      "boundaryMetrics": null,
+      "boundaryProposals": 225,
+      "memory": {
+        "heapDeltaBytes": -9347904,
+        "arrayBufferDeltaBytes": 1671176,
+        "processPeakRssKiB": 293984,
+        "comparisonJsonBytes": 3902694
+      },
+      "decisionCounts": {
+        "Standard quiet-frame gate retained.": 85,
+        "2048 candidate failed independent gates.": 143,
+        "Standard accepted estimate protected; shorter-window clarity does not override it.": 771,
+        "Frame centre lies inside an uncertain boundary interval.": 31,
+        "Standard estimate retained away from acoustic boundary proposals.": 530,
+        "No cross-resolution agreement or very strong 2048 evidence.": 10,
+        "No independently eligible neighbouring frame within the proposed segment.": 3,
+        "2048 evidence agrees with cycle-eligible 1024 and a within-segment neighbour; recovery is not ground-truth correctness.": 1
+      }
+    }
+  ]
+}

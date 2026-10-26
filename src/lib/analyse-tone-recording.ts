@@ -1,5 +1,6 @@
 import { decodeRecording } from "./decode-audio.ts";
 import { TONE_CONFIG, type ToneResult } from "./tone.ts";
+import type { ExperimentalResult } from "./experimental-pitch.ts";
 import type { PitchResult } from "./pitch.ts";
 
 export async function analyseToneRecording(
@@ -7,6 +8,7 @@ export async function analyseToneRecording(
   signal: AbortSignal,
   onProgress: (value: number) => void,
   onPitch?: (pitch: PitchResult) => void,
+  experimental?: { onResult: (result: ExperimentalResult) => void },
 ): Promise<ToneResult> {
   if (
     typeof OfflineAudioContext === "undefined" ||
@@ -61,7 +63,12 @@ export async function analyseToneRecording(
     worker.onmessage = (
       event: MessageEvent<
         | { type: "progress"; progress: number }
-        | { type: "result"; result: ToneResult; pitch?: PitchResult }
+        | {
+            type: "result";
+            result: ToneResult;
+            pitch?: PitchResult;
+            experimental?: ExperimentalResult;
+          }
         | { type: "error"; message: string }
       >,
     ) => {
@@ -71,6 +78,8 @@ export async function analyseToneRecording(
         cleanup();
         if (message.type === "result") {
           if (message.pitch) onPitch?.(message.pitch);
+          if (message.experimental)
+            experimental?.onResult(message.experimental);
           resolve(message.result);
         } else reject(new Error(message.message));
       }
@@ -82,7 +91,11 @@ export async function analyseToneRecording(
         (_, i) => new Float32Array(audio.getChannelData(i)),
       );
       worker.postMessage(
-        { channels, sampleRate: audio.sampleRate },
+        {
+          channels,
+          sampleRate: audio.sampleRate,
+          experimental: !!experimental,
+        },
         channels.map((c) => c.buffer),
       );
     } catch {
