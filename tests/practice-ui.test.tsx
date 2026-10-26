@@ -15,6 +15,7 @@ import { PracticeMentor } from "../src/components/practice-mentor";
 import { PracticeAnalysisSession } from "../src/lib/practice-session";
 import { generatePracticeFeedback } from "../src/lib/practice-feedback";
 import type { createFeedbackClient } from "../src/lib/practice-feedback-client";
+import { candidateChecks } from "../src/lib/experimental-evidence";
 import { experimentalFixture } from "./helpers/experimental-fixture";
 import { practiceFixture } from "./helpers/practice-fixture";
 
@@ -184,9 +185,55 @@ test("student hierarchy keeps graphs outside Advanced and simple review synchron
     fixture.recordingId,
     async (_id, _file, _signal, _progress, experimental) => {
       calls++;
-      return experimental
-        ? { ...fixture, experimental: experimentalFixture(fixture) }
-        : fixture;
+      if (!experimental) return fixture;
+      const comparison = experimentalFixture(fixture);
+      const c = {
+        frequency: 188.6,
+        support: 0.77,
+        periodicity: 0.91,
+        score: 0.73,
+        primitive: true,
+        harmonics: [1, 2, 3],
+      };
+      const measured = {
+        ...fixture.pitch.frames[0],
+        frequency: null,
+        midi: null,
+        note: null,
+        cents: null,
+        diagnostics: {
+          ...fixture.pitch.frames[0].diagnostics!,
+          candidates: [c],
+          rawFrequency: 188.6,
+          margin: 0.12,
+        },
+      };
+      comparison.pitch = {
+        ...fixture.pitch,
+        frames: [measured, ...fixture.pitch.frames.slice(1)],
+        usableFrames: fixture.pitch.usableFrames - 1,
+      };
+      comparison.decisions[0] = {
+        ...comparison.decisions[0],
+        source: null,
+        status: "unresolved",
+        reason: "Constructed diagnostic fixture; missing bilateral support.",
+        unresolvedReasons: ["harmonic-support", "bilateral-evidence"],
+        shorter: [
+          {
+            windowSize: 2048,
+            centreSample: 2048,
+            frequency: null,
+            candidateFrequency: 188.6,
+            cycles: 17.5,
+            failures: ["Harmonic support < 0.8"],
+            supportOnlyNearMiss: true,
+            checks: candidateChecks(c, 0.12, 2048, 0.1),
+            frame: measured,
+          },
+        ],
+      };
+      return { ...fixture, experimental: comparison };
     },
   );
   const recording = {
@@ -310,6 +357,22 @@ test("student hierarchy keeps graphs outside Advanced and simple review synchron
       className: "panel advanced-level",
     });
     assert.match(contents(updatedAdvanced), /experimental additional work/);
+    assert.match(contents(updatedAdvanced), /Weak harmonic support/);
+    assert.match(
+      contents(updatedAdvanced),
+      /Missing eligible evidence on both sides/,
+    );
+    assert.match(contents(updatedAdvanced), /near threshold; short by 0.030/);
+    assert.match(
+      contents(updatedAdvanced),
+      /Best measured candidate \(unverified\)/,
+    );
+    assert.match(contents(updatedAdvanced), /188.60/);
+    assert.ok(
+      updatedAdvanced.findByProps({
+        "aria-label": "2048-sample acoustic gates",
+      }),
+    );
     assert.match(
       contents(root.findByProps({ className: "performance-level" })),
       /Detected pitch trajectory/,

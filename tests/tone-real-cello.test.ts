@@ -11,6 +11,7 @@ import {
   summariseInterval,
 } from "../src/lib/tone.ts";
 
+import { analyseExperimentalPitch } from "../src/lib/experimental-pitch.ts";
 const samplePath = process.env.STRINGMENTOR_CELLO_V2_PATH;
 test(
   "V2 private cello development regression (set STRINGMENTOR_CELLO_V2_PATH; requires FFmpeg)",
@@ -51,6 +52,14 @@ test(
     }
     const samples = mixToMono(channels);
     const pitch = analysePitch(samples);
+    const experimental = analyseExperimentalPitch(samples, pitch);
+    for (const [i, frame] of pitch.frames.entries())
+      if (frame.frequency !== null)
+        assert.equal(
+          experimental.pitch.frames[i].frequency,
+          frame.frequency,
+          `Experimental must preserve accepted V2 frame at ${frame.time}`,
+        );
     const result = analyseTone(samples, pitch.frames);
     result.clipping = clippingEvidence(channels);
     assert.ok(result.duration > 36 && result.duration < 37);

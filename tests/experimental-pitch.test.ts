@@ -20,8 +20,12 @@ test("experimental analysis is aligned, immutable and independently gated; optio
       assert.equal(standard.frames[i].frequency, null);
       const m = d.shorter.find((e) => e.windowSize === 2048)!;
       assert.ok(m.cycles! >= 6);
-      assert.deepEqual(m.failures, []);
-      assert.ok(m.frequency);
+      if (d.supportException) {
+        assert.ok(m.supportOnlyNearMiss);
+        assert.equal(m.checks.filter((g) => !g.passed).length, 1);
+        assert.ok(d.anchors.length >= 2);
+      } else assert.deepEqual(m.failures, []);
+      assert.ok(m.candidateFrequency);
     }
     if (d.status === "disagreement")
       assert.equal(adaptive.pitch.frames[i].frequency, null);
@@ -94,5 +98,60 @@ test("busy experimental computation can be terminated from another thread withou
     assert.equal(completed, false);
   } finally {
     await worker.terminate();
+  }
+});
+
+test("within-note harmonic variation and simulated bow-noise bursts do not justify false pitch changes", (t) => {
+  for (const kind of ["harmonic variation", "noise bursts"]) {
+    let seed = 8821;
+    const frequency = 146.8323839587038;
+    const samples = Float32Array.from({ length: 44100 }, (_, i) => {
+      const time = i / 22050,
+        phase = 2 * Math.PI * frequency * time;
+      seed = (1664525 * seed + 1013904223) >>> 0;
+      const burst =
+        kind === "noise bursts" && time % 0.4 < 0.016
+          ? 0.06 * (seed / 2 ** 31 - 1)
+          : 0;
+      return (
+        0.15 *
+          (Math.sin(phase) +
+            (0.5 + 0.3 * Math.sin(2 * Math.PI * 7 * time)) *
+              Math.sin(2 * phase) +
+            (0.3 + 0.2 * Math.cos(2 * Math.PI * 3 * time)) *
+              Math.sin(3 * phase)) +
+        burst
+      );
+    });
+    const standard = analysePitch(samples),
+      result = analyseExperimentalPitch(samples, standard);
+    const count = (frames: typeof standard.frames) => ({
+      correct: frames.filter(
+        (f) =>
+          f.frequency !== null &&
+          Math.abs(1200 * Math.log2(f.frequency / frequency)) <= 50,
+      ).length,
+      wrong: frames.filter(
+        (f) =>
+          f.frequency !== null &&
+          Math.abs(1200 * Math.log2(f.frequency / frequency)) > 50,
+      ).length,
+      withheld: frames.filter((f) => f.frequency === null).length,
+    });
+    const a = count(standard.frames),
+      b = count(result.pitch.frames);
+    assert.equal(a.wrong, 0);
+    assert.equal(b.wrong, 0);
+    assert.ok(b.correct >= a.correct);
+    t.diagnostic(
+      JSON.stringify({
+        kind,
+        standard: a,
+        experimental: b,
+        acousticProposals: result.boundaries.length,
+        segmentBarriers: result.stats.segmentBoundaries,
+        noteTransitions: 0,
+      }),
+    );
   }
 });

@@ -5,7 +5,7 @@ export function experimentalFixture(
   bundle: AnalysisBundle,
 ): ExperimentalResult {
   return {
-    version: "2D.2A.1",
+    version: "2D.2B.1",
     pitch: bundle.pitch,
     standardMs: 10,
     experimentalMs: 20,
@@ -17,9 +17,14 @@ export function experimentalFixture(
       reason: "Controlled fixture",
       boundary: false,
       shorter: [],
+      unresolvedReasons: [],
+      supportException: false,
+      anchors: [],
     })),
     stats: {
       recovered: 0,
+      supportExceptions: 0,
+      segmentBoundaries: 0,
       disagreements: 0,
       withheld: 0,
       evaluated2048: 0,

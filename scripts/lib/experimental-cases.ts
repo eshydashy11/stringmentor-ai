@@ -1,16 +1,19 @@
 import { makeSequence, hz, type SignalCase } from "./fast-pitch-audit.ts";
 
 /** Evaluation-only seeds/configurations, frozen before inspecting adaptive results. */
-export function heldOutCases(): SignalCase[] {
-  return [701, 809, 997, 1237].map((seedValue, variant) => {
+export function heldOutCases(
+  seeds = [701, 809, 997, 1237],
+  durations = [0.135, 0.085],
+): SignalCase[] {
+  return seeds.map((seedValue, variant) => {
     let seed = seedValue;
     const random = () => {
       seed = (1664525 * seed + 1013904223) >>> 0;
       return seed / 2 ** 32;
     };
     const notes = Array.from({ length: 18 }, (_, i) => ({
-      start: i * (variant % 2 ? 0.085 : 0.135),
-      end: (i + 1) * (variant % 2 ? 0.085 : 0.135),
+      start: i * durations[variant % 2],
+      end: (i + 1) * durations[variant % 2],
       frequency: hz(38 + Math.floor(random() * 26) + (random() - 0.5) * 0.2),
     }));
     const samples = new Float32Array(Math.ceil(notes.at(-1)!.end * 22050));
@@ -96,4 +99,9 @@ export function extraCases(): SignalCase[] {
       }),
     });
   return cases;
+}
+
+/** Frozen Phase 2D.2B evaluation set; do not tune parameters after viewing results. */
+export function heldOutRecoveryCases(): SignalCase[] {
+  return heldOutCases([1601, 1777, 2029, 2411], [0.115, 0.095]);
 }

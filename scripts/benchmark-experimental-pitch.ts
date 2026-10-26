@@ -6,6 +6,7 @@ import { analyseTone } from "../src/lib/tone.ts";
 import {
   analyseExperimentalPitch,
   EXPERIMENTAL_RULES,
+  EXPERIMENTAL_VERSION,
 } from "../src/lib/experimental-pitch.ts";
 import {
   scoreFrames,
@@ -14,15 +15,23 @@ import {
   matchBoundaries,
   type SignalCase,
 } from "./lib/fast-pitch-audit.ts";
-import { heldOutCases, extraCases } from "./lib/experimental-cases.ts";
+import {
+  heldOutCases,
+  heldOutRecoveryCases,
+  extraCases,
+} from "./lib/experimental-cases.ts";
 
-mkdirSync("work/experimental", { recursive: true });
+mkdirSync("work/experimental-b", { recursive: true });
 const output: Record<string, unknown> = {
-  version: "2D.2A.1",
+  version: EXPERIMENTAL_VERSION,
   rules: EXPERIMENTAL_RULES,
   node: process.version,
   date: new Date().toISOString(),
-  seeds: [701, 809, 997, 1237],
+  previousEvaluationSeeds: [701, 809, 997, 1237],
+  heldOutSeeds: [1601, 1777, 2029, 2411],
+  unavailable: [
+    "Beethoven solo excerpt: no audio or full exported diagnostics supplied",
+  ],
   timing:
     "One wall-clock run per case; includes cold/JIT effects. Peak RSS is cumulative process high-water, not per-case browser memory. No decode time included.",
   cases: [],
@@ -31,7 +40,7 @@ const rows: unknown[] = [];
 const save = () => {
   output.cases = rows;
   writeFileSync(
-    "work/experimental/results.json",
+    "work/experimental-b/results.json",
     JSON.stringify(output, null, 2),
   );
 };
@@ -46,6 +55,11 @@ function evaluate(signal: SignalCase, group: string) {
     standardMs,
   });
   const after = process.memoryUsage();
+  if (process.argv.includes("--diagnostics"))
+    writeFileSync(
+      `work/experimental-b/${signal.id}-diagnostics.json`,
+      JSON.stringify(adaptive),
+    );
   const labelled = signal.notes.length > 0;
   const discrete = labelled && signal.texture !== "continuous-motion";
   const reference = discrete ? signal.notes.slice(1).map((n) => n.start) : [];
@@ -84,6 +98,42 @@ function evaluate(signal: SignalCase, group: string) {
         )
       : null,
     boundaryProposals: adaptive.boundaries.length,
+    segmentBoundaryMetrics: discrete
+      ? matchBoundaries(
+          adaptive.boundaries
+            .filter((b) => b.usedForSegmentation)
+            .map((b) => b.centreSample / 22050),
+          reference,
+        )
+      : null,
+    unresolvedGateCounts: adaptive.decisions
+      .filter((d) => d.status === "unresolved" || d.status === "disagreement")
+      .reduce<Record<string, number>>((counts, d) => {
+        for (const code of d.unresolvedReasons)
+          counts[code] = (counts[code] ?? 0) + 1;
+        return counts;
+      }, {}),
+    newlyAccepted: labelled
+      ? scoreFrames(
+          adaptive.pitch,
+          signal.notes,
+          adaptive.pitch.frames.filter(
+            (f, i) =>
+              f.frequency !== null && standard.frames[i].frequency === null,
+          ),
+        )
+      : null,
+    retainedChanges: standard.frames.flatMap((f, i) =>
+      f.frequency !== null && f.frequency !== adaptive.pitch.frames[i].frequency
+        ? [
+            {
+              time: f.time,
+              standard: f.frequency,
+              experimental: adaptive.pitch.frames[i].frequency,
+            },
+          ]
+        : [],
+    ),
     memory: {
       heapDeltaBytes: after.heapUsed - before.heapUsed,
       arrayBufferDeltaBytes: after.arrayBuffers - before.arrayBuffers,
@@ -110,7 +160,7 @@ function evaluate(signal: SignalCase, group: string) {
 const historical = JSON.parse(
   readFileSync("docs/data/fast-pitch/synthetic.json", "utf8"),
 );
-for (const s of syntheticCases()) {
+for (const s of process.argv.includes("--real-only") ? [] : syntheticCases()) {
   evaluate(s, "development-baseline");
   const last = rows.at(-1) as {
     standard: { correct: number; wrong: number; withheld: number };
@@ -124,9 +174,15 @@ for (const s of syntheticCases()) {
   )
     throw new Error(`2D.1 reproduction failed: ${s.id}`);
 }
-for (const s of extraCases()) evaluate(s, "regression");
+for (const s of process.argv.includes("--real-only") ? [] : extraCases())
+  evaluate(s, "regression");
 // No parameter changes permitted in response to these held-out results for this version.
-for (const s of heldOutCases()) evaluate(s, "held-out");
+for (const s of process.argv.includes("--real-only") ? [] : heldOutCases())
+  evaluate(s, "previous-evaluation");
+for (const s of process.argv.includes("--real-only")
+  ? []
+  : heldOutRecoveryCases())
+  evaluate(s, "held-out");
 for (const [key, id, hash] of [
   [
     "STRINGMENTOR_BACH_PATH",

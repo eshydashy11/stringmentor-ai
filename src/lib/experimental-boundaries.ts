@@ -11,6 +11,8 @@ export type BoundaryProposal = {
   highFlux: number;
   envelopeChangeDb: number;
   threshold: number;
+  usedForSegmentation: boolean;
+  interpretation: string;
 };
 /** Experimental acoustic boundaries, never verified note onsets or bow reversals. */
 export function experimentalBoundaries(
@@ -120,6 +122,9 @@ export function experimentalBoundaries(
       highFlux: row.highFlux,
       envelopeChangeDb,
       threshold,
+      usedForSegmentation: false,
+      interpretation:
+        "Acoustic change only; no persistent pitch-transition evidence yet.",
     });
   }
   // 35 ms suppression is independent of the sparse 250 ms articulation-event list.
@@ -132,4 +137,34 @@ export function experimentalBoundaries(
     )
       kept.push(p);
   return kept.sort((a, b) => a.centreSample - b.centreSample);
+}
+
+/** Classify proposals using independently gated, non-recursive evidence on either side.
+ * Even a segmentation cue is not a confirmed note onset or a bow reversal.
+ */
+export function classifyBoundary(
+  proposal: BoundaryProposal,
+  before: (number | null)[],
+  after: (number | null)[],
+): BoundaryProposal {
+  const distance = (a: number, b: number) => Math.abs(1200 * Math.log2(a / b));
+  const stable = (side: (number | null)[]): side is number[] =>
+    side.length === 2 &&
+    side.every((f) => f !== null) &&
+    distance(side[0]!, side[1]!) <= 80;
+  const change =
+    stable(before) && stable(after) && distance(before[0], after[0]) >= 90;
+  // An envelope change alone may be bow dynamics; require a low-band spectral peak too.
+  const articulation =
+    Math.abs(proposal.envelopeChangeDb) >= 4 &&
+    proposal.lowFlux >= proposal.threshold;
+  return {
+    ...proposal,
+    usedForSegmentation: change || articulation,
+    interpretation: change
+      ? "Persistent independently eligible pitch change across the acoustic proposal; tentative segment boundary."
+      : articulation
+        ? "Coincident envelope and low-band spectral change; conservative articulation/transition barrier, not a verified note onset."
+        : "Unconfirmed acoustic change (possibly within-note variation); retained for inspection, not used as a segment boundary.",
+  };
 }

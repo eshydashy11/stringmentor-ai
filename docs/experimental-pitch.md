@@ -1,5 +1,7 @@
 # Phase 2D.2A — Experimental multi-resolution pitch
 
+Historical 2D.2A report. For the current opt-in implementation, see [Phase 2D.2B](experimental-pitch-recovery.md).
+
 26 October 2026. Version `2D.2A.1`. **Standard remains the default. This experiment does not meet the criteria for replacing it.**
 
 ## What ships

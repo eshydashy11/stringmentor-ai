@@ -184,7 +184,7 @@ test("shared adapter receives pitch and tone from one worker response and reject
     );
     assert.equal(comparison.pitch, fixture.pitch);
     assert.equal(comparison.tone, fixture.tone);
-    assert.equal(comparison.experimental?.version, "2D.2A.1");
+    assert.equal(comparison.experimental?.version, "2D.2B.1");
     assert.equal(validateBundle(comparison, fixture.recordingId), true);
     const malformed = structuredClone(comparison);
     malformed.experimental!.pitch.frames[0].time = -1;

@@ -1,6 +1,24 @@
 "use client";
 import { usePracticeAnalysis } from "./practice-analysis-provider";
 
+const REQUIREMENT_LABELS: Record<string, string> = {
+  amplitude: "Below amplitude threshold",
+  "harmonic-support": "Weak harmonic support",
+  periodicity: "Insufficient periodicity",
+  score: "Low candidate score",
+  ambiguity: "Candidate ambiguity",
+  "cross-resolution-disagreement": "Cross-resolution disagreement",
+  "boundary-overlap": "Boundary overlap",
+  "cross-resolution-unavailable": "No eligible cross-resolution corroboration",
+  "segment-conflict": "Conflicting eligible segment evidence",
+  "segment-evidence": "Insufficient segment support",
+  "bilateral-evidence": "Missing eligible evidence on both sides",
+  cycles: "Too few cycles",
+  primitive: "Non-primitive harmonic family",
+  range: "Out of range",
+  "no-candidate": "No harmonic candidate",
+};
+
 export function ExperimentalPitchControls({
   selectedIndex,
 }: {
@@ -60,8 +78,9 @@ export function ExperimentalPitchControls({
                 </span>
                 <span>
                   {comparison.stats.recovered} recovered ·{" "}
-                  {comparison.stats.disagreements} disagreements between
-                  eligible estimates · {comparison.stats.withheld} withheld
+                  {comparison.stats.disagreements} withheld for cross-resolution
+                  conflicts · {comparison.stats.withheld} withheld ·{" "}
+                  {comparison.stats.supportExceptions} support-only exceptions
                 </span>
                 <span>
                   Standard pitch: {(comparison.standardMs / 1000).toFixed(2)} s
@@ -73,9 +92,35 @@ export function ExperimentalPitchControls({
               <p>
                 Teal: adaptive estimate. Ivory dashed: Standard. Gaps remain
                 missing measurements. Stable Standard estimates are retained.
-                Unresolved disagreements near changing content become adaptive
-                gaps; the Standard overlay stays available.
+                Unresolved conflicts near supported segment boundaries remain
+                gaps; the Standard overlay stays available. No gaps are
+                interpolated.
               </p>
+              <details>
+                <summary>Why frames remain withheld</summary>
+                <p>
+                  A frame can fail several requirements; these counts overlap.
+                </p>
+                <ul>
+                  {Object.entries(
+                    comparison.decisions
+                      .filter(
+                        (d) =>
+                          d.status === "unresolved" ||
+                          d.status === "disagreement",
+                      )
+                      .reduce<Record<string, number>>((counts, d) => {
+                        for (const code of d.unresolvedReasons)
+                          counts[code] = (counts[code] ?? 0) + 1;
+                        return counts;
+                      }, {}),
+                  ).map(([code, count]) => (
+                    <li key={code}>
+                      {REQUIREMENT_LABELS[code] ?? code}: {count}
+                    </li>
+                  ))}
+                </ul>
+              </details>
               {selected && (
                 <details className="pitch-frame-diagnostics">
                   <summary>
@@ -86,15 +131,69 @@ export function ExperimentalPitchControls({
                   <p>{selected.reason}</p>
                   <p>
                     Source: {selected.source ?? "none"} samples · long window
-                    intersects boundary proposal:{" "}
+                    intersects a supported segment boundary:{" "}
                     {selected.boundary ? "yes" : "no"}. Boundary proposals are
                     not confirmed note onsets or bow changes.
                   </p>
+                  {selected.unresolvedReasons.length > 0 && (
+                    <p>
+                      Withheld requirements:{" "}
+                      {selected.unresolvedReasons
+                        .map((code) => REQUIREMENT_LABELS[code] ?? code)
+                        .join("; ")}
+                      .
+                    </p>
+                  )}
+                  {selected.supportException && (
+                    <p>
+                      Support-only exception applied. The original failed gate
+                      remains below; this does not establish the true note.
+                    </p>
+                  )}
+                  {selected.anchors.length > 0 && (
+                    <p>
+                      Independently gated neighbours:{" "}
+                      {selected.anchors
+                        .map(
+                          (a) =>
+                            `${(a.centreSample / 22050).toFixed(3)} s: ${a.frequency.toFixed(1)} Hz`,
+                        )
+                        .join("; ")}
+                      . Overlapping windows are not statistically independent.
+                    </p>
+                  )}
                   {selected.shorter.map((e) => (
                     <div key={e.windowSize}>
                       <strong>{e.windowSize} samples</strong>:{" "}
                       {e.frequency?.toFixed(2) ?? "withheld"} Hz ·{" "}
                       {e.cycles?.toFixed(1) ?? "unknown"} cycles
+                      <p>
+                        Best measured candidate (unverified):{" "}
+                        {e.candidateFrequency?.toFixed(2) ?? "none"} Hz. Raw
+                        periodicity estimate:{" "}
+                        {e.frame.diagnostics?.rawFrequency?.toFixed(2) ??
+                          "none"}{" "}
+                        Hz.
+                      </p>
+                      <ul aria-label={`${e.windowSize}-sample acoustic gates`}>
+                        {e.checks.map((g) => (
+                          <li key={g.code}>
+                            {g.label}:{" "}
+                            {g.value === null
+                              ? "unavailable"
+                              : g.value.toFixed(3)}
+                            {g.required !== null
+                              ? `; requires ≥ ${g.required}`
+                              : ""}
+                            {g.passed ? " — passed" : " — failed"}
+                            {g.nearMiss &&
+                            g.value !== null &&
+                            g.required !== null
+                              ? ` (near threshold; short by ${(g.required - g.value).toFixed(3)})`
+                              : ""}
+                          </li>
+                        ))}
+                      </ul>
                       <p>
                         {e.failures.join("; ") ||
                           "Independent evidence gates passed; agreement still required for recovery."}
@@ -104,7 +203,7 @@ export function ExperimentalPitchControls({
                         {e.frame.diagnostics?.candidates
                           .map(
                             (c) =>
-                              `${c.frequency.toFixed(1)} Hz (support ${c.support.toFixed(2)}, periodicity ${c.periodicity.toFixed(2)}, score ${c.score.toFixed(2)})`,
+                              `${c.frequency.toFixed(1)} Hz (support ${c.support.toFixed(2)}, periodicity ${c.periodicity.toFixed(2)}, score ${c.score.toFixed(2)}, relative frequency ${(c.frequency / e.frame.diagnostics!.candidates[0].frequency).toFixed(2)}×, harmonics ${c.harmonics.join("/")}, ${c.primitive ? "primitive" : "non-primitive"})`,
                           )
                           .join("; ") || "none"}
                       </p>
@@ -115,18 +214,23 @@ export function ExperimentalPitchControls({
               <details>
                 <summary>
                   Experimental boundary proposals (
-                  {comparison.boundaries.length})
+                  {comparison.boundaries.length};{" "}
+                  {comparison.stats.segmentBoundaries} used for segmentation)
                 </summary>
                 <p>
                   Local multiband flux, envelope and harmonic changes; uncertain
-                  timing intervals. First 100 shown; full evidence is included
-                  in Export feedback &amp; reviews.
+                  timing intervals. A proposal requires persistent pitch change
+                  or coincident envelope/low-band change to constrain tracking.
+                  Neither category confirms a note onset or bow reversal. First
+                  100 shown; full evidence is included in Export feedback &amp;
+                  reviews.
                 </p>
                 <ul>
                   {comparison.boundaries.slice(0, 100).map((b) => (
                     <li key={b.centreSample}>
                       {(b.startSample / 22050).toFixed(3)}–
-                      {(b.endSample / 22050).toFixed(3)} s: {b.cues.join("; ")}
+                      {(b.endSample / 22050).toFixed(3)} s: {b.cues.join("; ")}.{" "}
+                      {b.interpretation}
                     </li>
                   ))}
                 </ul>

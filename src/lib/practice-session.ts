@@ -41,7 +41,7 @@ export function validateBundle(
     );
   return (
     (!bundle.experimental ||
-      (bundle.experimental.version === "2D.2A.1" &&
+      (bundle.experimental.version === "2D.2B.1" &&
         bundle.experimental.pitch.duration === duration &&
         bundle.experimental.pitch.frames.length ===
           bundle.pitch.frames.length &&

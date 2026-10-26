@@ -4,6 +4,7 @@ import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { analysePitch } from "../src/lib/pitch.ts";
+import { analyseExperimentalPitch } from "../src/lib/experimental-pitch.ts";
 const samplePath = process.env.STRINGMENTOR_CELLO_SAMPLE_PATH;
 
 test(
@@ -37,6 +38,14 @@ test(
       pcm.buffer.slice(pcm.byteOffset, pcm.byteOffset + pcm.byteLength),
     );
     const result = analysePitch(samples);
+    const experimental = analyseExperimentalPitch(samples, result);
+    for (const [i, frame] of result.frames.entries())
+      if (frame.frequency !== null)
+        assert.equal(
+          experimental.pitch.frames[i].frequency,
+          frame.frequency,
+          `Experimental must preserve accepted V1 frame at ${frame.time}`,
+        );
     const regions = [
       [1.4, 4.2, "C2", 0.95],
       [4.6, 7.5, "G2", 0.99],
