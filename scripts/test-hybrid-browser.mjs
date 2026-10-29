@@ -24,7 +24,13 @@ const requests = [],
   errors = [];
 page.on("request", (r) => requests.push({ url: r.url(), method: r.method() }));
 page.on("pageerror", (e) => errors.push(e.message));
-const report = { startedAt: new Date().toISOString(), buildId: readFileSync(".next/BUILD_ID", "utf8").trim(), base, tests: [], errors };
+const report = {
+  startedAt: new Date().toISOString(),
+  buildId: readFileSync(".next/BUILD_ID", "utf8").trim(),
+  base,
+  tests: [],
+  errors,
+};
 const save = () =>
   writeFileSync(`${root}/browser-ui.json`, JSON.stringify(report, null, 2));
 await context.addInitScript(() => {
@@ -153,7 +159,7 @@ try {
   assert.ok(
     await page
       .getByTestId("hybrid-diagnostics")
-      .getByText(/Hybrid Tiny: /)
+      .getByText(/^Hybrid Tiny: /)
       .isVisible(),
   );
   assert.ok(
@@ -188,6 +194,44 @@ try {
       accepted: c2.filter((f) => f.frequency !== null).length,
     },
   };
+  const eligible = result.hybrid.decisions.map(
+    (d, i) =>
+      result.pitch.frames[i].rms >= 0.003 &&
+      d.neural.frequency !== null &&
+      d.neural.frequency >= 55 &&
+      d.neural.frequency <= 1000 &&
+      d.neural.confidence >= 0.5 &&
+      d.neural.confidence <= 1,
+  );
+  const eligibleCount = eligible.filter(Boolean).length;
+  const suppressedIndex = eligible.findIndex(
+    (v, i) => v && result.hybrid.pitch.frames[i].frequency === null,
+  );
+  assert.ok(suppressedIndex >= 0);
+  const coverageText = await page
+    .getByTestId("independent-coverage")
+    .innerText();
+  assert.ok(
+    coverageText.includes(
+      `Raw CREPE Tiny (unverified): ${eligibleCount}/${eligible.length}`,
+    ),
+  );
+  const pitchChart = page
+    .locator('[aria-labelledby="advanced-intonation-title"] .pitch-chart-panel')
+    .first();
+  assert.equal(await pitchChart.locator(".recharts-line").count(), 3);
+  await page.getByLabel("Amber dotted — raw CREPE Tiny (unverified)").uncheck();
+  assert.equal(await pitchChart.locator(".recharts-line").count(), 2);
+  await page.getByLabel("Amber dotted — raw CREPE Tiny (unverified)").check();
+  await page.locator("#advanced-pitch-timestamp").fill(String(suppressedIndex));
+  await page
+    .getByTestId("hybrid-diagnostics")
+    .getByText(/eligible candidate; withheld by Hybrid/)
+    .waitFor();
+  assert.equal(await page.evaluate(() => window.__decodes), 2);
+  report.tests.push(
+    "Three independent trajectories, exact raw eligibility coverage, toggle reuse and CREPE-eligible/Hybrid-withheld frame reasons verified",
+  );
   writeFileSync(`${root}/ui-v1-result.json`, JSON.stringify(result));
   save();
   // Seeking and mode changes reuse results; no decoding or inference repeats.

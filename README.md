@@ -174,3 +174,5 @@ Practice Mentor, Explore and tone analysis continue to use Standard. The hybrid 
 See [policy, browser validation and measured limitations](docs/hybrid-crepe.md) and [numerical results](docs/data/hybrid-crepe/results.json).
 
 Run `npm ci`, `npm run dev` and open http://localhost:3000 for development. `predev` and `prebuild` verify the committed Tiny model and copy the pinned ONNX runtime locally. For production browser validation, build with `npm run build`, start with `npm run start`, then follow the report's `test:hybrid:browser` and `benchmark:hybrid` commands. Neither Python nor a model download from a third-party host is needed to run the website.
+
+Phase 2E.2 adds an [independent visual comparison](docs/crepe-visual-comparison.md) in the same Advanced Diagnostics Hybrid Tiny view: Standard, basic-gated raw CREPE candidates and guarded Hybrid, with separate coverage, visibility controls and frame-level rejection/disagreement evidence. Amber candidates are explicitly unverified. This display does not relax the Hybrid rules or affect Practice Mentor.

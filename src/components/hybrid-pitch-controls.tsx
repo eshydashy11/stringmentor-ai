@@ -1,4 +1,6 @@
 "use client";
+import { crepeComparison } from "@/lib/crepe-comparison";
+import { useMemo } from "react";
 import { usePracticeAnalysis } from "./practice-analysis-provider";
 
 export function HybridPitchControls({
@@ -8,6 +10,14 @@ export function HybridPitchControls({
 }) {
   const shared = usePracticeAnalysis(),
     hybrid = shared.result?.hybrid;
+  const comparison = useMemo(
+    () =>
+      hybrid && shared.result
+        ? crepeComparison(shared.result.pitch, hybrid)
+        : null,
+    [hybrid, shared.result],
+  );
+  const candidate = comparison?.rows[selectedIndex];
   const d = hybrid?.decisions[selectedIndex];
   return (
     <div data-testid="hybrid-diagnostics">
@@ -31,6 +41,41 @@ export function HybridPitchControls({
         </p>
       ) : (
         <>
+          {comparison && (
+            <div
+              className="pitch-stats"
+              data-testid="independent-coverage"
+              role="status"
+            >
+              {(
+                [
+                  ["Standard", comparison.standard],
+                  ["Raw CREPE Tiny (unverified)", comparison.crepe],
+                  ["Guarded Hybrid Tiny", comparison.hybrid],
+                ] as const
+              ).map(([name, v]) => (
+                <span key={name}>
+                  {name}: {v.accepted}/{v.total} (
+                  {(v.coverage * 100).toFixed(1)}%)
+                </span>
+              ))}
+              <span>
+                {comparison.hybridWithheld} CREPE-eligible frames withheld by
+                Hybrid
+              </span>
+              <span>
+                {comparison.disagreements} eligible CREPE / Standard
+                disagreements (&gt;35 cents; only where both have estimates)
+              </span>
+            </div>
+          )}
+          <p>
+            Raw CREPE is independently gated using RMS ≥ 0.003, 55–1000 Hz and
+            activation ≥ 0.50. It uses no harmonic, neighbour or Hybrid
+            acceptance gates. These are unverified candidate measurements, not
+            established correct notes. No new inference or threshold changes are
+            made by this comparison.
+          </p>
           <div className="pitch-stats" role="status">
             <span>
               Hybrid Tiny: {hybrid.pitch.usableFrames}/
@@ -59,10 +104,11 @@ export function HybridPitchControls({
           </div>
           <p>
             Teal: selected hybrid estimate. Ivory dashed: unchanged Standard.
-            Gaps stay unresolved. Harmonic guards retain an acoustic estimate or
-            withhold a disputed neural estimate; they are not independently
-            confirmed corrections. Correct/wrong counts require independent
-            labels and are not available for this recording.
+            Amber dotted: independently eligible raw CREPE candidates
+            (unverified). Gaps stay unresolved. Harmonic guards retain an
+            acoustic estimate or withhold a disputed neural estimate; they are
+            not independently confirmed corrections. Correct/wrong counts
+            require independent labels and are not available for this recording.
           </p>
           <details>
             <summary>Hybrid withheld requirements</summary>
@@ -90,6 +136,38 @@ export function HybridPitchControls({
                 {d.source ?? "withheld"}
               </summary>
               <p>{d.reason}</p>
+              {candidate && (
+                <>
+                  <p>
+                    Raw CREPE display:{" "}
+                    {candidate.frequency === null
+                      ? `ineligible — ${candidate.failed.join("; ")}`
+                      : candidate.hybridWithheld
+                        ? "eligible candidate; withheld by Hybrid"
+                        : "eligible candidate; Hybrid has an estimate (which may differ)"}
+                    .
+                  </p>
+                  <p>
+                    Standard:{" "}
+                    {candidate.standardFrequency?.toFixed(2) ?? "withheld"} Hz ·
+                    Hybrid:{" "}
+                    {candidate.hybridFrequency?.toFixed(2) ?? "withheld"} Hz.
+                  </p>
+                  <p>
+                    {candidate.differenceCents === null
+                      ? "No eligible pair for a Standard disagreement comparison."
+                      : `CREPE minus Standard: ${candidate.differenceCents.toFixed(1)} cents — ${candidate.disagreement ? "disagreement (>35 cents)" : "within 35 cents"}.`}
+                  </p>
+                  {candidate.ratioToStandard !== null && (
+                    <p>
+                      Raw candidate / Standard frequency ratio:{" "}
+                      {candidate.ratioToStandard.toFixed(3)}×. This ratio
+                      describes the measurements; it does not establish which
+                      fundamental is correct.
+                    </p>
+                  )}
+                </>
+              )}
               <p>
                 Selected: {d.frequency?.toFixed(2) ?? "unresolved"} Hz. CREPE
                 candidate: {d.neural.frequency?.toFixed(2) ?? "none"} Hz ·

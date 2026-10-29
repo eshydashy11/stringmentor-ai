@@ -1,7 +1,8 @@
 "use client";
 
 import { ExperimentalPitchControls } from "./experimental-pitch-controls";
-import { useState } from "react";
+import { crepeComparison } from "@/lib/crepe-comparison";
+import { useMemo, useState } from "react";
 import { Activity, ArrowDown, ArrowUp, Crosshair, X } from "lucide-react";
 import {
   CartesianGrid,
@@ -161,12 +162,40 @@ function MeasurementTooltip({
   payload,
 }: {
   active?: boolean;
-  payload?: readonly { payload?: PitchFrame }[];
+  payload?: readonly {
+    payload?: PitchFrame & {
+      crepe?: ReturnType<typeof crepeComparison>["rows"][number];
+    };
+  }[];
 }) {
   const frame = payload?.[0]?.payload;
   return active && frame ? (
     <div className="pitch-tooltip">
-      <Measurement frame={frame} />
+      {frame.crepe ? (
+        <>
+          <strong>{frame.time.toFixed(3)} s · independent comparison</strong>
+          <p>
+            Standard: {frame.crepe.standardFrequency?.toFixed(2) ?? "withheld"}{" "}
+            Hz
+          </p>
+          <p>
+            Raw CREPE (unverified):{" "}
+            {frame.crepe.frequency?.toFixed(2) ?? "ineligible"} Hz · activation{" "}
+            {frame.crepe.activation.toFixed(3)}
+          </p>
+          <p>
+            Hybrid: {frame.crepe.hybridFrequency?.toFixed(2) ?? "withheld"} Hz
+          </p>
+          {frame.crepe.hybridWithheld && (
+            <p>
+              CREPE eligible; Hybrid withheld. Select this timestamp to inspect
+              the reasons.
+            </p>
+          )}
+        </>
+      ) : (
+        <Measurement frame={frame} />
+      )}
     </div>
   ) : null;
 }
@@ -200,6 +229,18 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
     advanced && shared.pitchMode === "hybrid-tiny"
       ? shared.result?.hybrid
       : undefined;
+  const independent = useMemo(
+    () =>
+      hybrid && shared.result
+        ? crepeComparison(shared.result.pitch, hybrid)
+        : null,
+    [hybrid, shared.result],
+  );
+  const [visible, setVisible] = useState({
+    standard: true,
+    crepe: true,
+    hybrid: true,
+  });
   const comparison = hybrid ?? experimental;
   const result = comparison?.pitch ?? shared.result?.pitch ?? null;
   const run = () =>
@@ -221,6 +262,10 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
     .filter((f) => f.time >= windowStart && f.time <= windowEnd)
     .map((frame, index, visible) => ({
       ...frame,
+      crepe: independent?.rows[Math.round((frame.time * 22050 - 2048) / 512)],
+      crepeMidi:
+        independent?.rows[Math.round((frame.time * 22050 - 2048) / 512)]
+          ?.midi ?? null,
       standardMidi: comparison
         ? (shared.result!.pitch.frames[
             Math.round((frame.time * 22050 - 2048) / 512)
@@ -241,7 +286,8 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
   const visibleMidi = data.flatMap((f) => [
     ...(f.midi === null ? [] : [f.midi]),
     ...(f.standardMidi === null ? [] : [f.standardMidi]),
-    ...(showRaw && f.rawMidi !== null ? [f.rawMidi] : []),
+    ...(f.crepeMidi === null ? [] : [f.crepeMidi]),
+    ...(!hybrid && showRaw && f.rawMidi !== null ? [f.rawMidi] : []),
   ]);
   const pitchDomain = visibleMidi.length
     ? [
@@ -403,7 +449,7 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
           )}
           {frames.length > 0 && (
             <>
-              {advanced && (
+              {advanced && !hybrid && (
                 <label className="pitch-raw-toggle">
                   <input
                     type="checkbox"
@@ -431,6 +477,44 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
                   onChange={(e) => setWindowStart(Number(e.target.value))}
                 />
               </div>
+              {hybrid && (
+                <fieldset
+                  className="pitch-notice"
+                  data-testid="crepe-comparison-legend"
+                >
+                  <legend>
+                    Independent pitch comparison · toggle trajectories
+                  </legend>
+                  {(
+                    [
+                      ["standard", "Ivory dashed — Standard", "#e5dfca"],
+                      [
+                        "crepe",
+                        "Amber dotted — raw CREPE Tiny (unverified)",
+                        "#ffc478",
+                      ],
+                      ["hybrid", "Teal solid — guarded Hybrid Tiny", "#8dd4be"],
+                    ] as const
+                  ).map(([key, label, color]) => (
+                    <label key={key} style={{ display: "block", color }}>
+                      <input
+                        type="checkbox"
+                        checked={visible[key]}
+                        onChange={(e) =>
+                          setVisible({ ...visible, [key]: e.target.checked })
+                        }
+                      />{" "}
+                      {label}
+                    </label>
+                  ))}
+                  <p>
+                    Amber circles mark candidates eligible for raw CREPE display
+                    but withheld by Hybrid. Eligibility is not correctness. Gaps
+                    are not interpolated. The cents graph below remains the
+                    guarded Hybrid estimate.
+                  </p>
+                </fieldset>
+              )}
               <div className="pitch-chart-grid">
                 {(["midi", "graphCents"] as const).map((metric) => (
                   <div className="pitch-chart-panel" key={metric}>
@@ -525,19 +609,51 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
                                 strokeDasharray="2 2"
                               />
                             )}
-                          {metric === "midi" && comparison && (
+                          {metric === "midi" &&
+                            comparison &&
+                            (!hybrid || visible.standard) && (
+                              <Line
+                                dataKey="standardMidi"
+                                name="Standard reference"
+                                stroke="#e5dfca"
+                                strokeDasharray="6 3"
+                                strokeWidth={1.3}
+                                dot={false}
+                                connectNulls={false}
+                                isAnimationActive={false}
+                              />
+                            )}
+                          {metric === "midi" && hybrid && visible.crepe && (
                             <Line
-                              dataKey="standardMidi"
-                              name="Standard reference"
-                              stroke="#e5dfca"
-                              strokeDasharray="6 3"
-                              strokeWidth={1.3}
-                              dot={false}
+                              dataKey="crepeMidi"
+                              name="Raw CREPE Tiny — unverified"
+                              stroke="#ffc478"
+                              strokeDasharray="2 3"
+                              strokeWidth={1.7}
                               connectNulls={false}
                               isAnimationActive={false}
+                              activeDot={{ r: 4 }}
+                              dot={(props) => {
+                                const { cx, cy, payload } = props;
+                                return payload?.crepe?.hybridWithheld &&
+                                  Number.isFinite(cx) &&
+                                  Number.isFinite(cy) ? (
+                                  <circle
+                                    key={payload.time}
+                                    cx={cx}
+                                    cy={cy}
+                                    r={3}
+                                    fill="#101e2b"
+                                    stroke="#ffc478"
+                                    strokeWidth={1.5}
+                                  />
+                                ) : (
+                                  <g key={payload?.time} />
+                                );
+                              }}
                             />
                           )}
-                          {metric === "midi" && showRaw && (
+                          {metric === "midi" && !hybrid && showRaw && (
                             <Line
                               dataKey="rawMidi"
                               name="Raw Pitchy estimate"
@@ -550,6 +666,12 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
                             />
                           )}
                           <Line
+                            hide={
+                              metric === "midi" && !!hybrid && !visible.hybrid
+                            }
+                            name={
+                              hybrid ? "Guarded Hybrid Tiny" : "Tracked pitch"
+                            }
                             dataKey={metric}
                             type="linear"
                             stroke={metric === "midi" ? "#8dd4be" : "#edc49a"}
@@ -565,7 +687,7 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
                   </div>
                 ))}
               </div>
-              {showRaw && (
+              {!hybrid && showRaw && (
                 <p>
                   Raw estimates outside the cello range appear in frame
                   diagnostics rather than on the graph.
