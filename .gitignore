@@ -13,3 +13,6 @@ next-env.d.ts
 # Offline Python benchmark caches
 __pycache__/
 *.py[cod]
+
+# Pinned runtime copied by predev/prebuild
+public/vendor/

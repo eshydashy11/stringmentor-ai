@@ -39,9 +39,9 @@ function useSession(
     session.getSnapshot,
     session.getSnapshot,
   );
-  const [pitchMode, setPitchMode] = useState<"standard" | "experimental">(
-    "standard",
-  );
+  const [pitchMode, setPitchMode] = useState<
+    "standard" | "experimental" | "hybrid-tiny"
+  >("standard");
   const [goal, setGoal] = useState<PracticeGoal>("dynamics");
   const [interval, setInterval] = useState<TimeInterval>({ start: 0, end: 1 });
   const [comparison, setComparison] = useState<TimeInterval | null>(null);
@@ -70,14 +70,19 @@ function useSession(
       window.removeEventListener("pagehide", session.cancel);
     };
   }, [session]);
-  const run = async (force = false, includeExperimental = false) => {
+  const run = async (
+    force = false,
+    includeExperimental = false,
+    includeHybrid = false,
+  ) => {
     if (!recording || recording.instrument !== "cello") return;
     const before = session.getSnapshot();
     if (before.status === "decoding" || before.status === "analysing") return;
     if (
       before.result &&
       !force &&
-      (!includeExperimental || before.result.experimental)
+      (!includeExperimental || before.result.experimental) &&
+      (!includeHybrid || before.result.hybrid)
     )
       return;
     setReviews({});
@@ -86,7 +91,12 @@ function useSession(
     setComparison(null);
     setHighlight(null);
     setWindowStart(0);
-    await session.run(recording.file, force, includeExperimental);
+    await session.run(
+      recording.file,
+      force,
+      includeExperimental,
+      includeHybrid,
+    );
     const result = session.getSnapshot().result;
     if (result) setInterval({ start: 0, end: result.tone.duration });
   };
@@ -222,6 +232,7 @@ function useSession(
           {
             ...payload,
             experimentalComparison: state.result.experimental ?? null,
+            hybridComparison: state.result.hybrid ?? null,
             feedback: feedbackBusy || feedbackError ? null : payload.feedback,
             feedbackStatus: feedbackBusy
               ? "pending"

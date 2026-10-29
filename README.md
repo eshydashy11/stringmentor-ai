@@ -162,4 +162,15 @@ Deploy as a standard Next.js application on a compatible Node.js host (for examp
 
 ### Offline CREPE benchmark
 
-The [CREPE benchmark report](docs/crepe-benchmark.md) compares verified Tiny/Full models with Standard and Experimental on aligned synthetic and available private recordings. Its [numerical results](docs/data/crepe-benchmark/results.json) include correct/wrong/withheld counts, confidence sensitivity, timing, provenance and a separate browser feasibility test. No neural model is added to the website's production analysis. Follow the report's isolated Python/browser setup, then run `npm run benchmark:crepe -- --browser`; private recordings remain local.
+The [CREPE benchmark report](docs/crepe-benchmark.md) compares verified Tiny/Full models with Standard and Experimental on aligned synthetic and available private recordings. Its [numerical results](docs/data/crepe-benchmark/results.json) include correct/wrong/withheld counts, confidence sensitivity, timing, provenance and a separate browser feasibility test. That initial benchmark kept neural models offline. The opt-in Hybrid Tiny integration below now uses the verified model in Advanced Diagnostics. Follow the report's isolated Python/browser setup, then run `npm run benchmark:crepe -- --browser`; private recordings remain local.
+
+
+## Hybrid CREPE Tiny (Phase 2E)
+
+In Practice Studio, load a cello recording, open **Advanced Diagnostics**, choose **Hybrid Tiny — guarded CREPE comparison**, and press **Analyse Intonation** (or **Analyse again**). The first run downloads a verified 2 MB model and an 11 MB WASM runtime from this website; audio stays on your device. Progress, cancellation, per-frame selection reasons, Standard overlay, timestamp seeking and review export are available. Completed views reuse the result. Recordings up to two minutes are supported in this experimental mode; Standard retains its ten-minute analysis limit and remains the default.
+
+Practice Mentor, Explore and tone analysis continue to use Standard. The hybrid retains every accepted Standard estimate, including known Standard errors. It accepts only independently corroborated neural recoveries. More coverage is not a correctness claim. Full stays in the documented offline benchmark because its browser compute/memory costs do not justify a live option yet.
+
+See [policy, browser validation and measured limitations](docs/hybrid-crepe.md) and [numerical results](docs/data/hybrid-crepe/results.json).
+
+Run `npm ci`, `npm run dev` and open http://localhost:3000 for development. `predev` and `prebuild` verify the committed Tiny model and copy the pinned ONNX runtime locally. For production browser validation, build with `npm run build`, start with `npm run start`, then follow the report's `test:hybrid:browser` and `benchmark:hybrid` commands. Neither Python nor a model download from a third-party host is needed to run the website.

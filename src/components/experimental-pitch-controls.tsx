@@ -1,4 +1,5 @@
 "use client";
+import { HybridPitchControls } from "./hybrid-pitch-controls";
 import { usePracticeAnalysis } from "./practice-analysis-provider";
 
 const REQUIREMENT_LABELS: Record<string, string> = {
@@ -36,15 +37,23 @@ export function ExperimentalPitchControls({
           value={shared.pitchMode}
           disabled={shared.busy}
           onChange={(e) =>
-            shared.setPitchMode(e.target.value as "standard" | "experimental")
+            shared.setPitchMode(
+              e.target.value as "standard" | "experimental" | "hybrid-tiny",
+            )
           }
         >
           <option value="standard">Standard — harmonic-aware detector</option>
           <option value="experimental">
             Experimental — multi-resolution comparison
           </option>
+          <option value="hybrid-tiny">
+            Hybrid Tiny — guarded CREPE comparison
+          </option>
         </select>
       </label>
+      {shared.pitchMode === "hybrid-tiny" && (
+        <HybridPitchControls selectedIndex={selectedIndex} />
+      )}
       {shared.pitchMode === "experimental" && (
         <>
           <p>

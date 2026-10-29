@@ -81,8 +81,9 @@ test("scope validation rejects inconsistent durations and timestamps; short empt
 });
 
 test("shared adapter receives pitch and tone from one worker response and rejects missing context", async () => {
-  const { analysePracticeRecording } =
-    await import("../src/lib/practice-session.ts");
+  const { analysePracticeRecording } = await import(
+    "../src/lib/practice-session.ts"
+  );
   const oldWorker = Object.getOwnPropertyDescriptor(globalThis, "Worker");
   const oldDecoder = Object.getOwnPropertyDescriptor(
     globalThis,
@@ -207,4 +208,54 @@ test("shared adapter receives pitch and tone from one worker response and reject
       Object.defineProperty(globalThis, "OfflineAudioContext", oldDecoder);
     else Reflect.deleteProperty(globalThis, "OfflineAudioContext");
   }
+});
+
+test("Hybrid Tiny is explicit, cached only after a complete hybrid result, and cannot alter Standard", async () => {
+  const { selectHybrid } = await import("../src/lib/hybrid-pitch.ts");
+  const fixture = practiceFixture();
+  const exp = experimentalFixture(fixture);
+  const selected = selectHybrid(
+    fixture.pitch,
+    exp,
+    fixture.pitch.frames.map((f) => ({
+      frequency: f.frequency,
+      confidence: 0.95,
+      peaks: [],
+    })),
+  );
+  const hybrid = {
+    ...selected,
+    timing: {
+      modelMs: 1,
+      inferenceMs: 1,
+      arbitrationMs: 1,
+      totalMs: 3,
+      inferredFrames: fixture.pitch.frames.length,
+    },
+    model: { sha256: "fixture", runtime: "fixture", backend: "fixture" },
+  };
+  const requests: boolean[] = [];
+  const session = new PracticeAnalysisSession(
+    fixture.recordingId,
+    async (_id, _file, _signal, progress, _experimental, includeHybrid) => {
+      requests.push(!!includeHybrid);
+      progress(0.3, "Loading model");
+      progress(0.8, "Neural frames");
+      return includeHybrid
+        ? { ...fixture, experimental: exp, hybrid }
+        : fixture;
+    },
+  );
+  await session.run(new Blob(["audio"]));
+  assert.deepEqual(requests, [false]);
+  await session.run(new Blob(["audio"]), false, true, true);
+  assert.deepEqual(requests, [false, true]);
+  assert.equal(session.getSnapshot().result!.pitch, fixture.pitch);
+  assert.equal(session.getSnapshot().result!.tone, fixture.tone);
+  assert.equal(session.getSnapshot().result!.hybrid, hybrid);
+  await session.run(new Blob(["audio"]), false, true, true);
+  assert.equal(requests.length, 2);
+  const invalid = structuredClone(session.getSnapshot().result!);
+  invalid.hybrid!.pitch.frames[0].frequency! *= 3;
+  assert.equal(validateBundle(invalid, fixture.recordingId), false);
 });

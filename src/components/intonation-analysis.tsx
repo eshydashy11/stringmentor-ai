@@ -196,9 +196,18 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
     advanced && shared.pitchMode === "experimental"
       ? shared.result?.experimental
       : undefined;
-  const result = experimental?.pitch ?? shared.result?.pitch ?? null;
+  const hybrid =
+    advanced && shared.pitchMode === "hybrid-tiny"
+      ? shared.result?.hybrid
+      : undefined;
+  const comparison = hybrid ?? experimental;
+  const result = comparison?.pitch ?? shared.result?.pitch ?? null;
   const run = () =>
-    shared.run(!!result, advanced && shared.pitchMode === "experimental");
+    shared.run(
+      !!result,
+      advanced && shared.pitchMode !== "standard",
+      advanced && shared.pitchMode === "hybrid-tiny",
+    );
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [showRaw, setShowRaw] = useState(advanced);
   const prefix = advanced ? "advanced-" : "";
@@ -212,7 +221,7 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
     .filter((f) => f.time >= windowStart && f.time <= windowEnd)
     .map((frame, index, visible) => ({
       ...frame,
-      standardMidi: experimental
+      standardMidi: comparison
         ? (shared.result!.pitch.frames[
             Math.round((frame.time * 22050 - 2048) / 512)
           ]?.midi ?? null)
@@ -319,7 +328,7 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
           <p role="status">
             {status === "decoding"
               ? "Decoding audio locally…"
-              : `Measuring pitch… ${progress}%`}
+              : `${shared.stage ?? "Measuring pitch"}… ${progress}%`}
           </p>
           <progress
             aria-label="Pitch analysis progress"
@@ -516,7 +525,7 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
                                 strokeDasharray="2 2"
                               />
                             )}
-                          {metric === "midi" && experimental && (
+                          {metric === "midi" && comparison && (
                             <Line
                               dataKey="standardMidi"
                               name="Standard reference"
@@ -599,7 +608,23 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
                     </>
                   )}
                 </div>
-                {advanced && selected && <FrameDiagnostics frame={selected} />}
+                {advanced && selected && (
+                  <>
+                    {hybrid && (
+                      <p>
+                        Standard reference evidence at this timestamp (the
+                        hybrid selection is explained above).
+                      </p>
+                    )}
+                    <FrameDiagnostics
+                      frame={
+                        hybrid
+                          ? shared.result!.pitch.frames[selectedIndex]
+                          : selected
+                      }
+                    />
+                  </>
+                )}
                 <button
                   className="button secondary"
                   disabled={!selected || !playbackDuration}
@@ -614,7 +639,12 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
           {advanced && (
             <div className="pitch-observations">
               <h3>Measured observations</h3>
-              {result.observations.length ? (
+              {hybrid ? (
+                <p>
+                  Hybrid-specific practice observations are not implemented.
+                  Practice Mentor continues to use Standard measurements.
+                </p>
+              ) : result.observations.length ? (
                 <ul>
                   {result.observations.map((observation) => (
                     <li key={observation}>{observation}</li>
@@ -627,10 +657,12 @@ function AnalysisSession({ advanced }: { advanced: boolean }) {
                     : "Observations are withheld because usable pitch data is insufficient."}
                 </p>
               )}
-              <small>
-                Calculated from these measurements using fixed rules; no LLM
-                assessment.
-              </small>
+              {!hybrid && (
+                <small>
+                  Calculated from these measurements using fixed rules; no LLM
+                  assessment.
+                </small>
+              )}
             </div>
           )}
         </>

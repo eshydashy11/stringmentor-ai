@@ -1,3 +1,4 @@
+import type { HybridResult } from "./hybrid-pitch.ts";
 import { decodeRecording } from "./decode-audio.ts";
 import { TONE_CONFIG, type ToneResult } from "./tone.ts";
 import type { ExperimentalResult } from "./experimental-pitch.ts";
@@ -6,9 +7,10 @@ import type { PitchResult } from "./pitch.ts";
 export async function analyseToneRecording(
   file: Blob,
   signal: AbortSignal,
-  onProgress: (value: number) => void,
+  onProgress: (value: number, stage?: string) => void,
   onPitch?: (pitch: PitchResult) => void,
   experimental?: { onResult: (result: ExperimentalResult) => void },
+  hybrid?: { onResult: (result: HybridResult) => void },
 ): Promise<ToneResult> {
   if (
     typeof OfflineAudioContext === "undefined" ||
@@ -19,6 +21,10 @@ export async function analyseToneRecording(
     );
   const audio = await decodeRecording(file, TONE_CONFIG.sampleRate, signal);
   signal.throwIfAborted();
+  if (hybrid && audio.duration > 120)
+    throw new Error(
+      "Hybrid Tiny currently supports recordings up to two minutes. Choose a shorter clip or use Standard for this recording.",
+    );
   return new Promise((resolve, reject) => {
     let worker: Worker;
     try {
@@ -34,7 +40,20 @@ export async function analyseToneRecording(
       );
       return;
     }
+    let watchdog: ReturnType<typeof setTimeout>;
+    const resetWatchdog = () => {
+      clearTimeout(watchdog);
+      watchdog = setTimeout(() => {
+        cleanup();
+        reject(
+          new Error(
+            "Analysis stopped responding. Try a shorter clip or switch to Standard; your recording is unchanged.",
+          ),
+        );
+      }, 90000);
+    };
     const cleanup = () => {
+      clearTimeout(watchdog);
       worker.onmessage = null;
       worker.onerror = null;
       worker.onmessageerror = null;
@@ -46,6 +65,7 @@ export async function analyseToneRecording(
       reject(new DOMException("Analysis cancelled", "AbortError"));
     };
     signal.addEventListener("abort", abort, { once: true });
+    resetWatchdog();
     worker.onerror = () => {
       cleanup();
       reject(
@@ -62,24 +82,28 @@ export async function analyseToneRecording(
     };
     worker.onmessage = (
       event: MessageEvent<
-        | { type: "progress"; progress: number }
+        | { type: "progress"; progress: number; stage?: string }
         | {
             type: "result";
             result: ToneResult;
             pitch?: PitchResult;
             experimental?: ExperimentalResult;
+            hybrid?: HybridResult;
           }
         | { type: "error"; message: string }
       >,
     ) => {
       const message = event.data;
-      if (message.type === "progress") onProgress(message.progress);
+      resetWatchdog();
+      if (message.type === "progress")
+        onProgress(message.progress, message.stage);
       else {
         cleanup();
         if (message.type === "result") {
           if (message.pitch) onPitch?.(message.pitch);
           if (message.experimental)
             experimental?.onResult(message.experimental);
+          if (message.hybrid) hybrid?.onResult(message.hybrid);
           resolve(message.result);
         } else reject(new Error(message.message));
       }
@@ -95,6 +119,7 @@ export async function analyseToneRecording(
           channels,
           sampleRate: audio.sampleRate,
           experimental: !!experimental,
+          hybrid: !!hybrid,
         },
         channels.map((c) => c.buffer),
       );
